@@ -52,7 +52,18 @@ v0.2 구조:
 
 ---
 
-## 1. 설치
+## 1. 사전 준비 (3분)
+
+| # | 항목 | 비고 |
+|---|---|---|
+| 1 | Claude Code CLI 설치 + 최신 버전 | `npm install -g @anthropic-ai/claude-code@latest`. v2.1.x 이상 필요 |
+| 2 | 자료 폴더 정리 | PRD·유스케이스·시퀀스·와이어프레임·권한·용어집·ERD 7카테고리 — 다중 버전 있으면 최신본 식별 가능한 위치에 |
+| 3 | 인계 채널 합의 | 명인과 사전: zip(암호 zip 권장 — credentials 포함) / git push / 클라우드 중 1택 |
+| 4 | 사전 합의 정보 미리 준비 | 본인 Google email, 테스트 도메인 URL, 어드민/테스트 계정 (단계 11b에서 묻습니다) |
+
+---
+
+## 2. 설치
 
 ### 옵션 A — qa-kit 마켓플레이스 (권장)
 
@@ -61,7 +72,10 @@ Claude Code에서 다음 두 명령:
 ```
 /plugin marketplace add cmi94/qa-kit
 /plugin install qa-scout@qa-kit
+/reload-plugins
 ```
+
+검증 — 슬래시 입력 후 자동완성에 `/curate-input (qa-scout)` 등 3개 노출되면 OK.
 
 ### 옵션 B — 수동 install
 
@@ -82,7 +96,7 @@ cp -r plugins/qa-scout/templates ~/.claude/templates/qa-scout/
 
 ---
 
-## 2. 사용법 — 단계 -1 ~ 20
+## 3. 사용법 — 단계 -1 ~ 20
 
 ### 단계 -1: 명인 → 개발자 사전 인계
 
@@ -223,7 +237,7 @@ git push
 
 ---
 
-## 3. 환각 방지 — scout v0.2 6가지 가드
+## 4. 환각 방지 — scout v0.2 6가지 가드
 
 | # | 룰 | 의미 |
 |---|---|---|
@@ -236,7 +250,24 @@ git push
 
 ---
 
-## 4. 자주 묻는 질문
+## 5. 보안 — credentials 인계
+
+`input-manifest.yaml`에 단계 11b 수집 결과(개발자 email + 테스트 URL + admin 계정)가 포함되므로 인계 시 노출 위험.
+
+권장 인계 매체:
+
+| 매체 | 비고 |
+|---|---|
+| **zip 암호화 + 암호 별도 전송** | 가장 단순. 암호는 Slack DM·전화 등 별도 채널 |
+| 1password vault link | 사내 1password 사용 시 |
+| 암호화 메시지 (Signal·Wickr) | credentials 일부만 별도 전송 |
+| **git push (지양)** | 부득이 시 `.gitignore`에 `input-manifest.yaml` 추가 또는 credentials을 `engagement-secrets.yaml`로 분리하고 그 파일만 별도 채널 |
+
+운영 계정 절대 X — 단계 11b 인터뷰에서 테스트 전용 계정만 입력.
+
+---
+
+## 6. 자주 묻는 질문
 
 ### Q1. v0.1과 호환되나요?
 - 부분 호환. v0.1 산출물(6종 markdown)은 v0.2 양식과 다름.
@@ -267,7 +298,21 @@ git push
 
 ---
 
-## 5. 양식 참조
+## 7. 트러블슈팅
+
+| 증상 | 1차 대응 |
+|---|---|
+| `/plugin isn't available in this environment` | Claude Code 업그레이드 (`npm install -g @anthropic-ai/claude-code@latest`) — v2.1.x 이상 필요 |
+| 자동완성에 `/curate-input (qa-scout)` 등 안 뜸 | `/plugin marketplace update qa-kit` → `/plugin uninstall qa-scout@qa-kit` → `/plugin install qa-scout@qa-kit` → `/reload-plugins` |
+| `/reload-plugins` 출력에 `0 skills` 표시 | misleading. 실제 로드 검증은 자동완성 또는 자연어 호출로. 카운트 무시 OK |
+| scout이 PROJECT 헤더 없다고 중단 | 트리거에 `[PROJECT: <project>]` 헤더 포함했는지 확인 |
+| 자료 폴더 검증 실패 | 절대 경로 또는 작업 폴더 기준 상대 경로 (예: `./docs`). 폴더 존재·읽기 권한 확인 |
+| 단계 11b에 운영 계정 입력하려는데 | 운영 계정 절대 X — 테스트 전용 계정만. 없으면 사내 IT/QA에 테스트 계정 발급 요청 |
+| 그 외 | 본 plugin 저자 (chlauddls12@gmail.com) — `scout-log.md` 첨부 권장 |
+
+---
+
+## 8. 양식 참조
 
 - 표지: `templates/feature-spec/01_표지.md`
 - 변경이력: `templates/feature-spec/04_변경이력.md`
@@ -279,14 +324,14 @@ git push
 
 ---
 
-## 6. 라이선스 / 문의
+## 9. 라이선스 / 문의
 
 - 라이선스: MIT (`LICENSE` 파일은 [qa-kit 루트](../../LICENSE))
 - 문의: 최명인 (chlauddls12@gmail.com)
 - 마켓: https://github.com/cmi94/qa-kit
 - source: https://github.com/cmi94/qa-kit/tree/main/plugins/qa-scout
 
-## 7. 변경 이력
+## 10. 변경 이력
 
 | 버전 | 일자 | 변경 |
 |---|---|---|

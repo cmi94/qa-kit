@@ -1,5 +1,17 @@
 # qa-scout Changelog
 
+## [0.2.4] — 2026-05-07
+
+### Docs
+- README 재구성 — 사용자 가이드 SoT를 public README로 통합. 이전엔 사내 별도 안내서(qa-workbench private)에 흩어져 있던 내용:
+  - **§1 사전 준비** (3분, 4항목 표) — Claude Code 설치·자료 폴더 정리·인계 채널 합의·단계 11b 사전 합의 정보
+  - **§5 보안 — credentials 인계** — 권장 인계 매체 표 (zip 암호화·1password·암호화 메시지·git 지양)
+  - **§7 트러블슈팅** — 7개 증상별 1차 대응 (`/plugin` 미지원·자동완성 누락·0 skills misleading·PROJECT 헤더·자료 폴더·운영 계정 거부 등)
+- 섹션 번호 재배치 (1→사전준비 2→설치 3→사용법 4→가드 5→보안 6→FAQ 7→트러블슈팅 8→양식 9→라이선스 10→변경이력)
+
+### Why
+v0.2.3까지 사내(private) `INTERNAL_DISTRIBUTION.md`에만 있던 사용자 가이드를 외부 사용자도 접근 가능한 public README로 통합. 정보 1곳화 + 발견성 향상. 사내 한정 둘 가치 0이라는 사용자 지적.
+
 ## [0.2.3] — 2026-05-07
 
 ### Added

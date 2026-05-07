@@ -14,7 +14,7 @@
       "name": "qa-scout",
       "source": "./plugins/qa-scout",
       "description": "개발자가 보유한 5종 도메인 지식을 인계받고 PRD를 GxP 양식 기능 정의서(Google Sheets 5시트, 17컬럼)로 정형화하는 플러그인. scout 에이전트 + curate-input·docs-to-function-spec·markdown-to-sheets 스킬 + qa-handoff/ 표준 폴더. 환각 가드(추정 금지·[자료 부족] 마커·출처 표기·최신본 확인) + 단계 -1~20 양방향 인계.",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "category": "qa",
       "tags": ["qa", "scout", "spec-normalization", "documentation", "handoff", "gxp"],
       "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-scout"

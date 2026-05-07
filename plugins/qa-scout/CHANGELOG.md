@@ -1,9 +1,15 @@
 # qa-scout Changelog
 
-## [0.2.1] — 2026-05-07
+## [0.2.2] — 2026-05-07
 
 ### Fix
-- `plugin.json`의 `components` 블록 제거 — Claude Code 자동 디스커버리에 위임. 0.2.0에서 plugin manifest의 components 명시가 skills 자동 디스커버리를 막는 이슈 수정.
+- `plugin.json`의 `compatibility`, `license` 필드 제거 — 비표준 필드가 skills 디스커버리를 막는 이슈 수정. 정상 동작 플러그인 plugin.json 패턴 준수 (name/version/description/author/homepage/keywords만).
+- 라이선스는 LICENSE 파일(qa-kit 루트)로만 명시.
+
+## [0.2.1] — 2026-05-07
+
+### Fix (incomplete)
+- `plugin.json`의 `components` 블록 제거 시도. 0.2.0에서 plugin manifest의 components 명시가 skills 자동 디스커버리를 막는 가설로 시도했으나 효과 없음. 0.2.2에서 추가 fix.
 
 ## [0.2.0] — 2026-05-06
 

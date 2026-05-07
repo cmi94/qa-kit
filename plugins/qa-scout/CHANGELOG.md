@@ -1,5 +1,10 @@
 # qa-scout Changelog
 
+## [0.2.1] — 2026-05-07
+
+### Fix
+- `plugin.json`의 `components` 블록 제거 — Claude Code 자동 디스커버리에 위임. 0.2.0에서 plugin manifest의 components 명시가 skills 자동 디스커버리를 막는 이슈 수정.
+
 ## [0.2.0] — 2026-05-06
 
 ### 변경

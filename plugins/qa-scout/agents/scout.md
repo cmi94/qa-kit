@@ -151,8 +151,14 @@ model: sonnet
    - `_source/` 모든 원본 사본
    - `input-manifest.yaml` + `scout-log.md` 생성
    - **Sheets 이행 X** (단계 17a 명인 측에서 수행)
-6. **단계 10~11**: 모호점 추가 인터뷰 (5개 패턴 — 같은 용어 2의미·행위자 불명·필드 타입 불명·정의 충돌·단위 불명)
-7. **단계 12**: 완료 보고
+6. **단계 10~11a**: 모호점 추가 인터뷰 (5개 패턴 — 같은 용어 2의미·행위자 불명·필드 타입 불명·정의 충돌·단위 불명)
+7. **단계 11b**: 인계·검수 환경 정보 수집 (★ 필수 — 단계 17a·18b·18c 진행에 필요)
+   - **개발자 Google 이메일** — 단계 17a `share_spreadsheet` 대상 + 단계 18c 검수 권한 부여 (Sheets editor)
+   - **테스트 대상 도메인 URL** — 단계 18a~b 사람 검수·자동화 회귀(qa-workbench 후공정) 환경. 형식 `https://<test-or-staging-domain>` + 환경 종류(dev/staging/UAT) 명시. **운영 도메인 X**
+   - **어드민/테스트 계정 정보** — 권한 매트릭스 사람 검수·자동화 회귀용. 형식 `<id>/<password>` 또는 SSO 토큰. **테스트 전용 계정만 — 운영 계정 절대 X**. SSO·MFA 추가 정보 옵션
+   - 답변 → `input-manifest.yaml`의 `contact:` + `test_environment:` 섹션에 저장 (양식 §templates/input-manifest.yaml)
+   - 보안 주의: `input-manifest.yaml`을 git push 인계 시 credentials 노출 위험 → 권장 인계 매체 = zip(암호 zip) 또는 1password/암호화 메시지. git 인계 시 `.gitignore`에 `input-manifest.yaml` 또는 credentials 별도 분리 (`engagement-secrets.yaml`)
+8. **단계 12**: 완료 보고
 
 ### 단계 13~16: 개발자 → 명인 인계
 - 개발자가 결과 검토 후 인계 패키지 구성: (a) zip / (b) git push / (c) 클라우드
@@ -183,9 +189,14 @@ PROJECT: <프로젝트명>
 - domain-knowledge/ (받기 5종 모두 인계)
 - _source/ (원본 N건)
 
+검수·테스트 환경 (단계 11b 수집):
+- 개발자 Google email: <email> (단계 17a Sheets editor 권한 대상)
+- 테스트 도메인: <url> (<dev|staging|UAT>)
+- 어드민 테스트 계정: <id>/<***> (운영 계정 X 확인됨)
+
 질의 이력: <카테고리·이슈 목록>
 
-다음: 명인에게 인계 (단계 14 — zip / git / 클라우드 중 합의 옵션)
+다음: 명인에게 인계 (단계 14 — zip / git / 클라우드 중 합의 옵션 — credentials 포함 시 zip 암호화 권장)
 ```
 
 ## 받기 5종 다중 인풋 처리 (G16·G17)

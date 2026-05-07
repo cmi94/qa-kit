@@ -1,5 +1,19 @@
 # qa-scout Changelog
 
+## [0.2.3] — 2026-05-07
+
+### Added
+- **단계 11b** 신규 — 인계·검수 환경 정보 수집 단계. scout가 단계 12 완료 보고 직전에 3개 항목 인터뷰:
+  1. 개발자 Google email (단계 17a `share_spreadsheet` + 단계 18c 검수 권한 대상)
+  2. 테스트 대상 도메인 URL + 환경 종류(dev/staging/UAT) — 단계 18a~b 사람 검수·자동화 회귀
+  3. 어드민/테스트 계정 정보 — 권한 매트릭스 사람 검수·자동화 회귀 (테스트 전용 — 운영 계정 금지)
+- `input-manifest.yaml` 양식에 `contact:` + `test_environment:` 섹션 추가 (단계 11b 답변 저장 위치)
+- `markdown-to-sheets` 스킬 입력 우선순위 명시 — `input-manifest.yaml > contact.developer.email`이 1순위, engagement-brief 2순위, 인터랙티브 입력 3순위
+- 보안 가이드 — credentials 포함 manifest는 zip 암호화 또는 1password/암호화 메시지 인계 권장. git 인계 시 `.gitignore` 또는 `engagement-secrets.yaml` 분리
+
+### Why
+사용자 검수 결과 — v0.2.2까지 단계 17a `share_spreadsheet`에 필요한 `developer_email`을 단계 0~12 어디에서도 수집하지 않는 갭 발견. 명인이 단계 -1 사전 합의로 알고 있다는 운영 외 가정에 의존. 본 v0.2.3에서 scout 흐름 안에서 명시 수집으로 fix. 테스트 URL·어드민 계정도 같은 단계에서 함께 수집해 단계 18 사람 검수 가속화.
+
 ## [0.2.2] — 2026-05-07
 
 ### Fix

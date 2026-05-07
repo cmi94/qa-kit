@@ -25,6 +25,31 @@ missing_categories:
     # extracted: PRD 등 다른 자료에서 발췌 (G16)
     # skip: 생략
 
+# 인계·검수 환경 정보 (단계 11b 수집)
+# 단계 17a Sheets 공유 + 단계 18a~c 사람 검수·자동화 회귀 진행에 필수
+contact:
+  developer:
+    name: <개발자 이름>
+    email: <개발자 Google email>      # 단계 17a share_spreadsheet 대상 (editor 권한)
+    role: <역할 — 예: backend dev, full-stack 등>
+  reviewer:
+    email: <명인 또는 사내 검수자 email — 옵션 (markdown-to-sheets 시 명인 본인 OAuth 자동 처리되면 생략)>
+
+test_environment:
+  url: <https://test-or-staging-domain.example.com>   # 운영 도메인 X
+  type: <dev | staging | UAT>
+  admin:
+    id: <테스트 어드민 ID>
+    password: <테스트 어드민 password>   # 테스트 전용 — 운영 계정 절대 X
+    sso: <SSO 토큰 또는 추가 인증 정보 — 옵션>
+    mfa_notes: <MFA 사용 시 우회 방법 — 옵션>
+  notes: <환경 특이사항 자유 텍스트>
+# 보안 주의: 본 섹션은 credentials 포함. git push 인계 시 노출 위험.
+# 권장 인계 매체:
+#   - zip 암호화 + 별도 채널로 암호 전송
+#   - 1password 또는 암호화 메시지 (Slack DM with vault link)
+#   - git 인계 시 .gitignore에 input-manifest.yaml 추가 또는 credentials를 engagement-secrets.yaml로 분리
+
 # 개발자 응답 이력 (단계 6, 8, 11)
 developer_responses:
   - timestamp: <ISO 8601>

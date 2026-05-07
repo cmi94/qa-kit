@@ -12,10 +12,18 @@ scout v0.2 단계 17a (명인 측 markdown → Sheets 이행) 전용 스킬. 사
 
 ## 입력
 - 인계 패키지: `qa-handoff/{프로젝트명}/feature-spec/` markdown 5개
-- engagement-brief 또는 사용자 입력:
+- `qa-handoff/{프로젝트명}/input-manifest.yaml` (단계 11b scout 수집 결과 포함)
+- 입력 우선순위:
+  1. **`input-manifest.yaml > contact.developer.email`** (1순위 — scout 단계 11b에서 수집됨)
+  2. engagement-brief 파일 (별도 사전 합의서, 옵션)
+  3. 사용자 인터랙티브 입력 (1·2 둘 다 부재 시 fallback)
+- 필수 입력:
   - `mode`: `new` (옵션 A 신규 생성) | `pre-shared` (옵션 B 사전 공유 시트)
   - `google_sheets_id`: pre-shared 모드일 때 사전 시트 ID (필수)
-  - `developer_email`: 단계 18c 검수 권한 부여 대상
+  - `developer_email`: 단계 18c 검수 권한 부여 대상 (input-manifest.yaml에서 자동 추출)
+- 옵션 입력 (input-manifest.yaml에서 함께 추출 — 사람 검수 가이드용):
+  - `test_environment.url` + `type` — 18a~b 검수자가 라이브 환경 검증 시
+  - `test_environment.admin` — 권한 매트릭스 사람 검수 시 어드민 계정으로 로그인 검증
 
 ## 출력
 - Google Sheets 5시트 채움 (01·04·06·07·08)
@@ -102,6 +110,15 @@ mode: <new | pre-shared>
 ### 5) share_spreadsheet + scout-log append
 
 ```python
+# developer_email 추출 — 우선순위 적용
+import yaml
+manifest = yaml.safe_load(open("qa-handoff/<project>/input-manifest.yaml"))
+developer_email = manifest.get("contact", {}).get("developer", {}).get("email")
+
+if not developer_email:
+    # fallback: engagement-brief 또는 인터랙티브 프롬프트
+    developer_email = engagement_brief.get("developer_email") or input("개발자 Google email: ")
+
 share_spreadsheet(
   spreadsheet_id=sheets_id,
   email_addresses=[developer_email],

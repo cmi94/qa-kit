@@ -9,18 +9,6 @@
   "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-scout",
   "license": "MIT",
   "keywords": ["qa", "scout", "spec-normalization", "documentation", "handoff", "gxp"],
-  "components": {
-    "agents": [
-      "agents/scout.md",
-      "agents/scout-curator.md",
-      "agents/scout-analyzer.md"
-    ],
-    "skills": [
-      "skills/curate-input/SKILL.md",
-      "skills/docs-to-function-spec/SKILL.md",
-      "skills/markdown-to-sheets/SKILL.md"
-    ]
-  },
   "compatibility": {
     "claude_code_min_version": "0.0.0",
     "required_mcp": [],

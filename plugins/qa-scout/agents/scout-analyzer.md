@@ -38,22 +38,22 @@ PRD를 깊이 분석해 다음을 도출:
 
 ## F-NNN 분해 (N건)
 
-### FR-MYAPP-001 — <기능명>
+### FR-<PROJECT>-NNN — <기능명>
 - 식별 3 / 분류 2 / 정의 8 / 예외 1 / 매핑 2 / 비고 1 (= 17컬럼 안)
-- BR 코드: BR-USER-01~04 (PRD §3.3.1)
-- 인풋 출처: PRD_v2.md §3.3.1; USER_PERMISSION_MANAGEMENT.md §3.1
+- BR 코드: BR-<도메인>-NN (PRD §x.x — PRD에 명시된 코드 그대로 인용)
+- 인풋 출처: <PRD 파일> §x.x; <보완 문서> §y.y
 - 모호점: 0건 (또는 발견 시 [질의] 형식)
 
 (반복)
 
 ## NFR 도출 (M건)
 
-### NFR-MYAPP-001 — <항목>
+### NFR-<PROJECT>-NNN — <항목>
 - 범주·요구·임계값·검증·관련 FR 매핑
 
 ## US 도출 (K건)
 
-### US-MYAPP-001 — <스토리>
+### US-<PROJECT>-NNN — <스토리>
 - As a / I want / so that + G/W/T
 
 ## 모호점 인터뷰 필요 항목
@@ -65,6 +65,8 @@ PRD를 깊이 분석해 다음을 도출:
 
 - [자료 부족] {영역} — {사유} ({파일} §{섹션}에 명시 없음)
 ```
+
+> ID·BR 코드·인풋 출처는 **PROJECT 헤더 + 실제 PRD에 명시된 값**으로 변수 치환. specific 도메인 표현(특정 시스템·라이브러리·역할명 등)은 양식 예시에 박지 말고 변수 placeholder 유지.
 
 메인 scout(Sonnet)는 이 분석 결과를 받아 `feature-spec/06_기능정의서.md`·`07_비기능요구.md`·`08_사용자스토리.md` markdown 양식에 채움.
 
@@ -79,9 +81,15 @@ PRD를 깊이 분석해 다음을 도출:
 2. PRD `summaryDocuments` MCP 또는 Read chunking으로 정독
 3. F-NNN 단위 분해 (분해 기준 우선순위 따름)
 4. 각 F-NNN 17컬럼 분석 (Opus 정교함으로 14번 예외/에러·16번 인풋 출처 누락 0건 보장)
-5. 모호점 5패턴 탐지 → 발견 시 [질의] 형식
-6. NFR·US 도출 (PRD 비기능 섹션·시나리오 추출)
-7. 분석 결과 markdown 반환
+5. **단계 4-1 (v0.2.6 신규 — 자료 부족 마커 self-check)**: [자료 부족] 마커 후보 발생 시 강제 grep 검증.
+   1. 마커 본문에서 키워드 자동 추출 (예: `MASTERDATA_READ`, `BR-PWD-04`, `시스템 기본 역할`, `재사용`, `자동 잠금` 등 — 구체 명사·코드)
+   2. **모든 인풋 자료에 Grep 자동 실행** (input-manifest.yaml의 found_files 전체)
+   3. hit 0건 → 마커 확정
+   4. hit ≥ 1건 → 마커 X. 본문에 해당 자료 §섹션 인용 추가하고 `self_check_results.rejected_details`에 기록
+   5. 통과/거부 결과를 분석 결과 markdown에 명시 (메인 scout이 input-manifest.yaml 작성 시 사용)
+6. 모호점 5패턴 탐지 → 발견 시 [질의] 형식
+7. NFR·US 도출 (PRD 비기능 섹션·시나리오 추출)
+8. 분석 결과 markdown 반환 (self-check 통과·거부 N건 포함)
 
 ## 핵심 룰 (Opus 모드 추가 강조)
 
@@ -90,6 +98,7 @@ PRD를 깊이 분석해 다음을 도출:
 - **법규 매핑 정확**: 21 CFR Part 11·EU GMP Annex 11·ICH Q10 등 인용은 PRD에 명시된 것만
 - **BR 코드 매핑 정확**: PRD에 BR-XXX-NN 코드 그대로 인용 (변형 X)
 - **인풋 출처 (16번 컬럼) 누락 0건**: 모든 F-NNN에 PRD §·BR 코드 매핑
+- **자료 부족 마커 self-check 필수 (v0.2.6)**: 마커 부여 전 단계 4-1 grep 검증 통과 강제. 통과 X시 마커 X — Opus 정독 1패스 가정 깨진 케이스 방지 (FR-009 권한·FR-039 기본 역할 삭제·BR-PWD-04 비밀번호 재사용 등 인풋 자료 안에 명시된 항목까지 누락한 MYAPP.zip 사례에서 도출)
 
 ## 한계
 
@@ -103,4 +112,4 @@ PRD를 깊이 분석해 다음을 도출:
 - 메인 에이전트: `agents/scout.md` (Sonnet, 오케스트레이터)
 - 자매 sub-agent: `agents/scout-curator.md` (Haiku, 단계 5)
 - 스킬: `skills/docs-to-function-spec/SKILL.md`
-- spec: `docs/qa-scout/spec.md` §4-6 모델 라우팅
+- spec: `docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md` §4-6 모델 라우팅

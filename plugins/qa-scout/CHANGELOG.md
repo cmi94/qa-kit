@@ -1,5 +1,25 @@
 # qa-scout Changelog
 
+## [0.2.6] — 2026-05-07
+
+### Added
+- **단계 12a 신규 (커버리지 자가 검증)** — `agents/scout.md` 절차 + 완료 보고 양식. operations-guide 카테고리 자료(USER_MANUAL·*_GUIDE.md 등)에서 heading 자동 추출 → F-NNN 분해와 매핑 시도 → 미매핑 heading은 사용자에 인터뷰 (포함/통합/제외). 결과를 `input-manifest.yaml > coverage_check` 섹션에 기록
+- **자료 부족 마커 self-check** — `agents/scout-analyzer.md` 절차 단계 4-1 + `skills/docs-to-function-spec/SKILL.md` 단계 4-4. 마커 부여 전 키워드 자동 추출 + 모든 인풋 자료 grep 검증 강제 → hit 0건일 때만 마커 확정. hit ≥ 1건 시 마커 X + 본문에 §섹션 인용 추가. 결과를 `input-manifest.yaml > self_check_results` 섹션에 기록
+- **8번째 카테고리 operations-guide** — `skills/curate-input/SKILL.md`. 운영 가이드·매뉴얼·정책 docs(`*GUIDE*`·`*MANUAL*`·`*POLICY*`·`*WORKFLOW*`·`*STANDARDS*` + docs 루트) 인식
+- **다중 카테고리 매핑** — `categories: [<list>]` 배열 + `primary_category`. 한 파일이 N 카테고리에 기여 가능 (예: USER_MANUAL → user-scenario·screen-layout·permission-matrix·glossary·operations-guide)
+- **archive 폴더 정책** — `skills/curate-input/SKILL.md`. archive·legacy 폴더 default 무시 X — 사용자 (a) 전체 무시 / (b) 일부 포함 / (c) 전체 포함 인터뷰 강제. 결정 자료 누락 차단
+- **input-manifest.yaml 신규 슬롯** — `coverage_check`·`self_check_results`·`excluded_locations` 섹션
+- **다중 카테고리 통합 매뉴얼 휴리스틱** — 파일 첫 30줄 Read해서 `## 목차` 또는 `## TOC` 감지 시 다중 카테고리 의심
+
+### Why
+plugin v0.2.5까지의 4개 구조적 갭 해소:
+- **RC1**: curate-input 카테고리 모델이 7개 closed-set — 운영 가이드 docs 미매핑
+- **RC2**: 단일 카테고리 매핑 가정 — 다중 카테고리 통합 매뉴얼 처리 불가
+- **RC3**: 자료 부족 마커 부여 시 self-check 부재 — Opus 정독 1패스 누락 케이스 발생
+- **RC4**: 기능 누락 자가 검증 단계 부재 — 산출물에서 38% 누락 신호 X
+
+실측 산출물 검증에서 (40 FR 산출물 기준) 커버리지 ~62% / 자료 부족 마커 정확도 ~30% 발견. v0.2.6 적용 시 ~95%+ / ~90%+ 목표.
+
 ## [0.2.5] — 2026-05-07
 
 ### Docs

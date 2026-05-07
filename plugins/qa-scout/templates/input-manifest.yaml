@@ -1,17 +1,22 @@
 # qa-handoff/{프로젝트명}/input-manifest.yaml 템플릿
-# 자료 큐레이션 결과 (curate-input 스킬 단계 5 산출)
-# 본 양식은 spec docs/qa-scout/spec.md §4-5 기반
+# 자료 큐레이션 결과 (curate-input 스킬 단계 5 산출) + 인계·검수 환경 정보 (단계 11b)
+# 본 양식은 spec docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md §4-5 기반
+# v0.2.5: 단계 11b (engagement context — gmail·테스트 URL·테스트 계정) 신규 슬롯 추가
 
+schema_version: "0.2"
 project: <project_name>           # 예: myapp
 scan_root: <자료 폴더 경로>        # 예: D:/work/myapp-dev/docs (다중 시 배열)
 scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
 
 # 발견된 모든 파일
+# v0.2.6: category(single) → categories(array) — 다중 카테고리 통합 매뉴얼 지원 (예: USER_MANUAL.md 한 파일이
+# user-scenario·screen-layout·permission-matrix·glossary·operations-guide 5개에 기여)
 found_files:
   - path: <상대 경로>
     mtime: <ISO 8601>
     git_commit: <hash | null>
-    category: <category | null>   # PRD | user-scenario | state-transition | screen-layout | permission-matrix | glossary | erd-architecture | null
+    categories: [<list>]            # 배열 — PRD | user-scenario | state-transition | screen-layout | permission-matrix | glossary | erd-architecture | operations-guide
+    primary_category: <category>    # 가장 강한 매핑 (단일)
     confidence: <★★★|★★|★|X>
     status: <confirmed|skipped|missing>
 
@@ -24,31 +29,6 @@ missing_categories:
     # dev-ai: 개발자 자기 AI로 생성 요청
     # extracted: PRD 등 다른 자료에서 발췌 (G16)
     # skip: 생략
-
-# 인계·검수 환경 정보 (단계 11b 수집)
-# 단계 17a Sheets 공유 + 단계 18a~c 사람 검수·자동화 회귀 진행에 필수
-contact:
-  developer:
-    name: <개발자 이름>
-    email: <개발자 Google email>      # 단계 17a share_spreadsheet 대상 (editor 권한)
-    role: <역할 — 예: backend dev, full-stack 등>
-  reviewer:
-    email: <QA 또는 사내 검수자 email — 옵션 (markdown-to-sheets 시 QA 본인 OAuth 자동 처리되면 생략)>
-
-test_environment:
-  url: <https://test-or-staging-domain.example.com>   # 운영 도메인 X
-  type: <dev | staging | UAT>
-  admin:
-    id: <테스트 어드민 ID>
-    password: <테스트 어드민 password>   # 테스트 전용 — 운영 계정 절대 X
-    sso: <SSO 토큰 또는 추가 인증 정보 — 옵션>
-    mfa_notes: <MFA 사용 시 우회 방법 — 옵션>
-  notes: <환경 특이사항 자유 텍스트>
-# 보안 주의: 본 섹션은 credentials 포함. git push 인계 시 노출 위험.
-# 권장 인계 매체:
-#   - zip 암호화 + 별도 채널로 암호 전송
-#   - 1password 또는 암호화 메시지 (Slack DM with vault link)
-#   - git 인계 시 .gitignore에 input-manifest.yaml 추가 또는 credentials를 engagement-secrets.yaml로 분리
 
 # 개발자 응답 이력 (단계 6, 8, 11)
 developer_responses:
@@ -73,3 +53,71 @@ multi_input_bindings:
     output_files:
       - <domain-knowledge/01-user-scenario-usecase.{ext}>
       - <domain-knowledge/01-user-scenario-flow.md>
+
+# -------------------------------------------------------
+# 인계·검수 환경 정보 (단계 11b 수집 — v0.2.5 신규)
+# -------------------------------------------------------
+# 단계 17a Sheets editor 권한 부여 + 단계 18c 개발팀 검수 + 라이브 검증을 위해 필수 수집.
+# 운영 계정 절대 금지 — 테스트 전용 계정만 입력.
+# secrets 인계 시 보안 가이드 준수: zip 암호화 + 별도 채널 암호 전송, 1password,
+# git 인계 시 본 파일을 .gitignore에 추가 또는 engagement-secrets.yaml로 분리.
+contact:
+  developer_email: <gmail 주소>     # 예: <dev-email@example.com> — 단계 17a editor 권한 부여 대상
+  note: <부가 메모>                # 예: 단계 18c 개발팀 검수 요청 대상
+
+test_environment:
+  server_port: <포트>              # 예: 8087
+  local_url: <라이브 URL>          # 예: http://localhost:8087
+  type: <local | staging | dev>    # 환경 종류
+  test_accounts:
+    - id: <테스트 계정 ID>          # 예: admin
+      role: <역할>                 # 예: SYSTEM_ADMIN
+      note: <비고>                 # 예: 테스트 전용 계정
+  notes:
+    - "운영 계정 사용 금지"
+    - "라이브 URL이 localhost인 경우 원격 공유 시 staging 환경 별도 구성 필요"
+
+# -------------------------------------------------------
+# 커버리지 자가 검증 결과 (단계 12a — v0.2.6 신규)
+# -------------------------------------------------------
+# operations-guide 카테고리 자료(USER_MANUAL·*_GUIDE.md 등)의 heading을
+# F-NNN 분해 결과와 매핑한 결과. 미매핑 heading은 사용자 결정으로 분류.
+coverage_check:
+  guide_files:                       # 매뉴얼·가이드 자료 목록
+    - path: <상대 경로>
+      headings_total: <N>
+  headings_total: <N>                # 합계
+  headings_mapped: <M>               # F-NNN 매핑 성공
+  headings_missed: <K>               # 미매핑 후보
+  user_decisions:
+    - heading: <heading 텍스트>      # 예: "USER_MANUAL §3 시뮬레이션"
+      source_file: <파일 경로>
+      decision: <include | merged | exclude>
+      target_fr_id: <FR-NNN 또는 null>
+      note: <자유 텍스트>
+
+# -------------------------------------------------------
+# 자료 부족 마커 self-check 결과 (단계 9 docs-to-function-spec — v0.2.6 신규)
+# -------------------------------------------------------
+# scout-analyzer가 [자료 부족] 마커 부여 전 모든 인풋 자료에 grep 검증한 결과.
+# rejected = grep hit 발견되어 마커 취소된 케이스 (본문에 인용으로 보강됨).
+self_check_results:
+  candidates_total: <N>              # 마커 후보
+  confirmed: <M>                     # self-check 통과 (실제 자료 부족)
+  rejected: <K>                      # grep hit으로 거부 (자료 발견 → 마커 취소)
+  rejected_details:
+    - candidate_keyword: <키워드>    # 예: "MASTERDATA_READ"
+      found_in: <파일 §섹션>         # 예: "GXP_RBAC_PERMISSION_MATRIX.md §229"
+      original_target: <FR-NNN 또는 컬럼>
+      action_taken: <마커 취소 + 본문 인용 추가>
+
+# -------------------------------------------------------
+# 명시 제외 위치 (단계 7~8 — v0.2.6 신규)
+# -------------------------------------------------------
+# 사용자가 무시 결정한 자료 위치. archive·legacy·deprecated 폴더는 default 무시 X
+# (P4 정책 — 결정 자료 가능성 있음 → 사용자 명시 확인 필수).
+excluded_locations:
+  - path: <폴더 경로>                # 예: docs/architecture/v1/
+    reason: <v1 deprecated | 결정 자료 부재 | 사용자 명시 제외>
+    confirmed_by_user: <ISO 8601>
+    note: <자유 텍스트>

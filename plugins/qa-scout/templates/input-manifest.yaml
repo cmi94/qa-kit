@@ -1,0 +1,50 @@
+# qa-handoff/{프로젝트명}/input-manifest.yaml 템플릿
+# 자료 큐레이션 결과 (curate-input 스킬 단계 5 산출)
+# 본 양식은 spec docs/qa-scout/spec.md §4-5 기반
+
+project: <project_name>           # 예: myapp
+scan_root: <자료 폴더 경로>        # 예: D:/work/myapp-dev/docs (다중 시 배열)
+scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
+
+# 발견된 모든 파일
+found_files:
+  - path: <상대 경로>
+    mtime: <ISO 8601>
+    git_commit: <hash | null>
+    category: <category | null>   # PRD | user-scenario | state-transition | screen-layout | permission-matrix | glossary | erd-architecture | null
+    confidence: <★★★|★★|★|X>
+    status: <confirmed|skipped|missing>
+
+# 빠진 카테고리 (단계 7 가이드 결과)
+missing_categories:
+  - category: <category>
+    resolution: <live-verify|dev-ai|extracted|skip>
+    note: <자유 텍스트>
+    # live-verify: 라이브 URL+계정 받음
+    # dev-ai: 개발자 자기 AI로 생성 요청
+    # extracted: PRD 등 다른 자료에서 발췌 (G16)
+    # skip: 생략
+
+# 개발자 응답 이력 (단계 6, 8, 11)
+developer_responses:
+  - timestamp: <ISO 8601>
+    question: <질의>
+    answer: <답변>
+
+# G16 PRD 다중 역할 처리 (있으면)
+prd_extractions:
+  - target_category: <category>   # 예: permission-matrix
+    source_file: <PRD 파일명>
+    source_section: <§x.x>
+    output_file: <domain-knowledge/04-permission-matrix.{ext}>
+
+# G17 받기 5종 다중 인풋 결합 (있으면)
+multi_input_bindings:
+  - target_category: <category>   # 예: user-scenario
+    source_files:
+      - <usecase 파일>
+      - <Process Flow 파일>
+    output_strategy: <separate-files|index-file>
+    output_files:
+      - <domain-knowledge/01-user-scenario-usecase.{ext}>
+      - <domain-knowledge/01-user-scenario-flow.md>

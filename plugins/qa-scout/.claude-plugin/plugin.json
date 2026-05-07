@@ -1,0 +1,29 @@
+{
+  "name": "qa-scout",
+  "version": "0.2.0",
+  "description": "개발자가 보유한 5종 도메인 지식(사용자 시나리오·상태 전이도·화면 전개도·권한 매트릭스·도메인 용어집)을 인계받고 PRD를 GxP 양식 기능 정의서(Google Sheets 5시트, 17컬럼)로 정형화하는 Claude Code 플러그인. scout 에이전트 + curate-input·docs-to-function-spec·markdown-to-sheets 스킬 + qa-handoff/ 표준 폴더. 환각 가드(추정 금지·[자료 부족] 마커·출처 표기·최신본 확인) + 단계 -1~20 양방향 인계.",
+  "author": {
+    "name": "최명인",
+    "email": "chlauddls12@gmail.com"
+  },
+  "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-scout",
+  "license": "MIT",
+  "keywords": ["qa", "scout", "spec-normalization", "documentation", "handoff", "gxp"],
+  "components": {
+    "agents": [
+      "agents/scout.md",
+      "agents/scout-curator.md",
+      "agents/scout-analyzer.md"
+    ],
+    "skills": [
+      "skills/curate-input/SKILL.md",
+      "skills/docs-to-function-spec/SKILL.md",
+      "skills/markdown-to-sheets/SKILL.md"
+    ]
+  },
+  "compatibility": {
+    "claude_code_min_version": "0.0.0",
+    "required_mcp": [],
+    "optional_mcp": []
+  }
+}

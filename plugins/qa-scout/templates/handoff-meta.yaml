@@ -1,0 +1,29 @@
+# domain-knowledge/{N}-{받기5종}.meta.yaml 템플릿
+# 받기 5종 자료 (사용자 시나리오·상태 전이도·화면 전개도·권한 매트릭스·도메인 용어집)에 첨부되는 메타
+# 본 양식은 spec docs/qa-scout/spec.md §4-3 기반
+
+# 필수 필드
+project: <project_name>          # PROJECT 헤더 값 (예: myapp)
+domain: <domain_name>            # 중분류 (예: USER_PERMISSION)
+category: <category>             # user-scenario | state-transition | screen-layout | permission-matrix | glossary
+source:                          # 원본 파일명 — 다중 인풋 결합 시 (G17) 배열
+  - <원본 파일1 상대 경로>
+  # - <원본 파일2 상대 경로>    # 예: 사용자 시나리오 = 유스케이스 + Process Flow
+confidence: <★★★|★★|★>           # 큐레이션 단계 신뢰도
+last_updated: <YYYY-MM-DD>
+
+# 옵션 필드
+version: <원본 버전 표기>        # 있으면 (예: v2)
+change_log:                      # V1→V2 누적
+  - version: 0.1
+    date: <YYYY-MM-DD>
+    changed_by: scout v0.2
+    type: 최초 인계
+    description: <설명>
+notes: <자유 텍스트>              # 다중 인풋 결합 시 결합 메커니즘 설명 등
+
+# G16 PRD 다중 역할 적용 시 (예: 04-permission-matrix가 PRD §3.4 발췌)
+extracted_from:                  # 옵션
+  source_file: <PRD 파일명>
+  section: <§x.x>
+  note: <발췌 사유>

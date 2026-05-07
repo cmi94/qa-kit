@@ -11,7 +11,7 @@ model: sonnet
 
 개발자 자료를 흡수해서 두 가지 출력을 생성한다:
 
-1. **GxP 정형화 산출물 1종**: 기능 정의서 markdown 5개 (PRD를 인풋으로). 명인 측에서 단계 17a `markdown-to-sheets` 스킬로 Google Sheets 5시트 이행 (사용자 정정 6차 — 개발자 MCP 인증 부담 해결).
+1. **GxP 정형화 산출물 1종**: 기능 정의서 markdown 5개 (PRD를 인풋으로). QA 측에서 단계 17a `markdown-to-sheets` 스킬로 Google Sheets 5시트 이행 (사용자 정정 6차 — 개발자 MCP 인증 부담 해결).
 2. **받기 5종 도메인 지식**: 본문 변환 없이 그대로 인계 (사용자 시나리오·상태 전이도·화면 전개도·권한 매트릭스·도메인 용어집)
 
 후공정(tc-writer·script-generator·spec-analyzer 등)이 이 묶음을 입력으로 받음.
@@ -59,7 +59,7 @@ model: sonnet
 │   ├── 06_기능정의서.md (17컬럼)
 │   ├── 07_비기능요구.md (9컬럼)
 │   └── 08_사용자스토리.md (9컬럼)
-│   * 명인 측에서 단계 17a markdown-to-sheets 스킬로 Sheets 이행 후 feature-spec.yaml 생성
+│   * QA 측에서 단계 17a markdown-to-sheets 스킬로 Sheets 이행 후 feature-spec.yaml 생성
 ├── domain-knowledge/                    ← 받기 5종 (그대로 인계 + 메타)
 │   ├── 01-user-scenario.{원본 확장자}
 │   ├── 01-user-scenario.meta.yaml
@@ -150,7 +150,7 @@ model: sonnet
    - 받기 5종 → `domain-knowledge/` 사본 + `.meta.yaml` 생성
    - `_source/` 모든 원본 사본
    - `input-manifest.yaml` + `scout-log.md` 생성
-   - **Sheets 이행 X** (단계 17a 명인 측에서 수행)
+   - **Sheets 이행 X** (단계 17a QA 측에서 수행)
 6. **단계 10~11a**: 모호점 추가 인터뷰 (5개 패턴 — 같은 용어 2의미·행위자 불명·필드 타입 불명·정의 충돌·단위 불명)
 7. **단계 11b**: 인계·검수 환경 정보 수집 (★ 필수 — 단계 17a·18b·18c 진행에 필요)
    - **개발자 Google 이메일** — 단계 17a `share_spreadsheet` 대상 + 단계 18c 검수 권한 부여 (Sheets editor)
@@ -160,12 +160,12 @@ model: sonnet
    - 보안 주의: `input-manifest.yaml`을 git push 인계 시 credentials 노출 위험 → 권장 인계 매체 = zip(암호 zip) 또는 1password/암호화 메시지. git 인계 시 `.gitignore`에 `input-manifest.yaml` 또는 credentials 별도 분리 (`engagement-secrets.yaml`)
 8. **단계 12**: 완료 보고
 
-### 단계 13~16: 개발자 → 명인 인계
+### 단계 13~16: 개발자 → QA 인계
 - 개발자가 결과 검토 후 인계 패키지 구성: (a) zip / (b) git push / (c) 클라우드
-- 명인이 무결성 점검 (input-manifest 일치)
+- QA가 무결성 점검 (input-manifest 일치)
 
-### 단계 17~20: 명인 측 후속 처리 (사용자 정정 6차 — 양방향 검수)
-- **17a**: `Skill: markdown-to-sheets` 호출 → markdown 5개 → Google Sheets 5시트 자동 이행 (명인 본인 계정)
+### 단계 17~20: QA 측 후속 처리 (사용자 정정 6차 — 양방향 검수)
+- **17a**: `Skill: markdown-to-sheets` 호출 → markdown 5개 → Google Sheets 5시트 자동 이행 (QA 본인 계정)
 - **17b**: `knowledge/{프로젝트}/scout-handoff/`로 흡수
 - **18a**: 인사팀 reviewer 자동 검수 (헤더·자료부족·환각·일관성·인풋 출처 ID)
 - **18b**: 인사팀 reviewer 사람 검수 (현업 확인 슬롯·GxP 디테일)
@@ -182,7 +182,7 @@ PROJECT: <프로젝트명>
 출력 위치: qa-handoff/{프로젝트명}/
 
 산출물 채움률:
-- feature-spec/ markdown 5개 (단계 17a에서 명인이 Sheets 이행)
+- feature-spec/ markdown 5개 (단계 17a에서 QA가 Sheets 이행)
   · 06_기능정의서.md (17컬럼 N행) — 채움 <N>% / [자료 부족] <N>건
   · 07_비기능요구.md (9컬럼 N행) — 채움 <N>%
   · 08_사용자스토리.md (9컬럼 N행) — 채움 <N>%
@@ -196,7 +196,7 @@ PROJECT: <프로젝트명>
 
 질의 이력: <카테고리·이슈 목록>
 
-다음: 명인에게 인계 (단계 14 — zip / git / 클라우드 중 합의 옵션 — credentials 포함 시 zip 암호화 권장)
+다음: QA에게 인계 (단계 14 — zip / git / 클라우드 중 합의 옵션 — credentials 포함 시 zip 암호화 권장)
 ```
 
 ## 받기 5종 다중 인풋 처리 (G16·G17)

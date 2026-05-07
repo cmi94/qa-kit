@@ -20,9 +20,9 @@ v0.2 구조:
    ├── PRD → GxP 양식 기능 정의서 (Google Sheets 5시트, 17컬럼)  ← 정형화
    └── 5종 도메인 지식 그대로 인계 + .meta.yaml 메타     ← 받기
    ↓ qa-handoff/{프로젝트}/ 폴더에 저장
-   ↓ zip / git / 클라우드로 명인에게 인계
+   ↓ zip / git / 클라우드로 QA에게 인계
    ↓
-명인 (qa-workbench 측) → tc-writer·script-generator·spec-analyzer 등 후공정
+QA (qa-workbench 측) → tc-writer·script-generator·spec-analyzer 등 후공정
 ```
 
 ## v0.2 주요 변경 (v0.1 대비)
@@ -31,16 +31,16 @@ v0.2 구조:
 - **GxP 정형화 = 기능 정의서 1종** (받기 5종은 본문 변환 X, 그대로 인계)
 - **17컬럼 평면 양식** (Sheets 22컬럼에서 운영 메타 3 + 다른 시트 흡수 3 제거 + TC ID·인풋 출처·비고 추가)
 - **`qa-handoff/{프로젝트명}/` 표준 폴더 구조**
-- **단계 -1 ~ 20 양방향 인계** (명인↔개발자)
+- **단계 -1 ~ 20 양방향 인계** (QA↔개발자)
 - **이모티콘 전면 금지** (공식 문서)
 - **자료 최신성 확인** 필수 (잘못된 버전 인풋 = GxP 위반)
 - **신규 스킬 `curate-input`** (자료 큐레이션 V1 8단계)
-- **운영 모드** (정정 6차) — 개발자는 markdown 인계, 명인이 Sheets 이행 + 양방향 검수 (인사팀 + 개발팀)
+- **운영 모드** (정정 6차) — 개발자는 markdown 인계, QA가 Sheets 이행 + 양방향 검수 (인사팀 + 개발팀)
 - **모델 라우팅** (정정 7차) — sub-agent 2개 신설:
   - `scout-curator` (Haiku) — 단계 5 자료 큐레이션 (대량 파일 단순 패턴, 비용·속도 최적화)
   - `scout-analyzer` (Opus) — 단계 9 PRD 분석 (F-NNN 분해·BR 매핑·5패턴 모호점, 깊이 분석)
   - `scout` 메인 (Sonnet) — 오케스트레이션·markdown 작성·인터뷰
-- **신규 스킬 `markdown-to-sheets`** (정정 6차) — 명인 측 단계 17a Sheets 이행
+- **신규 스킬 `markdown-to-sheets`** (정정 6차) — QA 측 단계 17a Sheets 이행
 
 ## 효과
 
@@ -52,13 +52,158 @@ v0.2 구조:
 
 ---
 
+## 흐름 한눈에 보기 (도식)
+
+> 본 섹션은 다른 개발자에게 짧게 설명할 때 그대로 보여줄 수 있는 형태입니다.
+
+### 도식 1 — 개발자 관점 흐름 (★ 가장 중요)
+
+```mermaid
+flowchart TD
+    Start([개발자 시작]):::dev
+    Setup[환경 셋업<br/>cd 본인폴더 → claude]:::dev
+    Trigger[/★ 트리거<br/>'PROJECT: name scout 호출'/]:::trigger
+
+    Q1{① 자료 폴더 경로?}:::ask
+    Q2{② 최신본 확정?}:::ask
+    Q3{③ 빠진 카테고리?}:::ask
+    Q4{④ 모호점 5패턴?}:::ask
+    Q5{⑤ ★ email + URL + admin?}:::ask
+
+    Auto1[(scout 자동<br/>큐레이션 보고서)]:::auto
+    Auto2[(scout 자동<br/>17컬럼 분해 + markdown 5개)]:::auto
+    Auto3[(scout 자동<br/>완료 보고)]:::auto
+
+    Handoff[개발자 자발<br/>zip/git/cloud 발송]:::dev
+    END([🏁 개발자 END]):::endpoint
+
+    Start --> Setup --> Trigger --> Q1
+    Q1 -->|답변| Auto1 --> Q2
+    Q2 -->|답변| Q3
+    Q3 -->|답변| Auto2 --> Q4
+    Q4 -->|답변| Q5
+    Q5 -->|답변| Auto3 --> Handoff --> END
+
+    classDef dev fill:#e3f2fd,stroke:#1976d2
+    classDef ask fill:#fff9c4,stroke:#f57f17
+    classDef auto fill:#e8f5e9,stroke:#388e3c
+    classDef trigger fill:#ffe0b2,stroke:#e65100,stroke-width:3px
+    classDef endpoint fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+```
+
+**범례** — 파랑 개발자 행동 / 노랑 scout 질문 5개 / 초록 scout 자동 / 주황 트리거 / 진녹 종착점
+
+### 도식 2 — 전체 흐름 Swim Lane (개발자 + scout + QA)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Dev as 개발자
+    participant Scout as scout 메인<br/>(Sonnet)
+    participant Sub as 서브 에이전트<br/>(Haiku/Opus)
+    participant QA as QA
+
+    Note over Dev,QA: 단계 -1: 발신
+    QA->>Dev: 사용 가이드 링크 1개 발송
+
+    Note over Dev,Scout: 개발자 측 (-1 ~ 14)
+    Dev->>Scout: 트리거 PROJECT name scout 호출
+    Scout->>Dev: ① 자료 폴더 경로?
+    Dev-->>Scout: ./docs
+    Scout->>Sub: scout-curator spawn → curate-input
+    Sub-->>Scout: 큐레이션 보고서
+    Scout->>Dev: ② 매핑·최신본 맞나요?
+    Dev-->>Scout: 답변
+    Scout->>Dev: ③ 빠진 카테고리 처리?
+    Dev-->>Scout: 답변
+    Scout->>Sub: scout-analyzer spawn → docs-to-function-spec
+    Sub-->>Scout: 17컬럼 분해
+    Scout->>Dev: ④ 모호점 5패턴 답변
+    Dev-->>Scout: 답변
+    Scout->>Dev: ⑤ email 테스트URL admin 계정
+    Dev-->>Scout: 답변
+    Scout-->>Dev: 완료 보고 + qa-handoff 폴더 생성
+    Dev->>QA: zip/git/cloud 발송
+    Note over Dev: 개발자 END
+
+    Note over QA: QA 측 (17 ~ 20)
+    QA->>QA: Skill markdown-to-sheets
+    QA->>QA: Sheets 5시트 + share_spreadsheet
+    QA->>QA: 검수 자동/사람/개발팀
+    QA->>QA: Sheets v1.0 정식 발행
+    Note over QA: 시스템 END
+```
+
+### 도식 3 — 트리거 5종 + 엔드포인트 3개
+
+```mermaid
+flowchart LR
+    subgraph T["트리거 5종"]
+        T1[T1: 개발자 사람 트리거<br/>scout 호출]:::human
+        T2[T2: scout 내부<br/>scout-curator spawn]:::auto
+        T3[T3: scout 내부<br/>scout-analyzer spawn]:::auto
+        T4[T4: scout 내부<br/>Skill 호출 x2]:::auto
+        T5[T5: QA 사람 트리거<br/>markdown-to-sheets]:::human
+    end
+
+    subgraph E["엔드포인트 3종"]
+        E1[E1: 개발자 END<br/>단계 14 인계 발송]:::dev
+        E2[E2: QA 작업 END<br/>단계 18c Sheets 공유]:::qa
+        E3[E3: 시스템 END<br/>단계 20 v1.0 발행]:::final
+    end
+
+    T1 --> T2 --> T4 --> T3 --> E1
+    E1 --> T5 --> E2 --> E3
+    E2 -.회귀.-> T5
+
+    classDef human fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef auto fill:#e1f5fe,stroke:#0288d1
+    classDef dev fill:#bbdefb,stroke:#1976d2,stroke-width:2px
+    classDef qa fill:#c5cae9,stroke:#3949ab,stroke-width:2px
+    classDef final fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+```
+
+### 1분 설명 스크립트 (다른 개발자에게)
+
+```
+1) 이 플러그인이 뭐 하는 건가
+   → "PRD + 도메인 지식 7카테고리를 받아서 GxP 기능 정의서로
+      정형화해주는 Claude Code 플러그인"
+
+2) 당신(개발자)은 무엇을 하나
+   → "딱 5번 묻는 질문에 텍스트로 답변하면 됩니다.
+      마지막에 결과물 폴더를 zip/git/cloud로 보내면 끝."
+
+3) 5번의 질문은 뭐냐
+   ① 자료 폴더 경로 (./docs)
+   ② 최신본 맞나요 (PRD v2 확인 같은 것)
+   ③ 빠진 카테고리 처리 (와이어프레임 없으면 라이브 URL?)
+   ④ 모호점 답변 (같은 용어 다른 의미 등 5패턴)
+   ⑤ ★ 본인 Google email + 테스트 URL + admin 계정
+      (★ = 가장 중요. QA가 Sheets 공유·검수·자동화에 사용)
+
+4) 당신의 종착점은 어디인가
+   → "단계 14 — qa-handoff 폴더 묶어서 QA에게 발송한 시점"
+
+5) 그 후엔
+   → "QA가 markdown → Google Sheets로 옮기고 검수 → 최종 v1.0 발행.
+      이 사이에 개발팀에 검수 요청 받을 수 있음.
+      그때만 다시 들어와서 Sheets에 코멘트 남기면 됨."
+```
+
+### 1줄 요약
+
+> qa-scout은 **개발자가 5개 질문에 답변만 하면 PRD를 GxP 양식으로 정형화하고 도메인 지식을 묶어서 인계 패키지로 만들어주는 Claude Code 플러그인**입니다. 개발자 작업은 **단계 14(인계 발송)에서 종료**되고, 그 후는 QA 측에서 Sheets 이행·검수·발행을 맡습니다.
+
+---
+
 ## 1. 사전 준비 (3분)
 
 | # | 항목 | 비고 |
 |---|---|---|
 | 1 | Claude Code CLI 설치 + 최신 버전 | `npm install -g @anthropic-ai/claude-code@latest`. v2.1.x 이상 필요 |
 | 2 | 자료 폴더 정리 | PRD·유스케이스·시퀀스·와이어프레임·권한·용어집·ERD 7카테고리 — 다중 버전 있으면 최신본 식별 가능한 위치에 |
-| 3 | 인계 채널 합의 | 명인과 사전: zip(암호 zip 권장 — credentials 포함) / git push / 클라우드 중 1택 |
+| 3 | 인계 채널 합의 | QA와 사전: zip(암호 zip 권장 — credentials 포함) / git push / 클라우드 중 1택 |
 | 4 | 사전 합의 정보 미리 준비 | 본인 Google email, 테스트 도메인 URL, 어드민/테스트 계정 (단계 11b에서 묻습니다) |
 
 ---
@@ -98,9 +243,9 @@ cp -r plugins/qa-scout/templates ~/.claude/templates/qa-scout/
 
 ## 3. 사용법 — 단계 -1 ~ 20
 
-### 단계 -1: 명인 → 개발자 사전 인계
+### 단계 -1: QA → 개발자 사전 인계
 
-명인이 개발자에게 1회 발송:
+QA가 개발자에게 1회 발송:
 - 플러그인 install 가이드 (위 §1)
 - 사전 안내서 1쪽 (별도 자료)
 - 인계 약속 합의 (zip / git / 클라우드 — 단계 14에서 선택, 일정)
@@ -209,10 +354,10 @@ PROJECT: myapp
 출력 위치: qa-handoff/myapp/
 산출물 채움률: ...
 질의 이력: 3건
-다음: 명인에게 인계 (단계 14 — 합의 옵션 따름)
+다음: QA에게 인계 (단계 14 — 합의 옵션 따름)
 ```
 
-### 단계 13~16: 개발자 → 명인 인계
+### 단계 13~16: 개발자 → QA 인계
 
 ```bash
 # 옵션 A: zip + Slack
@@ -227,9 +372,9 @@ git push
 # 옵션 C: Google Drive 등 + 공유 링크
 ```
 
-명인이 무결성 점검 (input-manifest 일치, 모든 파일 존재).
+QA가 무결성 점검 (input-manifest 일치, 모든 파일 존재).
 
-### 단계 17~20: 명인 측 후속
+### 단계 17~20: QA 측 후속
 
 - `knowledge/{프로젝트}/scout-handoff/` 흡수
 - 후공정 트리거 (검수 게이트·tc-writer·script-generator)

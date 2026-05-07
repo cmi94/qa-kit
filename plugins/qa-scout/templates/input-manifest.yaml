@@ -33,7 +33,7 @@ contact:
     email: <개발자 Google email>      # 단계 17a share_spreadsheet 대상 (editor 권한)
     role: <역할 — 예: backend dev, full-stack 등>
   reviewer:
-    email: <명인 또는 사내 검수자 email — 옵션 (markdown-to-sheets 시 명인 본인 OAuth 자동 처리되면 생략)>
+    email: <QA 또는 사내 검수자 email — 옵션 (markdown-to-sheets 시 QA 본인 OAuth 자동 처리되면 생략)>
 
 test_environment:
   url: <https://test-or-staging-domain.example.com>   # 운영 도메인 X

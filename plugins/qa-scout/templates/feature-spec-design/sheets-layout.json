@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "spec_id": "SPEC-2026-05-13-feature-spec-standard-design",
+  "description": "GxP 기능 정의서 표준 6시트 레이아웃. apply.py가 본 JSON 따라 시트 생성·헤더 작성. design_managed:false 시트는 디자인 적용 건너뜀.",
+
+  "sheets": [
+    {
+      "index": 0,
+      "title": "01_표지",
+      "type": "cover",
+      "design_managed": false,
+      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X."
+    },
+    {
+      "index": 1,
+      "title": "02_변경이력",
+      "type": "changelog",
+      "design_managed": true,
+      "headers": [
+        "버전",
+        "일자",
+        "작성자/변경자",
+        "변경 유형",
+        "변경 내용",
+        "영향 ID",
+        "승인자"
+      ]
+    },
+    {
+      "index": 2,
+      "title": "03_기능정의서",
+      "type": "feature_spec",
+      "design_managed": true,
+      "headers": [
+        "No.",
+        "기능 ID",
+        "화면 ID",
+        "메뉴 경로",
+        "중분류",
+        "기능명",
+        "기능 목적 (Why)",
+        "기능 요약 (1줄)",
+        "사전 조건",
+        "상세 정책 / 기능 설명",
+        "입력 (Input)",
+        "처리 로직 (Process)",
+        "상태 전이",
+        "출력 (Output)",
+        "예외/에러 처리",
+        "TC ID",
+        "비고"
+      ]
+    },
+    {
+      "index": 3,
+      "title": "04_비기능요구",
+      "type": "nfr",
+      "design_managed": true,
+      "headers": [
+        "No.",
+        "NFR ID",
+        "분류",
+        "요구사항명",
+        "요구사항 설명",
+        "측정 기준 / 수용 기준",
+        "관련 규정 또는 관련 FR",
+        "TC ID"
+      ]
+    },
+    {
+      "index": 4,
+      "title": "05_사용자스토리",
+      "type": "user_story",
+      "design_managed": true,
+      "headers": [
+        "No.",
+        "US ID",
+        "역할",
+        "사용자 스토리",
+        "관련 FR",
+        "인수 기준",
+        "우선순위",
+        "TC ID"
+      ]
+    },
+    {
+      "index": 5,
+      "title": "06_18c_개발팀_질의",
+      "type": "dev_query",
+      "design_managed": true,
+      "optional": true,
+      "_comment": "선택 시트 — 외부 검수·개발팀 질의 발생 시 추가. apply.py --include-optional 플래그로 생성.",
+      "headers": [
+        "No.",
+        "카테고리",
+        "질의 내용",
+        "영향 FR",
+        "라이브 관찰 결과",
+        "확인 요청 사항",
+        "개발팀 회신"
+      ]
+    }
+  ]
+}

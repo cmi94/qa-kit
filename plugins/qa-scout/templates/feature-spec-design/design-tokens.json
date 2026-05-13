@@ -1,0 +1,106 @@
+{
+  "version": "1.0",
+  "spec_id": "SPEC-2026-05-13-feature-spec-standard-design",
+  "source": "GxP feature spec sheet standard (reference master internal)",
+  "extracted_at": "2026-05-13",
+  "description": "GxP 기능 정의서 표준 디자인 token. 모든 향후 프로젝트 기능 정의서에 결정론적으로 적용. apply.py가 본 JSON을 읽어 batch_update 생성.",
+
+  "colors": {
+    "header_bg":         { "red": 0.26666668, "green": 0.50980395, "blue": 0.70980394 },
+    "header_fg":         { "red": 1.0,        "green": 1.0,        "blue": 1.0 },
+    "data_bg":           { "red": 1.0,        "green": 1.0,        "blue": 1.0 },
+    "light_gray_border": { "red": 0.84705883, "green": 0.84705883, "blue": 0.84705883 },
+    "dark_gray_border":  { "red": 0.49803922, "green": 0.49803922, "blue": 0.49803922 }
+  },
+
+  "text": {
+    "font_family":       "Arial",
+    "header_font_size":  10,
+    "header_bold":       true,
+    "data_font_size":    9,
+    "data_bold":         false
+  },
+
+  "alignment": {
+    "header_horizontal": "CENTER",
+    "header_vertical":   "MIDDLE",
+    "data_horizontal":   "LEFT",
+    "data_vertical":     "TOP"
+  },
+
+  "dimensions": {
+    "header_row_height_px":      60,
+    "default_column_width_px":   150
+  },
+
+  "wrap_strategy": "WRAP",
+
+  "border_styles": {
+    "thin":       { "style": "SOLID",        "width": 1, "color_ref": "light_gray_border" },
+    "thick_left": { "style": "SOLID_MEDIUM", "width": 2, "color_ref": "dark_gray_border"  }
+  },
+
+  "border_patterns": {
+    "_comment": "헤더·데이터 모두 동일 패턴 — 첫 컬럼만 left가 thick_left(좌측 강조), 나머지는 모두 thin",
+    "first_column":  { "top": "thin", "bottom": "thin", "left": "thick_left", "right": "thin" },
+    "middle_column": { "top": "thin", "bottom": "thin", "left": "thin",       "right": "thin" },
+    "last_column":   { "top": "thin", "bottom": "thin", "left": "thin",       "right": "thin" }
+  },
+
+  "structure": {
+    "frozen_row_count": 1
+  },
+
+  "column_widths_by_name": {
+    "_comment": "헤더 텍스트 → 너비(px). 동일 텍스트 통일 룰(2026-05-13): 시트 간 동일 텍스트는 동일 너비. 신규 컬럼 추가 시 본 매핑에 등록.",
+
+    "No.": 40,
+    "TC ID": 80,
+
+    "기능 ID": 100,
+    "화면 ID": 100,
+    "NFR ID": 100,
+    "US ID": 100,
+
+    "버전": 40,
+    "일자": 100,
+    "작성자/변경자": 130,
+    "변경 유형": 100,
+    "변경 내용": 400,
+    "영향 ID": 200,
+    "승인자": 100,
+
+    "분류": 110,
+    "요구사항명": 150,
+    "요구사항 설명": 350,
+    "측정 기준 / 수용 기준": 250,
+    "관련 규정 또는 관련 FR": 250,
+
+    "역할": 150,
+    "사용자 스토리": 400,
+    "관련 FR": 130,
+    "인수 기준": 350,
+    "우선순위": 70,
+
+    "메뉴 경로": 200,
+    "중분류": 100,
+    "기능명": 180,
+    "기능 목적 (Why)": 250,
+    "기능 요약 (1줄)": 200,
+    "사전 조건": 200,
+    "상세 정책 / 기능 설명": 350,
+    "입력 (Input)": 200,
+    "처리 로직 (Process)": 250,
+    "상태 전이": 150,
+    "출력 (Output)": 200,
+    "예외/에러 처리": 250,
+    "비고": 200,
+
+    "카테고리": 130,
+    "질의 내용": 250,
+    "영향 FR": 110,
+    "라이브 관찰 결과": 350,
+    "확인 요청 사항": 350,
+    "개발팀 회신": 300
+  }
+}

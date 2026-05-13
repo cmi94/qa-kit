@@ -1,5 +1,38 @@
 # qa-scout Changelog
 
+## [0.2.7] — 2026-05-13
+
+### Added
+- **GxP 표준 디자인 결정론적 적용 시스템** — `markdown-to-sheets` 스킬에 디자인 적용 단계 2개(Stage 1 addSheet · Stage 2 design) 신설. JSON token + Python 스크립트 자산으로 시트 간 동일 헤더 동일 너비·폰트·행 높이 강제.
+  - `templates/feature-spec-design/design-tokens.json` — 색·폰트·행 높이·보더·표준 컬럼명별 너비 매핑 (동일 텍스트 통일 룰)
+  - `templates/feature-spec-design/sheets-layout.json` — 6시트 구조·헤더 텍스트
+  - `scripts/feature-spec-design/apply.py` — google-sheets API batch_update payload(JSON) 생성기. stage=add/design 분리·`--sheet-title` 시트별 분할·`--compact` 모드
+  - `scripts/feature-spec-design/verify.py` — 적용 후 token 일치성 검증 (stdin JSON 비교, PASS/FAIL 리포트)
+
+### Changed
+- **시트 번호 체계 통일** — 5시트 → 6시트, 번호 연속화:
+  - `04_변경이력` → `02_변경이력`
+  - `06_기능정의서` → `03_기능정의서`
+  - `07_비기능요구` → `04_비기능요구`
+  - `08_사용자스토리` → `05_사용자스토리`
+  - `06_18c_개발팀_질의` 신규 (optional, `--include-optional` 플래그)
+- `templates/feature-spec/*.md` markdown 5개 파일명·frontmatter `sheet:` 필드·본문 내 시트 참조 동기화
+- `skills/markdown-to-sheets/SKILL.md` 절차 5단계 → 6단계 (디자인 적용 2단계 신설). markdown 파싱 표 갱신.
+
+### Why
+qa-scout가 만들어내는 Google Sheets의 디자인이 매번 일관되지 않는 문제. AI 해석 변동성으로 색·너비·정렬이 미세하게 달라짐. JSON token으로 정형화 + Python 스크립트로 batch_update payload 생성 → 사람·AI·신규 프로젝트 모두 동일 결과 보장. 시트 번호도 정합 (이전 점프 패턴 `01·04·06·07·08` → 연속 `01·02·03·04·05·06`).
+
+### 사용법
+```bash
+# 외부 사용자가 install 후 markdown-to-sheets 스킬 호출 시 자동 수행
+# 또는 직접 호출:
+python ${PLUGIN_ROOT}/scripts/feature-spec-design/apply.py \
+    --spreadsheet-id <ID> \
+    --stage add \
+    --existing-sheets-json '<{title:sheetId} JSON>' \
+    [--include-optional]
+```
+
 ## [0.2.6] — 2026-05-07
 
 ### Added

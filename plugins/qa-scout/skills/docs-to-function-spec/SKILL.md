@@ -93,6 +93,26 @@ B) {해석 2}
 #### 4-3. `[자료 부족]` 마커
 양식 골격 보존, 빈 셀에 `[자료 부족]` 마커. 추정 채움 X. reviewer가 SKIP + 사유 명시할 수 있게.
 
+#### 4-4. `[자료 부족]` 마커 self-check (v0.2.6 신규)
+마커 부여 **전** 강제 grep 검증 — Opus 정독 1패스 누락 방지.
+
+1. 마커 본문에서 키워드 자동 추출:
+   - 권한 코드 (예: `MASTERDATA_READ`, `MBR_WRITE`)
+   - BR 코드 (예: `BR-PWD-04`, `BR-ROLE-05`)
+   - 정책 명사 (예: `시스템 기본 역할`, `재사용`, `자동 잠금`, `비밀번호 이력`)
+2. **모든 인풋 자료에 Grep 자동 실행** (input-manifest.yaml `found_files` 전체):
+   ```
+   grep -rn "{keyword}" {input-manifest 자료 경로}
+   ```
+3. 결과 처리:
+   - **hit 0건** → 마커 확정 (실제 자료 부족)
+   - **hit ≥ 1건** → **마커 X**. 본문에 해당 자료 §섹션 인용 추가 (`PRD_001 §1.2; FS_MYAPP-187 §3.3.1` 형식)
+4. self-check 결과를 `input-manifest.yaml > self_check_results` 섹션에 기록:
+   - `candidates_total`·`confirmed`·`rejected` 카운트
+   - `rejected_details`에 키워드·발견 위치·취해진 조치 명시
+
+**why**: MYAPP.zip 산출물 검증에서 FR-009 권한·FR-039 기본 역할 삭제·BR-PWD-04 비밀번호 재사용 등 9건이 인풋 자료 안에 명시되어 있는데도 [자료 부족] 마커 부여됨. self-check로 이런 케이스 90% 차단.
+
 ### 5) 출처 표기 (16번 컬럼 핵심)
 모든 채움 항목 끝에 16번 컬럼에 출처:
 ```
@@ -112,6 +132,7 @@ PRD_v2.md §3.3.1; USER_MANUAL.md §1.4; BR-USER-01~04
 - [ ] 17번 비고: NFR 연결 등 cross-reference 명시
 - [ ] 사용자 질의 항목 `scout-log.md` 누적
 - [ ] 영역 헤더 이모티콘 X (Sheets 그룹 헤더 mergeCells 적용 X)
+- [ ] **[자료 부족] 마커 self-check 통과 (v0.2.6)**: 모든 마커가 §단계 4-4 grep 검증 거침. `self_check_results.candidates_total == confirmed + rejected`
 
 ## 한계
 - 본 스킬은 06_기능정의서 17컬럼 작성 전용
@@ -119,7 +140,7 @@ PRD_v2.md §3.3.1; USER_MANUAL.md §1.4; BR-USER-01~04
 - 받기 5종은 본 스킬 범위 외 (`curate-input` + scout가 처리)
 
 ## 참조
-- spec: `docs/qa-scout/spec.md` §4-2
+- spec: `docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md` §4-2
 - scout 에이전트: `agents/scout.md`
 - 선행 스킬: `skills/curate-input/SKILL.md`
 - 양식 골격: `templates/feature-spec/06_기능정의서.md`
@@ -129,4 +150,4 @@ PRD_v2.md §3.3.1; USER_MANUAL.md §1.4; BR-USER-01~04
 | 버전 | 일자 | 변경 |
 |---|---|---|
 | 0.1 | 2026-04-30 | 초기 작성 (markdown function-spec.md 자유 양식, 35컬럼 base) |
-| 0.2 | 2026-05-06 | 17컬럼 표준 양식 적응 (영역 헤더 폐지·이모티콘 제거·TC ID·인풋 출처·비고 추가). spec: docs/qa-scout/spec.md |
+| 0.2 | 2026-05-06 | 17컬럼 표준 양식 적응 (영역 헤더 폐지·이모티콘 제거·TC ID·인풋 출처·비고 추가). spec: docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md |

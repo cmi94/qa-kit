@@ -1,5 +1,16 @@
 # qa-scout Changelog
 
+## [Unreleased]
+
+### Docs
+- README에 **Scouter 1.0/2.0 품질율과 구동 방식 개선 릴리즈 노트** 추가.
+  - Scouter 1.0 기준선: 기능정의서 품질율 약 62%, 기능 누락 약 38%, `[자료 부족]` 마커 9/10건 부적절
+  - Scouter 2.0 개선 기준: 기능정의서 품질율 약 95%+, 40 FR → 약 65 FR, 자료 부족 마커 9건 → 1~2건
+  - 구동 방식 개선: 단계 12a 커버리지 자가 검증, 자료 부족 self-check, operations-guide 카테고리, 다중 매핑, archive 정책, sub-agent 역할 분리
+
+### Note
+- Scouter 3.0 품질율은 다음 개선 작업 완료 후 동일 기준으로 실측해 추가 예정.
+
 ## [0.2.7] — 2026-05-13
 
 ### Added

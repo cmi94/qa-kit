@@ -170,6 +170,6 @@ excluded_locations: [...]             # v0.2.6 — 명시 제외 위치 (P4)
 - 라이브 탐색은 `live-verifier` 에이전트 (qa-workbench 측)
 
 ## 참조
-- spec: `docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md` §5-2
+- spec: `../../../docs/qa-scout/spec.md` §5-2
 - scout 에이전트: `agents/scout.md`
 - 후속 스킬: `skills/docs-to-function-spec/SKILL.md`

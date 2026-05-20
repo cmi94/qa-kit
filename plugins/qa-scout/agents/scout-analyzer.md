@@ -25,9 +25,27 @@ PRD를 깊이 분석해 다음을 도출:
 ## 입력 (메인 scout이 Agent prompt로 전달)
 
 - PROJECT 헤더
-- 확정된 PRD 파일 경로 (단계 6에서 확정)
-- 도메인 용어집 (선택, 일관성 강화)
+- 확정된 PRD 파일 경로 (단계 6에서 확정 — `status='confirmed'`, `primary_category='PRD'`)
+- 도메인 용어집 (선택, 일관성 강화 — `status='confirmed'`, `primary_category='glossary'`)
+- 권한 매트릭스 (옵션 보강 — `status='confirmed'`, `primary_category='permission-matrix'`)
+- **보충자 발굴 자료** (v0.2.7 신규 — `status='related'`, `discovered_by='scout-supplementer'`): `relevance_score ∈ {★★★, ★★}` 자동 포함 + ★ 후보는 단계 8c 사용자 결정 거친 항목만
 - 받기 자료 메타 (단계 6 매핑 결과)
+- **(v0.2.8 신규, 옵션) deep_screen_targets[] + developer_deep_scope** — `input-manifest.yaml > downstream_enrichment`에서 그대로 전달. 단계 1b 부재 시 빈 입력으로 처리(하위 호환). 본 입력은 F-NNN 분해 시 누락 방지 필수 조건으로 작동한다(아래 §정독 우선순위 7번 + §self-check 단계 4-2 참조).
+
+### 분석가 정독 우선순위 (v0.2.7 신규)
+
+다음 순서로 정독·F-NNN 분해 인풋 활용:
+
+1. **PRD** (`status=confirmed`, `primary_category=PRD`) — 1차 인풋
+2. **도메인 용어집** (`status=confirmed`, `primary_category=glossary`) — 일관성
+3. **권한 매트릭스** (`status=confirmed`, `primary_category=permission-matrix`) — 8번 사전 조건·9번 정책 보강
+4. **보충자 발굴 ★★★** (`status=related`, `relevance_score=★★★`) — 강한 매칭 보강
+5. **보충자 발굴 ★★** (`status=related`, `relevance_score=★★`) — 중간 매칭 보강
+6. **나머지** `status=confirmed` 기타 카테고리 — 옵션 보강
+7. **(v0.2.8) deep_screen_targets[] 화면별 evidence 보강** — 각 target의 `evidence_refs.{prd,uc,design,ui_capture}`를 정독해 Step·Parameter·Variable·State·Role lifecycle 인용을 확보한다. F-NNN 분해 시 1행 이상 매핑되지 않으면 누락 후보로 표시(§분석 결과 markdown deep screen coverage 섹션 참조).
+
+`status='related'` 자료는 PRD 인풋 외 보강 — 단정 X, PRD 정책과 대조 후 채택.
+**self-check 단계 4-1 grep 검증**은 `status ∈ {confirmed, related}` 모두 대상으로 실행 (v0.2.7 확장).
 
 ## 출력 (메인 scout에 반환)
 
@@ -64,6 +82,25 @@ PRD를 깊이 분석해 다음을 도출:
 ## 자료 부족 영역
 
 - [자료 부족] {영역} — {사유} ({파일} §{섹션}에 명시 없음)
+
+## deep screen coverage (v0.2.8)
+
+deep_screen_targets[] 전 행에 대해 다음 표를 채움. 입력 부재 시 본 섹션 생략(하위 호환).
+
+| target_id | route | 매핑된 FR | gap 후보 | 17번 비고 marker | reviewer enum 후보 |
+|---|---|---|---|---|---|
+| <id> | </path> | FR-<PROJECT>-NNN, ... 또는 없음 | structure-depth-gap / behavior-depth-gap / variable-behavior-gap / state-visibility-gap / role-visibility-gap / risky-action-gap / doc-screen-conflict / 없음 | `[상세 화면 구조 부족]` / `[동적 UI 확인 필요]` / `[변수 동작 자료 부족]` / `[상태별 UI 확인 필요]` / `[권한별 UI 확인 필요]` / `[위험 액션 미검증]` / `[문서-화면 충돌]` | SCREEN-MISSING / BEHAVIOR-MISSING / VARIABLE-MISMATCH / STATE-MISMATCH / PERMISSION-MISMATCH / NOT-TESTED-RISKY-ACTION / FAIL |
+
+### Step/Parameter/Variable/State/Role/Risky 별도 gap 후보
+
+deep_screen_targets[]와 무관하게도 다음 6 차원에서 PRD/UC/design 본문에 등장하지만 F-NNN 분해에 1행도 못 잡힌 항목은 별도 후보로 1줄씩 적는다.
+
+- Step lifecycle (추가/수정/삭제/순서 조정/복사) — gap: behavior-depth-gap, marker: `[동적 UI 확인 필요]`
+- Parameter 타입·규격·단위·필수·검증 — gap: structure-depth-gap, marker: `[상세 화면 구조 부족]`
+- Variable 생성·삽입·삭제·marker·PDF 치환·atomic — gap: variable-behavior-gap, marker: `[변수 동작 자료 부족]`
+- State 별 편집 가능 여부·버튼 노출·전환 — gap: state-visibility-gap, marker: `[상태별 UI 확인 필요]`
+- Role 별 노출·동작 차이 — gap: role-visibility-gap, marker: `[권한별 UI 확인 필요]`
+- Risky action (저장/삭제/승인/제출/신규 버전 생성/전자서명) — gap: risky-action-gap, marker: `[위험 액션 미검증]`, reviewer enum: `NOT-TESTED-RISKY-ACTION`. **본 분석가는 위험 액션을 직접 호출하거나 화면 클릭을 지시하지 않는다(read-only 분석).**
 ```
 
 > ID·BR 코드·인풋 출처는 **PROJECT 헤더 + 실제 PRD에 명시된 값**으로 변수 치환. specific 도메인 표현(특정 시스템·라이브러리·역할명 등)은 양식 예시에 박지 말고 변수 placeholder 유지.
@@ -87,9 +124,14 @@ PRD를 깊이 분석해 다음을 도출:
    3. hit 0건 → 마커 확정
    4. hit ≥ 1건 → 마커 X. 본문에 해당 자료 §섹션 인용 추가하고 `self_check_results.rejected_details`에 기록
    5. 통과/거부 결과를 분석 결과 markdown에 명시 (메인 scout이 input-manifest.yaml 작성 시 사용)
-6. 모호점 5패턴 탐지 → 발견 시 [질의] 형식
-7. NFR·US 도출 (PRD 비기능 섹션·시나리오 추출)
-8. 분석 결과 markdown 반환 (self-check 통과·거부 N건 포함)
+6. **단계 4-2 (v0.2.8 신규 — deep_screen_targets coverage check)**: deep_screen_targets[] 입력이 있을 때만 실행.
+   1. 각 target.id에 대해 분해된 FR 목록을 grep — 1행 이상 매핑됐는지 확인
+   2. 매핑 0건 → 분석 결과 markdown `## deep screen coverage` 표에 해당 행을 `gap 후보` 컬럼 채워 명시 + `[자료 부족]` 또는 deep marker(`[상세 화면 구조 부족]` 등) 적용 + reviewer enum 후보 1순위 표기
+   3. 매핑 ≥ 1행이라도 evidence가 design 단독이고 PRD/UC 근거 부재면 `gap=behavior-depth-gap` + `[동적 UI 확인 필요]` 마커
+   4. 단정 X — 위험 액션 발견 시 자동 실행 금지(저장/삭제/승인/제출/신규 버전 생성/전자서명), `NOT-TESTED-RISKY-ACTION`으로 분류
+7. 모호점 5패턴 탐지 → 발견 시 [질의] 형식
+8. NFR·US 도출 (PRD 비기능 섹션·시나리오 추출)
+9. 분석 결과 markdown 반환 (self-check 통과·거부 N건 + deep screen coverage 표 포함)
 
 ## 핵심 룰 (Opus 모드 추가 강조)
 
@@ -98,7 +140,9 @@ PRD를 깊이 분석해 다음을 도출:
 - **법규 매핑 정확**: 21 CFR Part 11·EU GMP Annex 11·ICH Q10 등 인용은 PRD에 명시된 것만
 - **BR 코드 매핑 정확**: PRD에 BR-XXX-NN 코드 그대로 인용 (변형 X)
 - **인풋 출처 (16번 컬럼) 누락 0건**: 모든 F-NNN에 PRD §·BR 코드 매핑
-- **자료 부족 마커 self-check 필수 (v0.2.6)**: 마커 부여 전 단계 4-1 grep 검증 통과 강제. 통과 X시 마커 X — Opus 정독 1패스 가정 깨진 케이스 방지 (FR-009 권한·FR-039 기본 역할 삭제·BR-PWD-04 비밀번호 재사용 등 인풋 자료 안에 명시된 항목까지 누락한 MYAPP.zip 사례에서 도출)
+- **자료 부족 마커 self-check 필수 (v0.2.6)**: 마커 부여 전 단계 4-1 grep 검증 통과 강제. 통과 X시 마커 X — Opus 정독 1패스 가정 깨진 케이스 방지 (인풋 자료 안에 명시된 권한 코드·BR 코드·정책 항목까지 누락한 실측 산출물 사례에서 도출)
+- **deep_screen_targets coverage 필수 (v0.2.8)**: deep_screen_targets[] 입력이 존재할 때 단계 4-2 매핑 grep 결과를 분석 결과 markdown에 표로 명시. surface 일치만으로 행을 확정하지 말고, Step/Parameter/Variable/State/Role/Risky 6 차원 중 PRD/UC/design 본문에 등장하지만 F-NNN에 누락된 항목은 별도 후보로 1줄씩 남긴다.
+- **위험 액션 자동 실행/지시 금지 (v0.2.8)**: 저장·삭제·승인·반려·회수·제출·신규 버전 생성·전자서명(ID+PW)·메일/알림 발송 등은 본 분석가가 직접 실행하지 않고, 분석 결과에 클릭 시도 지시도 남기지 않는다. 발견 시 `gap=risky-action-gap` + `[위험 액션 미검증]` 마커 + reviewer enum 후보 `NOT-TESTED-RISKY-ACTION`으로만 분류한다(라이브 검증은 단계 9e verifier read-only 탐색 책임).
 
 ## 한계
 
@@ -112,4 +156,4 @@ PRD를 깊이 분석해 다음을 도출:
 - 메인 에이전트: `agents/scout.md` (Sonnet, 오케스트레이터)
 - 자매 sub-agent: `agents/scout-curator.md` (Haiku, 단계 5)
 - 스킬: `skills/docs-to-function-spec/SKILL.md`
-- spec: `docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md` §4-6 모델 라우팅
+- spec: `../../docs/qa-scout/spec.md` §4-6 모델 라우팅

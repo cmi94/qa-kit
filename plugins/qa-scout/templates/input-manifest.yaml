@@ -1,24 +1,32 @@
 # qa-handoff/{프로젝트명}/input-manifest.yaml 템플릿
 # 자료 큐레이션 결과 (curate-input 스킬 단계 5 산출) + 인계·검수 환경 정보 (단계 11b)
-# 본 양식은 spec docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md §4-5 기반
+# 본 양식은 spec(`../../docs/qa-scout/spec.md`) §4-5 기반
 # v0.2.5: 단계 11b (engagement context — gmail·테스트 URL·테스트 계정) 신규 슬롯 추가
+# v0.2.7+: schema_version 유지. 옵션 블록 downstream_enrichment(§ 본 파일 하단)는
+#   spec v0.2.8 footer (deep screen coverage 게이트)에 따라 추가 가능.
+#   기존 v0.2.6/v0.2.7 manifest는 본 블록 없이도 그대로 유효 (하위 호환).
 
-schema_version: "0.2"
-project: <project_name>           # 예: myapp
-scan_root: <자료 폴더 경로>        # 예: D:/work/myapp-dev/docs (다중 시 배열)
+schema_version: "0.2.7"
+project: <project_name>           # 예: ebr
+scan_root: <자료 폴더 경로>        # 예: D:/work/ebr-dev/docs (다중 시 배열)
 scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
 
 # 발견된 모든 파일
 # v0.2.6: category(single) → categories(array) — 다중 카테고리 통합 매뉴얼 지원 (예: USER_MANUAL.md 한 파일이
 # user-scenario·screen-layout·permission-matrix·glossary·operations-guide 5개에 기여)
+# v0.2.7: status enum 5종 명시 (confirmed | related | unconfirmed | ignored | archived) — category 부재는
+# missing_categories[]에서 관리. discovered_by + relevance_score + related_fr_candidates 신규.
 found_files:
-  - path: <상대 경로>
+  - path: <상대 경로 NFC>          # v0.2.7 — NFD→NFC 정규화 (P3-1)
     mtime: <ISO 8601>
     git_commit: <hash | null>
     categories: [<list>]            # 배열 — PRD | user-scenario | state-transition | screen-layout | permission-matrix | glossary | erd-architecture | operations-guide
     primary_category: <category>    # 가장 강한 매핑 (단일)
-    confidence: <★★★|★★|★|X>
-    status: <confirmed|skipped|missing>
+    confidence: <★★★|★★|★|X>     # curator 카테고리 매핑 신뢰도
+    status: <confirmed|related|unconfirmed|ignored|archived>  # v0.2.7 enum 5종
+    discovered_by: <scout-curator|scout-supplementer|null>     # v0.2.7 신규
+    relevance_score: <★★★|★★|★|null>                          # v0.2.7 신규 — supplementer 발굴만 채움 (PRD 연관성)
+    related_fr_candidates: [<FR-NNN>, ...]                     # v0.2.7 신규 — supplementer 발굴만
 
 # 빠진 카테고리 (단계 7 가이드 결과)
 missing_categories:
@@ -62,12 +70,12 @@ multi_input_bindings:
 # secrets 인계 시 보안 가이드 준수: zip 암호화 + 별도 채널 암호 전송, 1password,
 # git 인계 시 본 파일을 .gitignore에 추가 또는 engagement-secrets.yaml로 분리.
 contact:
-  developer_email: <gmail 주소>     # 예: <dev-email@example.com> — 단계 17a editor 권한 부여 대상
+  developer_email: <gmail 주소>     # 예: <developer-gmail>@gmail.com — 단계 17a editor 권한 부여 대상
   note: <부가 메모>                # 예: 단계 18c 개발팀 검수 요청 대상
 
 test_environment:
   server_port: <포트>              # 예: 8087
-  local_url: <라이브 URL>          # 예: http://localhost:8087
+  local_url: <라이브 URL>          # 예: http://<host>:<port> (테스트/스테이징 환경만 — 운영 환경 금지)
   type: <local | staging | dev>    # 환경 종류
   test_accounts:
     - id: <테스트 계정 ID>          # 예: admin
@@ -78,10 +86,9 @@ test_environment:
     - "라이브 URL이 localhost인 경우 원격 공유 시 staging 환경 별도 구성 필요"
 
 # -------------------------------------------------------
-# 커버리지 자가 검증 결과 (단계 12a — v0.2.6 신규)
+# 커버리지 자가 검증 결과 (단계 12a — v0.2.6 + v0.2.7 확장)
 # -------------------------------------------------------
-# operations-guide 카테고리 자료(USER_MANUAL·*_GUIDE.md 등)의 heading을
-# F-NNN 분해 결과와 매핑한 결과. 미매핑 heading은 사용자 결정으로 분류.
+# operations-guide·PRD heading·검증자 라이브 단서 통합 트래킹.
 coverage_check:
   guide_files:                       # 매뉴얼·가이드 자료 목록
     - path: <상대 경로>
@@ -90,11 +97,43 @@ coverage_check:
   headings_mapped: <M>               # F-NNN 매핑 성공
   headings_missed: <K>               # 미매핑 후보
   user_decisions:
-    - heading: <heading 텍스트>      # 예: "USER_MANUAL §3 시뮬레이션"
+    - heading: <heading 텍스트>      # 예: "USER_MANUAL §3 <기능 영역>"
       source_file: <파일 경로>
       decision: <include | merged | exclude>
       target_fr_id: <FR-NNN 또는 null>
       note: <자유 텍스트>
+
+  # v0.2.7 신규 — PRD heading 별도 트래킹 (D 해결: PRD heading 누락 검증 게이트)
+  prd_headings:
+    - heading: <heading 텍스트>      # PRD 본문의 H1/H2/H3
+      level: <1|2|3>
+      mapped_fr: [<FR-NNN>, ...]    # 매핑된 F-NNN 리스트 (다중 가능)
+      status: <mapped|unmapped|excluded>
+      decision: <include|merged|exclude|null>
+      reason: <자유 텍스트>
+
+  # v0.2.7 신규 — 검증자(scout-verifier) 라이브 단서 결과 보존
+  # 메인 scout이 단계 9f에서 사용자 인터뷰 후 본 슬롯에 기록 (verifier source 보존)
+  live_verification_results:
+    - target_marker: <FR-NNN>
+      source: scout-verifier         # 단일 source enum — 추후 다른 출처 추가 시 확장
+      live_url: <URL>
+      dom_evidence: <DOM 인용>
+      xpath_or_snapshot: <xpath 또는 스냅샷 N>
+      user_decision: <confirmed|maintained|other>
+      confirmed_policy: <text 또는 null>   # user_decision=confirmed 시 채움
+      decided_at: <ISO 8601>
+
+# -------------------------------------------------------
+# 보충자 정독 스냅샷 (단계 8b — v0.2.7 신규, P1-1a)
+# -------------------------------------------------------
+# 메인 scout이 보충자 spawn 직전 candidate_files_at_start 스냅샷 기록.
+# M1a 분모 안정화 — 실행 후 status 변경 영향 X.
+supplementer_review:
+  snapshot_at: <ISO 8601, 단계 8b 진입 직전>
+  candidate_files_at_start: [<path list>]   # spawn 직전 status='unconfirmed' 전체
+  reviewed_files: [<path list>]              # supplementer가 실제 정독한 파일
+  skipped_files: [<path list>]               # 정독 못 한 파일 (크기 한계·읽기 실패 등)
 
 # -------------------------------------------------------
 # 자료 부족 마커 self-check 결과 (단계 9 docs-to-function-spec — v0.2.6 신규)
@@ -106,7 +145,7 @@ self_check_results:
   confirmed: <M>                     # self-check 통과 (실제 자료 부족)
   rejected: <K>                      # grep hit으로 거부 (자료 발견 → 마커 취소)
   rejected_details:
-    - candidate_keyword: <키워드>    # 예: "MASTERDATA_READ"
+    - candidate_keyword: <키워드>    # 예: "<권한 코드>" 또는 "<BR 코드>"
       found_in: <파일 §섹션>         # 예: "GXP_RBAC_PERMISSION_MATRIX.md §229"
       original_target: <FR-NNN 또는 컬럼>
       action_taken: <마커 취소 + 본문 인용 추가>
@@ -121,3 +160,153 @@ excluded_locations:
     reason: <v1 deprecated | 결정 자료 부재 | 사용자 명시 제외>
     confirmed_by_user: <ISO 8601>
     note: <자유 텍스트>
+
+# -------------------------------------------------------
+# ERD 상태 게이트 (단계 7~8 — v0.2.7 신규, P5-3)
+# -------------------------------------------------------
+# 분류 카테고리 8개 중 ERD/아키텍처 = 상태 게이트.
+# enum 3종 중 하나로 통과: provided | generated-draft | explicitly-missing.
+# explicitly-missing 시 erd_missing_reason 필수 입력.
+erd_status: <provided|generated-draft|explicitly-missing>
+erd_missing_reason: <text 또는 null>   # explicitly-missing 시 사유
+
+# -------------------------------------------------------
+# 받기 5종 인계 (옵션 C — v0.2.7 신규, P5-1·P5-2)
+# -------------------------------------------------------
+# domain-knowledge/ 폴더에 받기 5종 사본만 인계 (양식 변환 X).
+# .meta.yaml 파일 5개는 v0.2.7에서 제거 — 본 슬롯에 통합.
+# missing 카테고리는 output_files: [] (빈 배열) + note: "missing"으로 일관 표기.
+received_artifacts:
+  - category: <user-scenario|state-transition|screen-layout|permission-matrix|glossary>
+    source_files: [<원본 경로>]
+    output_files: [<domain-knowledge/0N-<name>.{ext}>]
+    format: <markdown|mermaid|pdf|image|excel|null>
+    multi_input_strategy: <none|separate-files|index-file>
+    note: <자유 텍스트 또는 "missing">
+
+# -------------------------------------------------------
+# 2단계 hash 무결성 (v0.2.7 신규, P4)
+# -------------------------------------------------------
+# 단계 5 큐레이터 직후 scan + 단계 8d 분석가 spawn 직전 verify (원본 폴더)
+# 단계 9a _source/ 사본 직후 copy + 단계 13 인계 직전 handoff (사본)
+# 도구: scripts/hash-source-integrity.mjs (SHA-256)
+source_integrity:
+  hash_algorithm: SHA-256
+  original_folder:
+    scan_root: <자료 폴더 절대 경로>
+    scanned_at: <단계 5 시점 ISO 8601>
+    verified_at: <단계 8d 시점 ISO 8601>
+    files:
+      - relative_path: <scan_root 기준 상대 경로>
+        hash_at_scan: <64자 hex>
+        hash_at_verify: <64자 hex>
+        match: <bool>
+  _source_copy:
+    scan_root: <_source/ 절대 경로>
+    recorded_at: <9a 시점 ISO 8601>
+    verified_at: <13 시점 ISO 8601>
+    files:
+      - relative_path: <_source/ 기준 상대 경로>
+        hash_at_copy: <64자 hex>
+        hash_at_handoff: <64자 hex>
+        match: <bool>
+
+# -------------------------------------------------------
+# 마이그레이션 추적 (v0.2.7 신규, P5-5)
+# -------------------------------------------------------
+# 기존 산출물(v0.2.6 base)을 v0.2.7 plugin이 처리 시 단계 -1a에서 자동 발동.
+# 4단계: dry-run preview → user confirm → backup → migrate.
+# 자동 실행 X — user confirm 필수.
+migration:
+  from_schema: <"0.2"|null>
+  to_schema: "0.2.7"
+  preview_at: <ISO 8601, dry-run 시점>
+  confirmed_at: <ISO 8601, user confirm Y 시점>
+  backup_path: <qa-handoff/<project>.v0.2.6-backup-<timestamp>/>
+  migrated_at: <ISO 8601, migrate 완료 시점>
+  changes:
+    - <"received_artifacts 슬롯 추가">
+    - <".meta.yaml 5파일 삭제">
+    - <"source_integrity 슬롯 추가 (recorded_at: null — 기존 산출물 hash 기록 X)">
+    - <기타>
+
+# -------------------------------------------------------
+# downstream enrichment (옵션 — spec `../../docs/qa-scout/spec.md` v0.2.8 footer)
+# -------------------------------------------------------
+# Scouter 3.0 후공정(연구팀 enrichment + Sheets 업로드 + Playwright reviewer)에서
+# 깊은 화면 뎁스/핵심 기능 누락을 막기 위한 추적 슬롯. schema_version은 그대로 "0.2.7"이며
+# 본 블록은 optional — 부재해도 manifest는 유효하다.
+#
+# 운영 룰:
+#  - 개발자 deep-scope 답변은 시작 시점 1회 수집 + crawl 후 1회 재확인. 무한 질의 X.
+#  - 위험 액션은 자동 클릭 금지 — 답변·관찰만 기록하고 reviewer가 NOT-TESTED-RISKY-ACTION으로 남긴다.
+#  - 개발자가 명시 지정한 항목만 deep_screen_targets[] / research_seed.required_focus[]로 승격.
+#  - 답변 부재 시 확정하지 않고 [자료 부족] 또는 [상세 화면 구조 부족]로 남긴다.
+downstream_enrichment:
+  developer_deep_scope:
+    questions_round:
+      - round: 1            # 1=pre-crawl, 2~=post-crawl 재확인
+        asked_at: <ISO 8601>
+        questions:
+          - "기능정의서 누락이 절대 나면 안 되는 핵심 기능은?"
+          - "화면 depth가 깊거나 내부 구조가 복잡한 화면/기능은?"
+          - "변수·계산식·Step/Parameter·에디터·PDF 치환·상태별 편집 제한·승인·전자서명·감사추적 같은 복잡 동작이 있는가?"
+          - "crawl 시 반드시 열어봐야 하는 상세 화면/탭/모달/패널/row action은?"
+          - "클릭 금지 또는 관찰만 해야 하는 위험 액션은?"
+        answered_at: <ISO 8601 또는 null>
+        answers:
+          core_features: [<자유 텍스트 list>]
+          deep_screens: [<screen 또는 route 식별자 list>]
+          complex_behaviors: [<예: variable-atomic, pdf-substitution, step-parameter, signature>]
+          must_open_targets: [<탭/모달/패널/row action 식별자>]
+          risky_actions: [<저장|삭제|승인|제출|신규버전 등>]
+    confirmation_rounds:
+      - round: 2
+        asked_at: <ISO 8601>
+        candidates_presented:
+          - id: <후보 id>
+            evidence: <문서/화면/코드 인용>
+        answered_at: <ISO 8601 또는 null>
+        confirmed: [<id list>]
+        additional:
+          core_features: [<신규 핵심 기능>]
+          deep_screens: [<신규 deep screen>]
+          risky_actions: [<신규 위험 액션>]
+    rejected_deep_scope_candidates:
+      - id: <후보 id>
+        rejected_at: <ISO 8601>
+        reason: <자유 텍스트>
+
+  deep_screen_targets:
+    - id: <SCR-<PROJECT>-NNN 또는 route slug>     # 화면 식별자
+      route: </path/to/screen>
+      reason:
+        - prd-keyword                          # 화면명·경로에 detail/edit/editor 등 포함
+        - prd-uses-step-parameter-variable     # PRD/UC에 Step·Parameter·Variable·Formula 언급
+        - capture-inputs-empty                 # 화면 capture가 inputs:[]이나 문서엔 입력/편집
+        - multi-table-or-modal                 # 한 화면에 테이블 2+·modal trigger·nested tab
+        - gxp-data-integrity                   # 전자서명·감사추적·승인·불변성·버전 고정
+        - developer-pinned                     # 개발자 deep-scope 인터뷰에서 직접 지정
+      gap_candidates: [<structure-depth-gap|behavior-depth-gap|variable-behavior-gap|state-visibility-gap|role-visibility-gap|risky-action-gap|doc-screen-conflict>]
+      required_observations:
+        - tabs: [<list>]
+        - modals: [<list>]
+        - panels: [<list>]
+        - row_actions: [<list>]
+        - dynamic_regions: [<list>]
+      risky_actions_not_clicked: [<버튼/액션 식별자>]
+      evidence_refs:
+        prd: [<파일:line>]
+        uc: [<파일:section>]
+        design: [<파일:line>]
+        ui_capture: [<knowledge/{project}/shared/pages/*.yaml>]
+
+  research_seed:
+    required_focus:
+      - focus: <자유 텍스트>                   # 예: "Step 추가/수정/삭제/순서 조정 lifecycle"
+        source: <문서 또는 화면 인용>
+        deep_screen_target_ref: <id>          # 위 deep_screen_targets[].id 참조
+    forbidden_assumptions:
+      - <"화면에 보이지 않는 기능을 단정하지 말 것">
+      - <"코드 한 줄로 정책 단정하지 말 것">
+    risky_action_policy: "관찰만 — Playwright/MCP가 자동 클릭 금지. reviewer는 NOT-TESTED-RISKY-ACTION으로 남긴다."

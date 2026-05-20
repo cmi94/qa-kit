@@ -1,0 +1,138 @@
+# plugins/qa-scout/templates/ui-crawl-manifest.yaml
+# spec: ../../docs/qa-scout/spec.md (v0.2.8 footer 참조)
+# location_hint: knowledge/{project}/shared/pages/ui-crawl-manifest.yaml
+#
+# 본 manifest는 "요구사항 근거"와 "화면 관찰 증거"를 명시적으로 분리한다.
+# UI crawl 결과는 비즈니스 의도를 확정하지 않는다 — 관찰 증거일 뿐.
+# 위험 액션은 자동 클릭 금지. 본 manifest에 risky_actions_not_clicked로 명시 기록.
+
+schema_version: "0.1.0"
+project: <project>                        # 예: ebr
+crawled_at: <ISO 8601>
+crawler: <playwright-mcp | chrome-mcp | python-playwright | manual>
+live_url: <URL 또는 null>
+test_account_ref: <input-manifest test_environment.test_accounts[].id 또는 null>
+notes:
+  - "본 manifest는 화면 관찰 증거이며, 요구사항 원본이 아니다."
+  - "위험 액션은 자동 클릭하지 않는다."
+
+# ---------------------------------------------------------------
+# 1. observed_ui — 실제로 본 화면 surface
+# ---------------------------------------------------------------
+observed_ui:
+  routes:
+    - path: </path/to/screen>
+      title: <화면명>
+      auth_required: <bool>
+      role_observed: <role id 또는 null>
+      screenshot: <screenshots/<slug>.png>
+  screens:
+    - slug: <slug>
+      route: </path/to/screen>
+      controls_count: <N>
+      inputs_count: <N>
+      tables_count: <N>
+      modals_count: <N>
+      tabs_count: <N>
+      capture_file: <knowledge/{project}/shared/pages/<slug>.yaml>
+
+# ---------------------------------------------------------------
+# 2. requirement_sources — 요구사항 근거(문서·코드)
+# ---------------------------------------------------------------
+# observed_ui와 분리: 화면에 보이는지와 무관하게 문서 기반 근거를 기록한다.
+requirement_sources:
+  - kind: <PRD | UC | design | manual | code | permission-matrix | state-transition | erd>
+    path: <repo-relative path>
+    section: <§x.x 또는 line>
+    summary: <1줄 인용>
+
+# ---------------------------------------------------------------
+# 3. deep_screen_targets — input-manifest.downstream_enrichment 참조
+# ---------------------------------------------------------------
+# input-manifest.yaml > downstream_enrichment.deep_screen_targets[]와 id 일치.
+# 본 manifest에서는 crawl 결과로 "실제로 본 항목"과 "못 본 항목"을 표시.
+deep_screen_targets:
+  - id: <id>
+    route: </path>
+    status: <observed | partially-observed | missing | risky-action-skipped>
+    observed_items:
+      tabs: [<list>]
+      modals: [<list>]
+      panels: [<list>]
+      row_actions: [<list>]
+    missing_items:
+      tabs: [<list>]
+      modals: [<list>]
+      panels: [<list>]
+      row_actions: [<list>]
+    gap_marker: <structure-depth-gap | behavior-depth-gap | variable-behavior-gap | state-visibility-gap | role-visibility-gap | risky-action-gap | doc-screen-conflict | null>
+
+# ---------------------------------------------------------------
+# 4. dynamic_regions — 클릭/선택/입력 후 UI 변화
+# ---------------------------------------------------------------
+dynamic_regions:
+  - trigger: <button/select/input 식별자>
+    on: <click | change | input | submit>
+    region_revealed: <패널/모달/테이블 식별자>
+    observation: <1줄 — 화면 변화>
+    evidence:
+      screenshot_before: <screenshots/<...>.png>
+      screenshot_after: <screenshots/<...>.png>
+
+# ---------------------------------------------------------------
+# 5. variables — 변수 lifecycle 관찰
+# ---------------------------------------------------------------
+# <도메인 엔티티>·Editor·Form 등에서 변수 패널·marker·삽입·삭제·치환·atomic 동작이 있는 경우.
+variables:
+  panel_observed: <bool>
+  variable_kinds: [<text | number | dropdown | date | checkbox | signature | formula | sum | avg | sap | camera>]
+  marker_insert: <observed | not-observed | risky-action-skipped>
+  marker_delete_atomic: <observed | not-observed | risky-action-skipped>
+  marker_serialize_to_db: <observed | inferred-from-doc | unknown>
+  pdf_substitution: <observed | inferred-from-doc | unknown>
+  ime_safety: <observed | not-observed | unknown>
+  evidence:
+    design_doc: [<repo-relative path:line>]
+    capture: [<knowledge/{project}/shared/pages/*.yaml>]
+    screenshot: [<screenshots/*.png>]
+
+# ---------------------------------------------------------------
+# 6. state_role_matrix — 상태×역할 단위 UI 차이
+# ---------------------------------------------------------------
+state_role_matrix:
+  - screen_slug: <slug>
+    state: <Draft | PendingApproval | Approved | Rejected | Withdrawn | ...>
+    role: <문서 작성 관리자 | QA 담당자 | 품질 책임자 | ...>
+    edit_allowed: <bool | unknown>
+    visible_buttons: [<버튼 텍스트 list>]
+    hidden_or_disabled_buttons: [<버튼 텍스트 list>]
+    observation_method: <crawl | doc-only | conflict>
+    note: <자유 텍스트>
+
+# ---------------------------------------------------------------
+# 7. developer_confirmed_focus — 인터뷰 결과와 crawl 결과 매칭
+# ---------------------------------------------------------------
+# input-manifest.yaml > downstream_enrichment.developer_deep_scope를 인용·정합.
+developer_confirmed_focus:
+  pre_crawl_targets: [<id list — questions_round[1] 결과>]
+  post_crawl_additions: [<id list — confirmation_rounds[*] 결과>]
+  rejected: [<id list>]
+
+# ---------------------------------------------------------------
+# 8. risky_actions_not_clicked — 자동 클릭 금지 액션
+# ---------------------------------------------------------------
+risky_actions_not_clicked:
+  - screen_slug: <slug>
+    action: <저장 | 삭제 | 승인 | 제출 | 신규 버전 생성 | 전자서명 | ...>
+    rationale: <업무 영향 | GxP 영향 | 운영 데이터 영향>
+    reviewer_judgment_hint: NOT-TESTED-RISKY-ACTION
+
+# ---------------------------------------------------------------
+# 9. evidence_refs — screenshot/capture 인덱스
+# ---------------------------------------------------------------
+evidence_refs:
+  screenshots_dir: <knowledge/{project}/shared/pages/screenshots/>
+  captures:
+    - slug: <slug>
+      path: <knowledge/{project}/shared/pages/<slug>.yaml>
+  notes_md: <knowledge/{project}/shared/pages/crawl-gaps.md 또는 null>

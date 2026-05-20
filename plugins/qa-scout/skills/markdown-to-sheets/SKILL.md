@@ -7,7 +7,7 @@ description: QA가 단계 17a에서 호출하는 스킬. 개발자가 인계한 
 
 scout v0.2 단계 17a (QA 측 markdown → Sheets 이행) 전용 스킬. 사용자 정정 6차로 신설 (개발자 MCP 인증 부담 해결).
 
-v0.2.7 갱신 (2026-05-13): GxP 표준 디자인 결정론적 적용 단계 추가. 시트 번호 체계 표준 양식(01·02·03·04·05·06) 채택. 디자인 spec: `docs/specs/2026-05-13-feature-spec-standard-design.md`.
+v0.2.7 갱신 (2026-05-13): GxP 표준 디자인 결정론적 적용 단계 추가. 시트 번호 체계 표준 양식(01·02·03·04·05·06) 채택. 디자인 spec은 통합 spec(`../../../docs/qa-scout/spec.md`) v0.2.7 항목 참조.
 
 ## 사용 시점
 QA가 단계 13~16 인계 패키지 수령 + 무결성 점검 통과 후 호출. QA PC의 google-sheets MCP는 QA 본인 OAuth 인증 필수.
@@ -34,7 +34,7 @@ QA가 단계 13~16 인계 패키지 수령 + 무결성 점검 통과 후 호출.
 
 #### 옵션 A — 신규 생성
 ```python
-sheet = create_spreadsheet(title="<프로젝트명> Feature Spec (qa-scout-kit v0.2)")
+sheet = create_spreadsheet(title="<프로젝트명> Feature Spec (qa-scout v0.2)")
 sheets_id = sheet.id
 ```
 
@@ -148,7 +148,7 @@ scout-log.md append (timestamp + 이행 행 수 + 디자인 PASS 여부 + 공유
 - 레이아웃: `{PLUGIN_ROOT}/templates/feature-spec-design/sheets-layout.json` (6시트 구조·헤더 텍스트)
 - 적용: `{PLUGIN_ROOT}/scripts/feature-spec-design/apply.py` (payload 생성)
 - 검증: `{PLUGIN_ROOT}/scripts/feature-spec-design/verify.py` (token 일치성)
-- spec: `docs/specs/2026-05-13-feature-spec-standard-design.md`
+- spec: `../../../docs/qa-scout/spec.md` v0.2.7 항목
 
 ## 한계
 
@@ -159,8 +159,7 @@ scout-log.md append (timestamp + 이행 행 수 + 디자인 PASS 여부 + 공유
 
 ## 참조
 
-- spec (스킬): `docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md` §5-1 단계 17a
-- spec (디자인): `docs/specs/2026-05-13-feature-spec-standard-design.md`
+- spec: `../../../docs/qa-scout/spec.md` §5-1 단계 17a (v0.2.7 디자인 footer 포함)
 - scout 에이전트: `agents/scout.md`
 - 관련 스킬: `skills/docs-to-function-spec/SKILL.md` (markdown 작성 — 본 스킬의 입력)
 - 양식: `templates/feature-spec/*.md` (markdown 골격 5개)

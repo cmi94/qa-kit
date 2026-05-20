@@ -1,15 +1,30 @@
 # qa-scout Changelog
 
-## [Unreleased]
+## [0.2.8] — 2026-05-20
 
-### Docs
-- README에 **Scouter 1.0/2.0 품질율과 구동 방식 개선 릴리즈 노트** 추가.
-  - Scouter 1.0 기준선: 기능정의서 품질율 약 62%, 기능 누락 약 38%, `[자료 부족]` 마커 9/10건 부적절
-  - Scouter 2.0 개선 기준: 기능정의서 품질율 약 95%+, 40 FR → 약 65 FR, 자료 부족 마커 9건 → 1~2건
-  - 구동 방식 개선: 단계 12a 커버리지 자가 검증, 자료 부족 self-check, operations-guide 카테고리, 다중 매핑, archive 정책, sub-agent 역할 분리
+### Added — deep screen coverage 게이트
+- **scout 본체 단계 1b** 신설 — crawl/research 진입 전 개발자 deep-scope 5문 인터뷰(pre-crawl 1회).
+  - 5문: 핵심 기능 / 깊은 뎁스 화면 / 복잡 동작(변수·Step/Parameter·에디터·PDF 치환·상태별 편집·승인·전자서명·감사추적) / 반드시 열어볼 탭·모달·패널·row action / 위험 액션(저장·삭제·승인·제출·신규 버전 생성·전자서명)
+  - 답변은 `input-manifest.yaml > downstream_enrichment.developer_deep_scope.questions_round[]`에 기록. schema_version "0.2.7" 하위호환 유지(옵션 블록).
+- **scout 본체 단계 12b** 신설 — 1차 가공 후 발견 후보를 개발자에게 재확인(post-crawl 1회). 결과는 `confirmation_rounds[]`에 append.
+- **핵심 규약 7번** 신설 — 위험 액션 자동 클릭 금지. scout 본체·sub-agent·후공정 reviewer 모두 적용.
+- **sub-agent 4종 보강** — `scout-curator`/`scout-supplementer`/`scout-analyzer`/`scout-verifier`가 `deep_screen_targets[]`·`developer_deep_scope` 입력을 받아 분류 우선순위·발굴 boost·정독 우선순위·라이브 우선 경로로 연결.
+  - `scout-analyzer`에 단계 4-2 deep_screen_targets coverage check + Step/Parameter/Variable/State/Role/Risky 6 차원 별도 gap 후보 분류 추가.
+  - `scout-verifier`에 위험 액션 자동 클릭 금지(=`browser_click`·`browser_fill_form` 호출 금지) + `risky_actions_observed[]` 적재 채널.
+- **신규 템플릿 2종** — `templates/research-seed.md`(8섹션), `templates/ui-crawl-manifest.yaml`(9블록 — observed UI vs requirement source 분리).
+- **`03_기능정의서.md` 보강** — 16번 인풋 출처 다중 evidence 인용 룰 + 17번 비고 deep marker 7종 + reviewer 1차 enum 매핑 표.
+- **`docs/developer-first-run-guide.md` 신규** — 개발자가 처음 받았을 때 단계별로 따라할 변수형 가이드.
 
-### Note
-- Scouter 3.0 품질율은 다음 개선 작업 완료 후 동일 기준으로 실측해 추가 예정.
+### Changed — Scouter 2.0 품질율 정정
+- 릴리즈 노트의 Scouter 2.0 품질율을 **약 95%+ → 약 80%**로 정정. 마커 정확도 실측은 약 78%였고, 깊은 화면 뎁스는 surface crawl만으로 누락되는 사례가 남아 95%+ 표기는 목표값/추정값에 가까웠다는 점 명시.
+- README §7 변경 이력 v0.2.7 sub-agent 누락 보강(supplementer·verifier가 publish 측에 추가됨).
+
+### Why
+v0.2.6/v0.2.7까지의 구조는 route/screen 단위 surface crawl에 의존해 "상세 화면이 있다"는 사실은 잡지만 "그 화면 안의 에디터·변수·Step/Parameter·상태별 동작이 기능정의서에 반영됐는지"는 놓칠 위험이 있었다. v0.2.8은 시작 시점 + post-crawl 2회 게이트로 개발자에게 직접 핵심·깊은 기능·위험 액션을 묻고 reviewer가 BEHAVIOR-MISSING / VARIABLE-MISMATCH / STATE-MISMATCH 같은 행위 단위 판정 enum으로 매핑하도록 한다.
+
+### Compatibility
+- `input-manifest.yaml` 의 `schema_version`은 `"0.2.7"` 그대로. `downstream_enrichment`는 옵션 블록이며 부재해도 v0.2.7 manifest는 그대로 유효.
+- Gemini CLI / Codex / Playwright MCP / Google Sheets MCP는 본 플러그인의 필수 의존성이 아니다. 미설치 환경에서도 Scouter 본체는 정상 동작한다.
 
 ## [0.2.7] — 2026-05-13
 

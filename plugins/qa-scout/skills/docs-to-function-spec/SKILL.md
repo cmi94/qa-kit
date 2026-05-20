@@ -140,7 +140,7 @@ PRD_v2.md §3.3.1; USER_MANUAL.md §1.4; BR-USER-01~04
 - 받기 5종은 본 스킬 범위 외 (`curate-input` + scout가 처리)
 
 ## 참조
-- spec: `docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md` §4-2
+- spec: `../../../docs/qa-scout/spec.md` §4-2
 - scout 에이전트: `agents/scout.md`
 - 선행 스킬: `skills/curate-input/SKILL.md`
 - 양식 골격: `templates/feature-spec/06_기능정의서.md`
@@ -150,4 +150,4 @@ PRD_v2.md §3.3.1; USER_MANUAL.md §1.4; BR-USER-01~04
 | 버전 | 일자 | 변경 |
 |---|---|---|
 | 0.1 | 2026-04-30 | 초기 작성 (markdown function-spec.md 자유 양식, 35컬럼 base) |
-| 0.2 | 2026-05-06 | 17컬럼 표준 양식 적응 (영역 헤더 폐지·이모티콘 제거·TC ID·인풋 출처·비고 추가). spec: docs/specs/2026-05-06-qa-scout-kit-v0.2-skeleton.md |
+| 0.2 | 2026-05-06 | 17컬럼 표준 양식 적응 (영역 헤더 폐지·이모티콘 제거·TC ID·인풋 출처·비고 추가). |

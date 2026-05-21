@@ -1,5 +1,63 @@
 # qa-scout Changelog
 
+## [0.2.9] — 2026-05-21
+
+### Added — 최종 산출 문서 2종 압축 + 게이트 3종 신설
+
+- **최종 읽기 산출물 2종 압축** — v0.2.8까지의 `feature-spec/` 폴더 5 markdown(01_표지·02_변경이력·03_기능정의서·04_비기능요구·05_사용자스토리)와 `domain-knowledge/` 5종 분산 출력을 단일 markdown 2종으로 통합:
+  - `feature-spec.md` (§0~§8 9섹션 단일 markdown) — 기존 5 md + 받기 5종 중 02-state-transition/04-permission-matrix/05-glossary 본문 흡수. 01-user-scenario는 분량이 커서 인용만, 03-screen-layout은 `ui-menu-mindmap.md`로 분리.
+  - `ui-menu-mindmap.md` (§0~§6 7섹션 단일 markdown) — Mermaid mindmap 시각 + 노드 상세 표(SoT, 11컬럼, enum 14종) + deep_screen_targets[] 매핑 + 도출 근거 + cross-check 결과 placeholder.
+- **단계 1c execution gate** 신설 — 환경·금지 액션·진행 승인 3문 1회 게이트. **액션별 재확인 폐기**. decision 4종 × reviewer_status 4종 1:1 매핑:
+  - `full-execute` ↔ `EXECUTED-TEST-ENV` (local/dev/qa/staging + 금지 항목 없음 + 진행 승인)
+  - `partial-execute` ↔ `PARTIAL-OBSERVED` (일부 금지 항목 있음 — 허용 액션만 실행)
+  - `observe-only` ↔ `NOT-TESTED-PROD-RISK` (prod 또는 운영 데이터 — 상태 변경 액션 실행 금지)
+  - `context-insufficient` ↔ `CONTEXT-INSUFFICIENT` (환경 불명확 — 실행 금지)
+  - 결과는 3곳 동기 기록: `input-manifest.yaml > execution_gate:` 11필드 메타 SoT + `feature-spec.md` frontmatter `execution_policy:` 5필드 + `ui-menu-mindmap.md` frontmatter `execution_policy:` 5필드.
+- **단계 4a README discovery gate** 신설 — repo root + 자료 폴더의 README 4 후보 패턴(`README.md` / `README.*` / `docs/README.md` / `docs/**/README.md`) 탐색. **README는 요구사항 SoT가 아닌 탐색 힌트** — 발견 경로는 즉시 자료 폴더에 포함하지 않고 개발자 확인 후 승격. `AGENTS.md` / `CLAUDE.md` / `.cursorrules`는 `readme_discovery.agent_guidance_files[]` (top-level 배열)에 운영 지침으로 별도 기록, 제품 요구사항 X.
+- **단계 9 5단계 분기** 신설:
+  - 9a — 받기 5종 → `domain-knowledge/` 사본 + `_source/` + manifest received_artifacts (변경 없음)
+  - 9b — `docs-to-ui-menu-mindmap` 스킬 호출 → `ui-menu-mindmap.md` 작성
+  - 9c — `docs-to-function-spec` 스킬 호출 → `feature-spec.md` 작성 (기존 단계 9 통합)
+  - 9d — `input-manifest.yaml > final_artifacts:` 슬롯에 두 산출물 경로 + SHA-256 hash 기록
+  - 9d.5 — 상호 검증 게이트 (cross-check)
+- **단계 9d.5 cross-check 게이트** 신설 — `feature-spec.md` ↔ `ui-menu-mindmap.md` 양방향 정합 검증:
+  - 방향 A (기능정의서 → 마인드맵): FR → 화면/상태/권한/위험 액션 매핑 (누락 시 §8에 marker)
+  - 방향 B (마인드맵 → 기능정의서): leaf 노드 → FR 인용 / 위험 액션 비고 / deep target FR 분해 (누락 시 §6에 marker)
+  - 판정 enum 4종: `PASS | PASS_WITH_NOTES | FAIL | NOT_RUN` (NOT_RUN = 마이그레이션 직후 또는 단계 9d.5 진입 전 초기 상태)
+  - 결과 3곳 동기: `feature-spec.md` §8 + `ui-menu-mindmap.md` §6 + manifest `two_doc_cross_check:` (별도 제3 문서 금지)
+  - **자동 보정 X** — marker만 남기고 명인 검토 후 반영 (Auto-Healing Loop 차단)
+- **신규 스킬 `docs-to-ui-menu-mindmap`** — `ui-menu-mindmap.md` 작성 전용 (단일 writer 원칙 SDD §7). 깊이 최대 6단계 + 노드 enum 14종 + Mermaid syntax 안전성 + ★·★상세·⚠·marker 5종.
+- **신규 스크립트 `scripts/migrate-to-v029.mjs`** — v0.2.7/v0.2.8 → v0.2.9 마이그레이션 유틸. dry-run | write 2 mode + backup + 멱등성. write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 4종 append. 기존 구조(`downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]`) 모두 보존. **마이그레이션이 게이트 결과를 추정하지 않고 안전 기본값만 채움** (`context-insufficient` / `NOT_RUN` / `scanned: false`). 외부 의존성 X (Node stdlib만).
+- **단계 17a Sheets 옵션 A/B/C 분기** 신설 — `markdown-to-sheets` 스킬이 단일 `feature-spec.md`를 Sheets로 이행 시 옵션 선택:
+  - 옵션 A (기본, 권장): 5시트 — 01_표지·02_변경이력·03_기능정의서·04_비기능요구·05_사용자스토리. §4·§5·§6·§8은 markdown 본문 SoT.
+  - 옵션 B: 8시트 — A + 06_권한매트릭스·07_상태전이·08_용어집. §8 cross-check는 여전히 markdown SoT.
+  - 옵션 C: 1시트 — 03_기능정의서만 (최소 발행).
+  - **`ui-menu-mindmap.md`는 Sheets 이행 X** — markdown 보조 산출물 유지.
+
+### Changed
+
+- **핵심 규약 7번 표현 변경** — v0.2.8 표현 layer(자동 클릭 회피) → **"승인 범위 밖 상태 변경 액션 금지"** (운영 보호 운영 룰은 유지). execution_gate.decision 기반 실행 범위 결정 — 개발/QA/테스트 환경 + 금지 항목 없음 + 진행 승인 시 상태 변경 액션까지 실행 검증 가능. 운영 환경(prod)·운영 데이터 환경 상태 변경 액션은 decision 무관 항상 금지.
+- **scout.md 단계 패치** — 단계 1c·4a·9 5분기·9d.5 추가 + 단계 12 완료 보고 양식 갱신 (v0.2.9 최종 산출 2종 + cross-check 결과 + execution gate decision + README discovery 결과 + 메타·재현 자산).
+- **docs-to-function-spec 스킬** — 5 md → 1 md 작성으로 패치. §0~§8 9섹션 흡수 매핑 명시. §7 변경 이력 7컬럼 template SoT 정합.
+- **markdown-to-sheets 스킬** — 단일 `feature-spec.md` 입력 + 옵션 A/B/C 분기 명시.
+- **input-manifest.yaml schema_version 0.2.7 → 0.2.9** — 신규 슬롯 4종 추가:
+  - `final_artifacts` (feature-spec.md + ui-menu-mindmap.md 경로·hash)
+  - `execution_gate` (11필드)
+  - `readme_discovery` (10필드, agent_guidance_files[] top-level 배열)
+  - `two_doc_cross_check` (10필드)
+- **README.md / developer-first-run-guide.md 갱신** — v0.2.9 두 markdown 산출물 + 게이트 3종 + Sheets 옵션 A/B/C + 마이그레이션 안내 + 표현 변경.
+
+### Compatibility
+
+- `input-manifest.yaml` 의 `schema_version`은 `"0.2.9"`로 상향. v0.2.7/v0.2.8 manifest는 신규 슬롯 4종 없이도 호환 모드로 처리되며, 정식 v0.2.9 사용을 위해서는 `scripts/migrate-to-v029.mjs`를 통한 마이그레이션이 필요하다.
+- v0.2.7/v0.2.8 기존 구조(`downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]` · `received_artifacts` · `source_integrity`)는 본 사이클에서 변경 없음 — 모두 보존.
+- v0.2.8 `developer_deep_scope.questions_round[0].answers.risky_actions[]`는 단계 1c `execution_gate.forbidden_actions[]`의 1차 입력으로 받아 확정 (하위 호환).
+- Gemini CLI / Codex / Playwright MCP / Google Sheets MCP는 본 플러그인의 필수 의존성이 아니다. 미설치 환경에서도 Scouter 본체는 정상 동작한다.
+
+### Why
+
+v0.2.8까지 검수자가 읽는 산출물은 `feature-spec/` 폴더의 markdown 5개 + `domain-knowledge/` 5종 + research-seed·ui-crawl-manifest 등 7~10개 파일로 분산되어 한 행의 근거를 보려면 5~6개 파일을 동시에 열어야 했다. v0.2.9는 검수자 부담을 줄이기 위해 `feature-spec.md` + `ui-menu-mindmap.md` 단일 markdown 2종으로 압축한다. cross-check 게이트(단계 9d.5)로 두 문서 간 양방향 정합을 검증해 압축 시 정보 손실을 방지하며, execution gate(단계 1c)로 액션별 재확인 부담을 폐기하고 시작 1회 게이트로 환경·금지 액션·진행 승인을 결정한다. README discovery(단계 4a)로 clone-and-run 시나리오에서 자료 탐색 힌트를 자동 추출하되 요구사항 SoT로 단정하지 않는다. 마이그레이션 스크립트(`migrate-to-v029.mjs`)로 v0.2.7/v0.2.8 산출물 호환 이행 경로를 제공한다.
+
 ## [0.2.8] — 2026-05-20
 
 ### Added — deep screen coverage 게이트

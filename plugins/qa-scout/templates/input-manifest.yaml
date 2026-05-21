@@ -1,14 +1,17 @@
 # qa-handoff/{프로젝트명}/input-manifest.yaml 템플릿
 # 자료 큐레이션 결과 (curate-input 스킬 단계 5 산출) + 인계·검수 환경 정보 (단계 11b)
-# 본 양식은 spec(`../../docs/qa-scout/spec.md`) §4-5 기반
+# 본 양식은 spec ../../docs/qa-scout/spec.md §4-5 기반
 # v0.2.5: 단계 11b (engagement context — gmail·테스트 URL·테스트 계정) 신규 슬롯 추가
 # v0.2.7+: schema_version 유지. 옵션 블록 downstream_enrichment(§ 본 파일 하단)는
-#   spec v0.2.8 footer (deep screen coverage 게이트)에 따라 추가 가능.
+#   ../../docs/qa-scout/spec.md SDD §5-4에 따라 추가 가능.
 #   기존 v0.2.6/v0.2.7 manifest는 본 블록 없이도 그대로 유효 (하위 호환).
+# v0.2.9: 최종 읽기 산출물 2종(feature-spec.md + ui-menu-mindmap.md) 압축 + 메타/재현/후공정 자산 분리 (SDD ../../docs/qa-scout/spec.md).
+#   schema_version 0.2.7 → 0.2.9 상향 + 신규 슬롯 4종(final_artifacts·execution_gate·readme_discovery·two_doc_cross_check) 본 파일 하단 추가.
+#   schema_version 0.2.7 manifest는 4 신규 슬롯 부재 상태로도 유효 (하위 호환). 0.2.9 schema는 4 슬롯 의무 — 마이그레이션 4단계(SDD §5-7)에서 빈 슬롯으로 추가, dogfood 시점에 채움.
 
-schema_version: "0.2.7"
-project: <project_name>           # 예: ebr
-scan_root: <자료 폴더 경로>        # 예: D:/work/ebr-dev/docs (다중 시 배열)
+schema_version: "0.2.9"
+project: <project_name>           # 예: <project_name>
+scan_root: <자료 폴더 경로>        # 예: D:/work/<project>-dev/docs (다중 시 배열)
 scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
 
 # 발견된 모든 파일
@@ -67,23 +70,23 @@ multi_input_bindings:
 # -------------------------------------------------------
 # 단계 17a Sheets editor 권한 부여 + 단계 18c 개발팀 검수 + 라이브 검증을 위해 필수 수집.
 # 운영 계정 절대 금지 — 테스트 전용 계정만 입력.
-# secrets 인계 시 보안 가이드 준수: zip 암호화 + 별도 채널 암호 전송, 1password,
-# git 인계 시 본 파일을 .gitignore에 추가 또는 engagement-secrets.yaml로 분리.
+# 민감 접근 정보 (sensitive access data) 인계 시 보안 가이드 준수: zip 암호화 + 별도 채널 암호 전송, 1password,
+# git 인계 시 본 파일을 .gitignore에 추가 또는 engagement-sensitive-access.yaml로 분리.
 contact:
   developer_email: <gmail 주소>     # 예: <developer-gmail>@gmail.com — 단계 17a editor 권한 부여 대상
   note: <부가 메모>                # 예: 단계 18c 개발팀 검수 요청 대상
 
 test_environment:
   server_port: <포트>              # 예: 8087
-  local_url: <라이브 URL>          # 예: http://<host>:<port> (테스트/스테이징 환경만 — 운영 환경 금지)
+  local_url: <라이브 URL>          # 예: http://<host>:<port>
   type: <local | staging | dev>    # 환경 종류
   test_accounts:
-    - id: <테스트 계정 ID>          # 예: admin
+    - id: <테스트 계정 ID>          # 예: <test-account-id>
       role: <역할>                 # 예: SYSTEM_ADMIN
       note: <비고>                 # 예: 테스트 전용 계정
   notes:
     - "운영 계정 사용 금지"
-    - "라이브 URL이 localhost인 경우 원격 공유 시 staging 환경 별도 구성 필요"
+    - "테스트 URL이 로컬 개발 환경을 가리키는 경우 원격 공유 시 staging 환경 별도 구성 필요"
 
 # -------------------------------------------------------
 # 커버리지 자가 검증 결과 (단계 12a — v0.2.6 + v0.2.7 확장)
@@ -231,7 +234,7 @@ migration:
     - <기타>
 
 # -------------------------------------------------------
-# downstream enrichment (옵션 — spec `../../docs/qa-scout/spec.md` v0.2.8 footer)
+# downstream enrichment (옵션 — SDD ../../docs/qa-scout/spec.md)
 # -------------------------------------------------------
 # Scouter 3.0 후공정(연구팀 enrichment + Sheets 업로드 + Playwright reviewer)에서
 # 깊은 화면 뎁스/핵심 기능 누락을 막기 위한 추적 슬롯. schema_version은 그대로 "0.2.7"이며
@@ -310,3 +313,104 @@ downstream_enrichment:
       - <"화면에 보이지 않는 기능을 단정하지 말 것">
       - <"코드 한 줄로 정책 단정하지 말 것">
     risky_action_policy: "관찰만 — Playwright/MCP가 자동 클릭 금지. reviewer는 NOT-TESTED-RISKY-ACTION으로 남긴다."
+
+# =======================================================
+# v0.2.9 신규 슬롯 4종 (SDD ../../docs/qa-scout/spec.md)
+# =======================================================
+# 본 4 슬롯은 v0.2.9 schema에서 의무. v0.2.7 호환 manifest는 부재해도 유효(마이그레이션 4단계 §5-7에서 빈 슬롯 추가).
+# 4 슬롯 각각의 단계 매핑:
+#   - final_artifacts: 단계 9d (final hash 기록) — SDD §4 산출물 #2/#3
+#   - execution_gate:   단계 1c (3문 묶음 1회 게이트) — SDD §5-10
+#   - readme_discovery: 단계 4a (자료 폴더 경로 수신 직후·자동 스캔 직전) — SDD §5-11
+#   - two_doc_cross_check: 단계 9d.5 (cross-check 게이트) — SDD §5-9
+# 자동 보정 금지 — 모든 슬롯은 사용자/개발자 명시 입력만 반영 (Auto-Healing Loop 차단).
+
+# -------------------------------------------------------
+# 1) final_artifacts — 최종 읽기 산출물 2종 매핑 (SDD §4 + §5-1-1/§5-1-2)
+# -------------------------------------------------------
+# scout v0.2.9는 최종 읽기 산출물을 2종으로 압축한다. 나머지(input-manifest·scout-log·_source·research-seed·ui-crawl-manifest)는
+# 메타·재현·후공정 자산이며 최종 읽기 산출물이 아니다. Sheets 이행 대상은 feature_spec만 — ui_menu_mindmap은 markdown 보조.
+final_artifacts:
+  feature_spec: "feature-spec.md"
+  ui_menu_mindmap: "ui-menu-mindmap.md"
+  readable_outputs_count: 2
+  sheets_target: "feature_spec only"        # ui-menu-mindmap.md는 Sheets 이행 X — markdown 보조 산출물
+  deprecated_readable_outputs:               # v0.2.8까지의 분산 산출물 참조 (마이그레이션 4단계 §5-7 시 본 슬롯과 매핑)
+    - "feature-spec/01_표지.md"
+    - "feature-spec/02_변경이력.md"
+    - "feature-spec/03_기능정의서.md"
+    - "feature-spec/04_비기능요구.md"
+    - "feature-spec/05_사용자스토리.md"
+    - "domain-knowledge/02-state-transition.{ext}"
+    - "domain-knowledge/03-screen-layout.{ext}"
+    - "domain-knowledge/04-permission-matrix.{ext}"
+    - "domain-knowledge/05-glossary.{ext}"
+  hash:                                      # 단계 9d에서 SHA-256 기록 (final 산출물 무결성)
+    feature_spec_sha256: null
+    ui_menu_mindmap_sha256: null
+    hashed_at: null                          # ISO 8601 — 9d 진입 시점
+
+# -------------------------------------------------------
+# 2) execution_gate — 초기 execution gate (단계 1c, SDD §5-10)
+# -------------------------------------------------------
+# 액션별 매번 묻기 폐기. 환경·금지 액션·진행 승인 3문 1회로 결정.
+# decision 4종 × reviewer_status 4종 1:1 매핑 강제 (SDD §5-10-2):
+#   full-execute       → EXECUTED-TEST-ENV
+#   partial-execute    → PARTIAL-OBSERVED
+#   observe-only       → NOT-TESTED-PROD-RISK
+#   context-insufficient → CONTEXT-INSUFFICIENT
+execution_gate:
+  asked_at: null                                                                       # 단계 1c 진입 시점 ISO 8601
+  environment_class: "<local | dev | qa | staging | prod | unknown>"                   # 1번 답변
+  has_prod_or_real_data: "<true | false | unknown>"                                    # 1번 답변 보조 — 운영성 데이터 혼재 여부
+  forbidden_actions: []                                                                # 2번 답변 — 자유 텍스트 list (예: 저장·삭제·승인·제출·전자서명·신규 버전 생성)
+  allowed_state_change_scope: []                                                       # forbidden_actions 외 허용된 상태 변경 액션 범위
+  proceed_approved: null                                                               # 3번 답변 bool
+  decision: "<full-execute | partial-execute | observe-only | context-insufficient>"   # 4종 enum
+  reviewer_status: "<EXECUTED-TEST-ENV | PARTIAL-OBSERVED | NOT-TESTED-PROD-RISK | CONTEXT-INSUFFICIENT>"
+  confirmed_by: null                                                                   # 결정 확인 주체 (개발자 이름 또는 메타)
+  confirmed_at: null                                                                   # 결정 확정 시점 ISO 8601
+  notes: ""                                                                            # 자유 텍스트 — has_prod_or_real_data 사유, forbidden_actions 출처 등
+
+# -------------------------------------------------------
+# 3) readme_discovery — README discovery gate (단계 4a, SDD §5-11)
+# -------------------------------------------------------
+# 자료 폴더 경로 수신 직후·단계 5 자동 스캔 직전 1회 실시. README는 요구사항 SoT가 아니라 탐색 힌트.
+# 발견 경로는 즉시 자료 폴더 포함 X — 개발자 확인 후 found_files[]/received_artifacts/downstream_enrichment 승격.
+# AGENTS.md / CLAUDE.md / .cursorrules는 운영 지침으로 별도 기록, 제품 요구사항 X.
+readme_discovery:
+  scanned: null                                                                        # true/false (false면 README 부재 — 게이트 skip)
+  scanned_at: null                                                                     # 단계 4a 진입 시점 ISO 8601
+  scan_roots: []                                                                       # repo root + 자료 폴더 경로
+  readme_files: []                                                                     # 발견 README list — {path, type<readme|docs-readme|nested-readme>, mtime, git_commit}
+  referenced_paths: []                                                                 # README가 인용한 경로 list — {path, kind<prd|uc|design|spec|api|docs|other>, developer_decision<include|exclude|unknown>, promoted_to, note}
+  developer_confirmed_paths: []                                                        # 개발자가 include로 확정한 경로 (found_files[] 승격 후보)
+  rejected_paths: []                                                                   # 개발자가 exclude했거나 stale로 분류된 경로 — {path, reason}
+  agent_guidance_files: []                                                             # AGENTS.md / CLAUDE.md / .cursorrules — {path, kind, note} (운영 지침, 제품 요구사항 X)
+  extracted_project_hints:                                                             # 추출 메타 — feature_modules, environment_hints, api_docs_links
+    feature_modules: []
+    environment_hints:
+      local_url: null
+      test_accounts_hint: null
+      run_commands: []
+    api_docs_links: []
+  notes: ""
+
+# -------------------------------------------------------
+# 4) two_doc_cross_check — 기능정의서 ↔ ui-menu-mindmap 상호 검증 결과 요약 (단계 9d.5, SDD §5-9)
+# -------------------------------------------------------
+# 자세한 행 단위 결과는 feature-spec.md §8(방향 A) + ui-menu-mindmap.md §6(방향 B)에 양쪽 분리 기록 — 별도 제3 문서 금지.
+# 본 슬롯은 메타 요약만. result 4종 enum 판정 룰은 SDD §5-9-4 참조.
+two_doc_cross_check:
+  executed_at: null                                                                    # 단계 9d.5 진입 시점 ISO 8601
+  result: "<PASS | PASS_WITH_NOTES | FAIL | NOT_RUN>"                                  # NOT_RUN = 마이그레이션 직후 빈 슬롯 또는 미실행
+  fr_mapping_rate: 0.00                                                                # 방향 A 검증 1 — FR 총 수 대비 화면 매핑 성공률 (0.00~1.00)
+  leaf_mapping_rate: 0.00                                                              # 방향 B 검증 1 — leaf 노드 총 수 대비 FR 인용 성공률 (0.00~1.00)
+  risky_action_dual_marked: false                                                      # forbidden_actions가 양쪽 문서 모두에 표시됐는지 (full-execute decision은 n/a)
+  unmapped_fr: []                                                                      # 방향 A 미매핑 FR list — 모두 marker 부착됨 (PASS_WITH_NOTES 전제)
+  unmapped_leaf: []                                                                    # 방향 B 미매핑 leaf 노드 경로 list — 모두 SPEC-MISSING/[문서 근거 부족] 부착됨
+  risky_action_one_sided: []                                                           # 한쪽 문서에만 표시된 forbidden_actions — FAIL 시에만 채움
+  notes: []                                                                            # PASS_WITH_NOTES/FAIL 사유 list
+  artifacts:
+    feature_spec_section: "feature-spec.md#§8-마인드맵-대조-결과"
+    ui_menu_mindmap_section: "ui-menu-mindmap.md#§6-기능정의서-대조-결과"

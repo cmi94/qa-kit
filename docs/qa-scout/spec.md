@@ -4,7 +4,7 @@
 - **작성일**: 2026-05-06
 - **작성자**: QA 파트너 (사용자 티키타카 검토 후 ExitPlanMode 승인)
 - **상태**: approved (2026-05-06, 4차 검수 + 17갭 정정 완료, 사용자 승인)
-- **최신 적용 버전 (footer 갱신)**: v0.2.8 (2026-05-20) — deep screen coverage 게이트(단계 1b · 단계 12b · 핵심 규약 7번 · sub-agent 4종 입력 계약 · 신규 템플릿 2종 · `docs/developer-first-run-guide.md`). 본 spec의 §5 절차는 v0.2.6 골격을 보존하며, v0.2.7~v0.2.8 보강은 CHANGELOG와 `plugins/qa-scout/agents/scout.md` 본문에 반영됨.
+- **최신 적용 버전 (footer 갱신)**: v0.2.9 (2026-05-21) — 최종 산출 문서 2종 압축(`feature-spec.md` + `ui-menu-mindmap.md`) + 단계 1c execution gate (decision 4종 × reviewer_status 4종 1:1 매핑) + 단계 4a README discovery gate + 단계 9 5단계 분기(9a/9b/9c/9d/9d.5 cross-check) + 단계 17a Sheets 옵션 A/B/C 분기 + 핵심 규약 7번 표현 변경("승인 범위 밖 상태 변경 액션 금지") + 신규 스킬 `docs-to-ui-menu-mindmap` + 신규 마이그레이션 유틸 `scripts/migrate-to-v029.mjs` + input-manifest schema_version 0.2.9 + 신규 슬롯 4종. 본 spec의 §5 절차는 v0.2.6 골격을 보존하며, v0.2.7~v0.2.9 보강은 CHANGELOG와 `plugins/qa-scout/agents/scout.md` 본문에 반영됨.
 - **연계 산출물 위치**:
   - `plugins/qa-scout/agents/scout.md` (갱신)
   - `plugins/qa-scout/skills/curate-input/SKILL.md` (신규 — 자료 큐레이션·최신성 확인)

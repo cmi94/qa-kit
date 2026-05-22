@@ -4,7 +4,7 @@
 - **작성일**: 2026-05-06
 - **작성자**: QA 파트너 (사용자 티키타카 검토 후 ExitPlanMode 승인)
 - **상태**: approved (2026-05-06, 4차 검수 + 17갭 정정 완료, 사용자 승인)
-- **최신 적용 버전 (footer 갱신)**: v0.2.9 (2026-05-21) — 최종 산출 문서 2종 압축(`feature-spec.md` + `ui-menu-mindmap.md`) + 단계 1c execution gate (decision 4종 × reviewer_status 4종 1:1 매핑) + 단계 4a README discovery gate + 단계 9 5단계 분기(9a/9b/9c/9d/9d.5 cross-check) + 단계 17a Sheets 옵션 A/B/C 분기 + 핵심 규약 7번 표현 변경("승인 범위 밖 상태 변경 액션 금지") + 신규 스킬 `docs-to-ui-menu-mindmap` + 신규 마이그레이션 유틸 `scripts/migrate-to-v029.mjs` + input-manifest schema_version 0.2.9 + 신규 슬롯 4종. 본 spec의 §5 절차는 v0.2.6 골격을 보존하며, v0.2.7~v0.2.9 보강은 CHANGELOG와 `plugins/qa-scout/agents/scout.md` 본문에 반영됨.
+- **최신 적용 버전 (footer 갱신)**: v0.2.9 (2026-05-22) — 최종 산출 문서 2종 압축(`feature-spec.md` + `ui-menu-mindmap.md`) + 단계 1c execution gate + 단계 4a README discovery gate + gate 질문 UX(권장 선택·선택지·직접 입력·CLAUDE.md/README 근거) + 단계 9e Playwright 라이브 검증 기본 실행 + 단계 9d.5 cross-check + 단계 17a Sheets 옵션 A/B/C 분기 + 핵심 규약 7번 표현 변경("승인 범위 밖 상태 변경 액션 금지") + 신규 스킬 `docs-to-ui-menu-mindmap` + 신규 마이그레이션 유틸 `scripts/migrate-to-v029.mjs` + input-manifest schema_version 0.2.9 + 신규 슬롯 5종(`final_artifacts`, `execution_gate`, `playwright_verification`, `readme_discovery`, `two_doc_cross_check`). 본 spec의 §5 절차는 v0.2.6 골격을 보존하며, v0.2.7~v0.2.9 보강은 CHANGELOG와 `plugins/qa-scout/agents/scout.md` 본문에 반영됨.
 - **연계 산출물 위치**:
   - `plugins/qa-scout/agents/scout.md` (갱신)
   - `plugins/qa-scout/skills/curate-input/SKILL.md` (신규 — 자료 큐레이션·최신성 확인)
@@ -14,6 +14,16 @@
   - `plugins/qa-scout/README.md` (갱신 — v0.2 사용법)
 
 ---
+## 0. 2026-05-22 적용 보강 — gate UX + Playwright live verification
+
+본 보강은 v0.2.9 산출물 2종 압축 구조 위에 적용된다.
+
+- 모든 gate 질문은 `질문 / 근거 / 권장 선택 / 선택지 / 직접 입력` 구조로 출력한다.
+- 질문과 선택지의 근거는 호출자가 제공한 자료 폴더 root, repo root, `docs/`, `docs/**/`의 `CLAUDE.md`, `README.md`, `README.*`, `docs/README.md`, `docs/**/README.*`에서 도출한다. 근거가 없으면 `근거: 후보 없음 - 자유 입력 필요`를 표시한다.
+- gate 완료 후와 백그라운드 대기 중에는 단계표를 출력하고 `진행 중`은 1개 단계만 표시한다.
+- 최종 산출물은 `feature-spec.md`, `ui-menu-mindmap.md` 2개로만 부른다. `input-manifest.yaml`, `scout-log.md`, `research-seed.md`는 보조 자산이다.
+- 단계 9e 라이브 검증은 잔여 미확정 마커 존재 여부가 아니라 테스트 URL·테스트 계정·execution_gate 정보가 있으면 기본 실행을 시도한다.
+- 단계 9e는 `SPEC-MISSING`, `SCREEN-MISSING`, `DOC-SCREEN-MISMATCH`를 집계하고 `input-manifest.yaml > playwright_verification:`에 `RUN | SKIP | FAIL | BLOCKED` 상태와 evidence를 기록한다.
 
 ## 1. 목적 (Why)
 

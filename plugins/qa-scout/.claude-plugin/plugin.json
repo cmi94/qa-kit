@@ -1,7 +1,7 @@
 {
   "name": "qa-scout",
-  "version": "0.2.8",
-  "description": "개발자가 보유한 5종 도메인 지식(사용자 시나리오·상태 전이도·화면 전개도·권한 매트릭스·도메인 용어집)을 인계받고 PRD를 GxP 양식 기능 정의서(Google Sheets 5시트, 17컬럼)로 정형화하는 Claude Code 플러그인. scout 에이전트(+sub-agent 2종) + curate-input·docs-to-function-spec·markdown-to-sheets 스킬 + qa-handoff/ 표준 폴더. v0.2.5 단계 11b engagement context + v0.2.6 단계 12a 커버리지 자가 검증·자료부족 마커 self-check·operations-guide 카테고리·다중 매핑·archive 정책. 환각 가드(추정 금지·[자료 부족] 마커·출처 표기·최신본 확인) + 단계 -1~20 양방향 인계.",
+  "version": "0.2.9",
+  "description": "개발자가 보유한 5종 도메인 지식을 인계받고 PRD + 자료를 단일 markdown 2종(feature-spec.md + ui-menu-mindmap.md)으로 압축 정형화하는 Claude Code 플러그인. gate 질문 UX(권장 선택·선택지·직접 입력·CLAUDE.md/README 근거), execution gate, README discovery, Playwright 라이브 검증 기본 실행, 문서-화면 gap marker(SPEC-MISSING/SCREEN-MISSING/DOC-SCREEN-MISMATCH), qa-handoff/ 표준 폴더를 제공한다.",
   "author": {
     "name": "최명인",
     "email": "chlauddls12@gmail.com"

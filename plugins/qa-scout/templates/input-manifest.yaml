@@ -6,12 +6,12 @@
 #   ../../docs/qa-scout/spec.md SDD §5-4에 따라 추가 가능.
 #   기존 v0.2.6/v0.2.7 manifest는 본 블록 없이도 그대로 유효 (하위 호환).
 # v0.2.9: 최종 읽기 산출물 2종(feature-spec.md + ui-menu-mindmap.md) 압축 + 메타/재현/후공정 자산 분리 (SDD ../../docs/qa-scout/spec.md).
-#   schema_version 0.2.7 → 0.2.9 상향 + 신규 슬롯 4종(final_artifacts·execution_gate·readme_discovery·two_doc_cross_check) 본 파일 하단 추가.
-#   schema_version 0.2.7 manifest는 4 신규 슬롯 부재 상태로도 유효 (하위 호환). 0.2.9 schema는 4 슬롯 의무 — 마이그레이션 4단계(SDD §5-7)에서 빈 슬롯으로 추가, dogfood 시점에 채움.
+#   schema_version 0.2.7 → 0.2.9 상향 + 신규 슬롯 5종(final_artifacts·execution_gate·playwright_verification·readme_discovery·two_doc_cross_check) 본 파일 하단 추가.
+#   schema_version 0.2.7 manifest는 5 신규 슬롯 부재 상태로도 유효 (하위 호환). 0.2.9 schema는 5 슬롯 의무 — 마이그레이션 4단계(SDD §5-7)에서 빈 슬롯으로 추가, dogfood 시점에 채움.
 
 schema_version: "0.2.9"
-project: <project_name>           # 예: <project_name>
-scan_root: <자료 폴더 경로>        # 예: D:/work/<project>-dev/docs (다중 시 배열)
+project: <project_name>           # 예: ebr
+scan_root: <자료 폴더 경로>        # 예: D:/work/ebr-dev/docs (다중 시 배열)
 scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
 
 # 발견된 모든 파일
@@ -315,12 +315,13 @@ downstream_enrichment:
     risky_action_policy: "관찰만 — Playwright/MCP가 자동 클릭 금지. reviewer는 NOT-TESTED-RISKY-ACTION으로 남긴다."
 
 # =======================================================
-# v0.2.9 신규 슬롯 4종 (SDD ../../docs/qa-scout/spec.md)
+# v0.2.9 신규 슬롯 5종 (SDD ../../docs/qa-scout/spec.md + 2026-05-22 UX 강화)
 # =======================================================
-# 본 4 슬롯은 v0.2.9 schema에서 의무. v0.2.7 호환 manifest는 부재해도 유효(마이그레이션 4단계 §5-7에서 빈 슬롯 추가).
-# 4 슬롯 각각의 단계 매핑:
+# 본 5 슬롯은 v0.2.9 schema에서 의무. v0.2.7 호환 manifest는 부재해도 유효(마이그레이션 4단계 §5-7에서 빈 슬롯 추가).
+# 5 슬롯 각각의 단계 매핑:
 #   - final_artifacts: 단계 9d (final hash 기록) — SDD §4 산출물 #2/#3
 #   - execution_gate:   단계 1c (3문 묶음 1회 게이트) — SDD §5-10
+#   - playwright_verification: 단계 9e (Playwright 라이브 검증) — ../../docs/qa-scout/spec.md
 #   - readme_discovery: 단계 4a (자료 폴더 경로 수신 직후·자동 스캔 직전) — SDD §5-11
 #   - two_doc_cross_check: 단계 9d.5 (cross-check 게이트) — SDD §5-9
 # 자동 보정 금지 — 모든 슬롯은 사용자/개발자 명시 입력만 반영 (Auto-Healing Loop 차단).
@@ -373,7 +374,27 @@ execution_gate:
   notes: ""                                                                            # 자유 텍스트 — has_prod_or_real_data 사유, forbidden_actions 출처 등
 
 # -------------------------------------------------------
-# 3) readme_discovery — README discovery gate (단계 4a, SDD §5-11)
+# 3) playwright_verification — Playwright 라이브 검증 (단계 9e)
+# -------------------------------------------------------
+# 단계 9e는 [자료 부족] 조건 없이 기본 실행 시도한다.
+# RUN은 브라우저 실행 + 로그인 또는 로그인 불필요 확인 + 1개 이상 화면 방문 + evidence 1건 이상일 때만 허용.
+playwright_verification:
+  status: "<RUN | SKIP | FAIL | BLOCKED>"
+  tested_url: null
+  login_account_role: null
+  screens_visited: 0
+  evidence_files: []                                                                   # RUN이면 1건 이상 필수
+  spec_missing_count: 0                                                                # 화면에는 있으나 문서에 없는 항목
+  screen_missing_count: 0                                                              # 문서에는 있으나 화면에서 확인되지 않는 항목
+  mismatch_count: 0                                                                    # 문서-화면 불일치
+  forbidden_actions_observed: []                                                       # {screen, action, selector, reason}
+  skip_reason: null                                                                    # SKIP일 때 필수
+  blocked_reason: null                                                                 # BLOCKED일 때 필수
+  failed_reason: null                                                                  # FAIL일 때 필수
+  notes: []
+
+# -------------------------------------------------------
+# 4) readme_discovery — README discovery gate (단계 4a, SDD §5-11)
 # -------------------------------------------------------
 # 자료 폴더 경로 수신 직후·단계 5 자동 스캔 직전 1회 실시. README는 요구사항 SoT가 아니라 탐색 힌트.
 # 발견 경로는 즉시 자료 폴더 포함 X — 개발자 확인 후 found_files[]/received_artifacts/downstream_enrichment 승격.
@@ -397,7 +418,7 @@ readme_discovery:
   notes: ""
 
 # -------------------------------------------------------
-# 4) two_doc_cross_check — 기능정의서 ↔ ui-menu-mindmap 상호 검증 결과 요약 (단계 9d.5, SDD §5-9)
+# 5) two_doc_cross_check — 기능정의서 ↔ ui-menu-mindmap 상호 검증 결과 요약 (단계 9d.5, SDD §5-9)
 # -------------------------------------------------------
 # 자세한 행 단위 결과는 feature-spec.md §8(방향 A) + ui-menu-mindmap.md §6(방향 B)에 양쪽 분리 기록 — 별도 제3 문서 금지.
 # 본 슬롯은 메타 요약만. result 4종 enum 판정 룰은 SDD §5-9-4 참조.

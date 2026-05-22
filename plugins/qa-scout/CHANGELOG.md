@@ -1,5 +1,15 @@
 # qa-scout Changelog
 
+## [0.2.9-patch] — 2026-05-22
+
+### Changed — gate UX + Playwright live validation
+
+- **게이트 질문 UX 표준화** — engagement context, deep-scope, execution gate, README discovery 질문을 `질문 / 근거 / 권장 선택 / 선택지 / 직접 입력` 구조로 출력. 후보와 선택지는 `CLAUDE.md`, `README*`, `docs/**/README.*` 근거를 함께 표시하고 근거가 없으면 `근거: 후보 없음 - 자유 입력 필요`로 노출.
+- **진행 상태 표준화** — 게이트 완료 후와 백그라운드 대기 중 한 줄 요약 대신 단계표를 출력하고 `진행 중`은 항상 1개 단계만 표시.
+- **단계 9e 라이브 검증 기본 실행 시도** — 잔여 미확정 마커 존재 여부가 아니라 테스트 URL·테스트 계정·execution_gate 정보가 있으면 실행 시도. 결과는 `RUN | SKIP | FAIL | BLOCKED`로 기록.
+- **문서-화면 양방향 gap marker 추가** — `SPEC-MISSING`(화면에는 있으나 문서에 없음), `SCREEN-MISSING`(문서에는 있으나 화면에서 확인 안 됨), `DOC-SCREEN-MISMATCH`(문서-화면 불일치)를 verifier·manifest·완료 보고에 기록.
+- **manifest 신규 슬롯 5종 정합화** — v0.2.9 슬롯에 `playwright_verification`을 추가해 `final_artifacts`, `execution_gate`, `playwright_verification`, `readme_discovery`, `two_doc_cross_check` 5종으로 일관화.
+
 ## [0.2.9] — 2026-05-21
 
 ### Added — 최종 산출 문서 2종 압축 + 게이트 3종 신설
@@ -27,7 +37,7 @@
   - 결과 3곳 동기: `feature-spec.md` §8 + `ui-menu-mindmap.md` §6 + manifest `two_doc_cross_check:` (별도 제3 문서 금지)
   - **자동 보정 X** — marker만 남기고 명인 검토 후 반영 (Auto-Healing Loop 차단)
 - **신규 스킬 `docs-to-ui-menu-mindmap`** — `ui-menu-mindmap.md` 작성 전용 (단일 writer 원칙 SDD §7). 깊이 최대 6단계 + 노드 enum 14종 + Mermaid syntax 안전성 + ★·★상세·⚠·marker 5종.
-- **신규 스크립트 `scripts/migrate-to-v029.mjs`** — v0.2.7/v0.2.8 → v0.2.9 마이그레이션 유틸. dry-run | write 2 mode + backup + 멱등성. write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 4종 append. 기존 구조(`downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]`) 모두 보존. **마이그레이션이 게이트 결과를 추정하지 않고 안전 기본값만 채움** (`context-insufficient` / `NOT_RUN` / `scanned: false`). 외부 의존성 X (Node stdlib만).
+- **신규 스크립트 `scripts/migrate-to-v029.mjs`** — v0.2.7/v0.2.8 → v0.2.9 마이그레이션 유틸. dry-run | write 2 mode + backup + 멱등성. write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 5종 append. 기존 구조(`downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]`) 모두 보존. **마이그레이션이 게이트 결과를 추정하지 않고 안전 기본값만 채움** (`context-insufficient` / `NOT_RUN` / `scanned: false`). 외부 의존성 X (Node stdlib만).
 - **단계 17a Sheets 옵션 A/B/C 분기** 신설 — `markdown-to-sheets` 스킬이 단일 `feature-spec.md`를 Sheets로 이행 시 옵션 선택:
   - 옵션 A (기본, 권장): 5시트 — 01_표지·02_변경이력·03_기능정의서·04_비기능요구·05_사용자스토리. §4·§5·§6·§8은 markdown 본문 SoT.
   - 옵션 B: 8시트 — A + 06_권한매트릭스·07_상태전이·08_용어집. §8 cross-check는 여전히 markdown SoT.
@@ -40,16 +50,17 @@
 - **scout.md 단계 패치** — 단계 1c·4a·9 5분기·9d.5 추가 + 단계 12 완료 보고 양식 갱신 (v0.2.9 최종 산출 2종 + cross-check 결과 + execution gate decision + README discovery 결과 + 메타·재현 자산).
 - **docs-to-function-spec 스킬** — 5 md → 1 md 작성으로 패치. §0~§8 9섹션 흡수 매핑 명시. §7 변경 이력 7컬럼 template SoT 정합.
 - **markdown-to-sheets 스킬** — 단일 `feature-spec.md` 입력 + 옵션 A/B/C 분기 명시.
-- **input-manifest.yaml schema_version 0.2.7 → 0.2.9** — 신규 슬롯 4종 추가:
+- **input-manifest.yaml schema_version 0.2.7 → 0.2.9** — 신규 슬롯 5종 추가:
   - `final_artifacts` (feature-spec.md + ui-menu-mindmap.md 경로·hash)
   - `execution_gate` (11필드)
+  - `playwright_verification` (단계 9e 실행 상태·evidence·문서-화면 gap)
   - `readme_discovery` (10필드, agent_guidance_files[] top-level 배열)
   - `two_doc_cross_check` (10필드)
 - **README.md / developer-first-run-guide.md 갱신** — v0.2.9 두 markdown 산출물 + 게이트 3종 + Sheets 옵션 A/B/C + 마이그레이션 안내 + 표현 변경.
 
 ### Compatibility
 
-- `input-manifest.yaml` 의 `schema_version`은 `"0.2.9"`로 상향. v0.2.7/v0.2.8 manifest는 신규 슬롯 4종 없이도 호환 모드로 처리되며, 정식 v0.2.9 사용을 위해서는 `scripts/migrate-to-v029.mjs`를 통한 마이그레이션이 필요하다.
+- `input-manifest.yaml` 의 `schema_version`은 `"0.2.9"`로 상향. v0.2.7/v0.2.8 manifest는 신규 슬롯 5종 없이도 호환 모드로 처리되며, 정식 v0.2.9 사용을 위해서는 `scripts/migrate-to-v029.mjs`를 통한 마이그레이션이 필요하다.
 - v0.2.7/v0.2.8 기존 구조(`downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]` · `received_artifacts` · `source_integrity`)는 본 사이클에서 변경 없음 — 모두 보존.
 - v0.2.8 `developer_deep_scope.questions_round[0].answers.risky_actions[]`는 단계 1c `execution_gate.forbidden_actions[]`의 1차 입력으로 받아 확정 (하위 호환).
 - Gemini CLI / Codex / Playwright MCP / Google Sheets MCP는 본 플러그인의 필수 의존성이 아니다. 미설치 환경에서도 Scouter 본체는 정상 동작한다.

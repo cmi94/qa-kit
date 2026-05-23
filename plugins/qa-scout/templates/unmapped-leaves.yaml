@@ -1,0 +1,57 @@
+# qa-handoff/{프로젝트명}/unmapped-leaves.yaml 템플릿
+# v0.3.0 신규 — ui-menu-mindmap.md leaf 중 §1 feature-spec.md 미매핑 후보 레지스트리
+# SDD: ../../docs/qa-scout/spec.md §4-1-6
+#
+# 단계 9c.5 UI surface 감지 게이트가 mindmap leaf와 §1 FR ID 매핑 검증 후
+# 미매핑 leaf를 본 파일에 status: candidate로 자동 등록.
+# 단계 9d.5 발행 게이트 — status: candidate 잔존 1건이라도 있으면 scout 발행 FAIL.
+# 단계 18c 검수자 또는 명인이 candidate별로 status: approved 또는 status: out-of-scope 결정.
+# §1 본문 자동 진입 금지 — Auto-Healing Loop 차단 (memory bridge-wrapping-pattern 준수).
+
+schema_version: "0.3.0"
+project: <project_name>
+generated_at: <ISO 8601>                                      # 단계 9c.5 첫 생성 시점
+
+# -------------------------------------------------------
+# candidates[] — 미매핑 mindmap leaf 후보 목록
+# -------------------------------------------------------
+# 단계 9c.5에서 자동 등록. 본문 자동 수정 금지 (Auto-Healing Loop 차단).
+# status 전환은 명인 또는 단계 18c 검수자만 가능.
+candidates: []
+
+# 예시 entry 구조:
+# candidates:
+#   - leaf_id: N-066                                          # mindmap 노드 ID
+#     leaf_path: "사용자/권한 > 알림"                          # mindmap 메뉴 경로
+#     leaf_screen_id: SCR-<PROJECT>-NNN                             # mindmap에서 부여한 screen ID
+#     detected_at: "2026-05-22T17:30:00+09:00"                # 단계 9c.5 등록 시점
+#     proposed_fr_summary: "알림 목록 조회·관리 (mindmap에서 발견, §1 미매핑)"
+#     status: candidate                                       # enum 3종: candidate | approved | out-of-scope
+#     approved_by: null                                       # status: approved 또는 out-of-scope 시 명시
+#     approved_at: null
+#     approval_evidence: null                                 # 명인/개발팀 발언 인용 또는 PR 링크
+#
+#     # status: approved 시 채움 (§1 신규 FR 승격)
+#     promoted_to_fr_id: null                                 # 예: FR-<PROJECT>-NNN
+#     promoted_at: null
+#
+#     # status: out-of-scope 시 채움 (본 SDD 범위 외)
+#     out_of_scope_reason: null                               # 예: "v0.5 별도 모듈, 본 release 범위 외"
+#     out_of_scope_evidence: null                             # 명인 명시 발언 인용
+
+# -------------------------------------------------------
+# 단계 9d.5 발행 게이트 통과 조건
+# -------------------------------------------------------
+# 모든 candidates[*].status가 approved 또는 out-of-scope 인 경우만 PASS.
+# status: candidate 잔존 1건이라도 있으면 scout 발행 FAIL (feature-spec.yaml published=false 유지).
+
+# -------------------------------------------------------
+# 단계 18c 승인 워크플로 3 경로 (SDD §4-1-7)
+# -------------------------------------------------------
+# 1. §1 신규 FR 승격 — status: candidate → status: approved + promoted_to_fr_id + promoted_at
+#    → feature-spec.md §1에 신규 행 추가 (사람 작성 또는 scout 재실행)
+#    → input-manifest.yaml > fr_sources[<신규 FR-ID>] 추가
+# 2. Out-of-Scope — status: candidate → status: out-of-scope + out_of_scope_reason + out_of_scope_evidence
+#    → §1 진입 X, 본 레지스트리에 archive 상태 잔존
+# 3. 추가 정보 필요 — status: candidate 유지
+#    → scout 발행 FAIL 지속, 후공정 단계 18c 재진입 필요

@@ -79,8 +79,35 @@ def border_pattern_for(col_idx, n_cols, patterns):
     return patterns["middle_column"]
 
 
-def requests_for_sheet(sheet_id, sheet_def, tokens):
-    headers = sheet_def["headers"]
+def resolve_sheet_headers_widths(sheet_def, sheets_option):
+    """v0.3.0 옵션 분기 resolver — sheet_def에서 sheets_option에 맞는 headers·column_widths를 추출.
+
+    Priority:
+      1. headers_by_option[sheets_option] + column_widths_by_option[sheets_option] (v0.3.0 신규)
+      2. headers + column_widths (v1.0 fallback — 옵션 미지정 또는 옵션별 분기 미정의 시)
+    """
+    headers = sheet_def.get("headers_by_option", {}).get(sheets_option) if sheets_option else None
+    if headers is None:
+        headers = sheet_def.get("headers", [])
+
+    widths = sheet_def.get("column_widths_by_option", {}).get(sheets_option) if sheets_option else None
+    if widths is None:
+        widths = sheet_def.get("column_widths")  # fallback (옵션 A의 v0.3.0 fallback or 다른 시트)
+    return headers, widths
+
+
+def is_sheet_visible(sheet_def, sheets_option):
+    """v0.3.0 visible_in[] 필터 — sheets_option이 visible_in에 포함되면 True. visible_in 미정의 시 호환을 위해 True 반환 (v1.0 동작)."""
+    if not sheets_option:
+        return True  # 옵션 미지정 = v1.0 호환 (모든 시트 처리)
+    visible = sheet_def.get("visible_in")
+    if visible is None:
+        return True  # visible_in 필드 부재 = v1.0 호환 fallback
+    return sheets_option in visible
+
+
+def requests_for_sheet(sheet_id, sheet_def, tokens, sheets_option=None):
+    headers, explicit_widths = resolve_sheet_headers_widths(sheet_def, sheets_option)
     n = len(headers)
     patterns = tokens["border_patterns"]
     reqs = []
@@ -125,11 +152,14 @@ def requests_for_sheet(sheet_id, sheet_def, tokens):
         }
     })
 
-    # 3. 컬럼 너비 — 동일 텍스트 통일 룰
-    widths = tokens["column_widths_by_name"]
+    # 3. 컬럼 너비 — v0.3.0: explicit column_widths_by_option/column_widths 우선, fallback으로 design-tokens.json column_widths_by_name 매핑
+    name_widths = tokens["column_widths_by_name"]
     default_w = tokens["dimensions"]["default_column_width_px"]
     for col_idx, text in enumerate(headers):
-        w = widths.get(text, default_w)
+        if explicit_widths and col_idx < len(explicit_widths):
+            w = explicit_widths[col_idx]
+        else:
+            w = name_widths.get(text, default_w)
         reqs.append({
             "updateDimensionProperties": {
                 "range": {
@@ -157,10 +187,12 @@ def requests_for_sheet(sheet_id, sheet_def, tokens):
     return reqs
 
 
-def build_add_requests(layout, include_optional, existing):
+def build_add_requests(layout, include_optional, existing, sheets_option=None):
     out = []
     for sd in layout["sheets"]:
         if sd.get("optional", False) and not include_optional:
+            continue
+        if not is_sheet_visible(sd, sheets_option):
             continue
         if sd["title"] in existing:
             continue
@@ -175,13 +207,15 @@ def build_add_requests(layout, include_optional, existing):
     return out
 
 
-def build_design_requests(layout, tokens, include_optional, existing, sheet_title=None):
+def build_design_requests(layout, tokens, include_optional, existing, sheet_title=None, sheets_option=None):
     out = []
     missing = []
     for sd in layout["sheets"]:
         if not sd.get("design_managed", False):
             continue
         if sd.get("optional", False) and not include_optional:
+            continue
+        if not is_sheet_visible(sd, sheets_option):
             continue
         title = sd["title"]
         if sheet_title and title != sheet_title:
@@ -190,7 +224,7 @@ def build_design_requests(layout, tokens, include_optional, existing, sheet_titl
         if sheet_id is None:
             missing.append(title)
             continue
-        out.extend(requests_for_sheet(sheet_id, sd, tokens))
+        out.extend(requests_for_sheet(sheet_id, sd, tokens, sheets_option=sheets_option))
     return out, missing
 
 
@@ -201,6 +235,15 @@ def main():
     parser.add_argument("--existing-sheets-json", default="{}", help='기존 시트 {title:sheetId} JSON')
     parser.add_argument("--include-optional", action="store_true", help="optional 시트(06_18c) 포함")
     parser.add_argument("--sheet-title", default=None, help="design stage: 단일 시트만 필터링 (payload 분할용)")
+    parser.add_argument(
+        "--sheets-option",
+        choices=["A", "B", "C", "D"],
+        default=None,
+        help=(
+            "v0.3.0 옵션 분기 — A(5시트 기본) / B(8시트, 06·07·08 포함) / C(1시트 03 단독) / "
+            "D(03 18컬럼, 인풋 출처 포함). 미지정 시 v1.0 호환 동작 (visible_in 무시, fallback headers·column_widths 사용)."
+        ),
+    )
     parser.add_argument("--compact", action="store_true", help="indent 없는 컴팩트 JSON 출력")
     args = parser.parse_args()
 
@@ -209,17 +252,20 @@ def main():
     existing = json.loads(args.existing_sheets_json)
 
     if args.stage == "add":
-        requests = build_add_requests(layout, args.include_optional, existing)
-        out = {"spreadsheet_id": args.spreadsheet_id, "stage": "add", "requests": requests}
+        requests = build_add_requests(layout, args.include_optional, existing, sheets_option=args.sheets_option)
+        out = {"spreadsheet_id": args.spreadsheet_id, "stage": "add", "requests": requests, "sheets_option": args.sheets_option}
     else:
-        requests, missing = build_design_requests(layout, tokens, args.include_optional, existing, args.sheet_title)
+        requests, missing = build_design_requests(
+            layout, tokens, args.include_optional, existing,
+            sheet_title=args.sheet_title, sheets_option=args.sheets_option,
+        )
         if missing:
             print(
                 f"WARNING: design_managed 시트 {missing}의 sheetId 미지정 — "
                 "existing-sheets-json에 추가 후 재실행 필요",
                 file=sys.stderr,
             )
-        out = {"spreadsheet_id": args.spreadsheet_id, "stage": "design", "requests": requests}
+        out = {"spreadsheet_id": args.spreadsheet_id, "stage": "design", "requests": requests, "sheets_option": args.sheets_option}
 
     if args.compact:
         print(json.dumps(out, ensure_ascii=False, separators=(",", ":")))

@@ -1,7 +1,8 @@
 {
-  "version": "1.0",
-  "spec_id": "SPEC-2026-05-13-feature-spec-standard-design",
-  "description": "GxP 기능 정의서 표준 6시트 레이아웃. apply.py가 본 JSON 따라 시트 생성·헤더 작성. design_managed:false 시트는 디자인 적용 건너뜀.",
+  "version": "3.0",
+  "spec_id": "SPEC-2026-05-22-qa-scout-v3-0-coverage-completeness-gate",
+  "description": "GxP 기능 정의서 표준 시트 레이아웃 v3.0 — 옵션 A/B/C/D 분기. apply.py는 --sheets-option 인자로 visible_in[] 필터 + headers_by_option·column_widths_by_option 분기. design_managed:false 시트는 디자인 적용 건너뜀. 기존 v1.0 호환 — headers·column_widths 필드는 fallback으로 유지 (옵션 미지정 시 사용).",
+  "compatibility_notes": "v0.2.9 plugin은 본 schema의 신규 필드(visible_in·headers_by_option·column_widths_by_option)를 무시하고 기존 headers·column_widths만 읽음 — 하위 호환 보장. v0.3.0 plugin은 신규 필드 우선 사용 + 미존재 시 fallback.",
 
   "sheets": [
     {
@@ -9,13 +10,15 @@
       "title": "01_표지",
       "type": "cover",
       "design_managed": false,
-      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X."
+      "visible_in": ["A", "B", "D"],
+      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X. 옵션 C(03_기능정의서 단독)에서는 미생성."
     },
     {
       "index": 1,
       "title": "02_변경이력",
       "type": "changelog",
       "design_managed": true,
+      "visible_in": ["A", "B", "D"],
       "headers": [
         "버전",
         "일자",
@@ -31,6 +34,8 @@
       "title": "03_기능정의서",
       "type": "feature_spec",
       "design_managed": true,
+      "visible_in": ["A", "B", "C", "D"],
+      "_comment": "옵션 A/B/C는 17 컬럼, 옵션 D는 18 컬럼 (인풋 출처 신규). headers·column_widths는 옵션 미지정 시 fallback (= 옵션 A 동일).",
       "headers": [
         "No.",
         "기능 ID",
@@ -49,13 +54,27 @@
         "예외/에러 처리",
         "TC ID",
         "비고"
-      ]
+      ],
+      "column_widths": [40, 100, 100, 200, 100, 180, 250, 200, 200, 350, 200, 250, 150, 200, 250, 80, 200],
+      "headers_by_option": {
+        "A": ["No.", "기능 ID", "화면 ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "사전 조건", "상세 정책 / 기능 설명", "입력 (Input)", "처리 로직 (Process)", "상태 전이", "출력 (Output)", "예외/에러 처리", "TC ID", "비고"],
+        "B": ["No.", "기능 ID", "화면 ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "사전 조건", "상세 정책 / 기능 설명", "입력 (Input)", "처리 로직 (Process)", "상태 전이", "출력 (Output)", "예외/에러 처리", "TC ID", "비고"],
+        "C": ["No.", "기능 ID", "화면 ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "사전 조건", "상세 정책 / 기능 설명", "입력 (Input)", "처리 로직 (Process)", "상태 전이", "출력 (Output)", "예외/에러 처리", "TC ID", "비고"],
+        "D": ["No.", "기능 ID", "화면 ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "사전 조건", "상세 정책 / 기능 설명", "입력 (Input)", "처리 로직 (Process)", "상태 전이", "출력 (Output)", "예외/에러 처리", "TC ID", "인풋 출처", "비고"]
+      },
+      "column_widths_by_option": {
+        "A": [40, 100, 100, 200, 100, 180, 250, 200, 200, 350, 200, 250, 150, 200, 250, 80, 200],
+        "B": [40, 100, 100, 200, 100, 180, 250, 200, 200, 350, 200, 250, 150, 200, 250, 80, 200],
+        "C": [40, 100, 100, 200, 100, 180, 250, 200, 200, 350, 200, 250, 150, 200, 250, 80, 200],
+        "D": [40, 100, 100, 200, 100, 180, 250, 200, 200, 350, 200, 250, 150, 200, 250, 80, 250, 200]
+      }
     },
     {
       "index": 3,
       "title": "04_비기능요구",
       "type": "nfr",
       "design_managed": true,
+      "visible_in": ["A", "B", "D"],
       "headers": [
         "No.",
         "NFR ID",
@@ -72,6 +91,7 @@
       "title": "05_사용자스토리",
       "type": "user_story",
       "design_managed": true,
+      "visible_in": ["A", "B", "D"],
       "headers": [
         "No.",
         "US ID",
@@ -89,7 +109,8 @@
       "type": "dev_query",
       "design_managed": true,
       "optional": true,
-      "_comment": "선택 시트 — 외부 검수·개발팀 질의 발생 시 추가. apply.py --include-optional 플래그로 생성.",
+      "visible_in": ["A", "B", "D"],
+      "_comment": "선택 시트 — 외부 검수·개발팀 질의 발생 시 추가. apply.py --include-optional 플래그로 생성. 옵션 C(03 단독)에서는 미생성.",
       "headers": [
         "No.",
         "카테고리",

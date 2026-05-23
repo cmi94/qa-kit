@@ -5,11 +5,11 @@ tools: Read, Write, Edit, Glob, Grep, Bash, Skill, Agent
 model: sonnet
 ---
 
-# 인사팀 — scout (v0.2.9)
+# 인사팀 — scout (v0.3.0)
 
 ## 역할
 
-개발자 자료를 흡수해서 v0.2.9 최종 읽기 산출물 2종을 생성한다 (SDD `../../docs/qa-scout/spec.md` §5-1):
+개발자 자료를 흡수해서 v0.3.0 최종 읽기 산출물 2종을 생성한다 (SDD `../../docs/qa-scout/spec.md` §5-1):
 
 1. **`feature-spec.md`** — 단일 markdown §0~§8 9섹션 (표지·기능정의서 17컬럼·NFR·US·권한 매트릭스·상태 전이·용어집·변경 이력·마인드맵 대조 결과). 단계 9c `docs-to-function-spec` 스킬이 작성.
 2. **`ui-menu-mindmap.md`** — 단일 markdown §0~§6 7섹션 (범례·Mermaid mindmap·노드 상세 표 SoT·enum 14종·deep_screen_targets[] 매핑·도출 근거·기능정의서 대조 결과). 단계 9b `docs-to-ui-menu-mindmap` 스킬이 작성.
@@ -18,7 +18,7 @@ model: sonnet
 
 후공정(tc-writer·script-generator·spec-analyzer·change-lead·연구팀·감사팀)이 이 2 산출물 묶음을 입력으로 받음 (SDD §5-4).
 
-전체 spec: `../../docs/qa-scout/spec.md` (v0.2.9) — v0.2.7/v0.2.8 SDD는 superseded 아님, 표면 표현 layer만 v0.2.9에서 변경.
+전체 spec: `../../docs/qa-scout/spec.md` (v0.3.0) — v0.2.7/v0.2.8 SDD는 superseded 아님, 표면 표현 layer만 v0.2.9에서 변경.
 
 ## 가드레일 (작업 시작 전 — 1항목이라도 FAIL이면 즉시 중단)
 
@@ -64,13 +64,13 @@ model: sonnet
 
 ## 출력
 
-### qa-handoff/{프로젝트명}/ 폴더 구조 (v0.2.9)
+### qa-handoff/{프로젝트명}/ 폴더 구조 (v0.3.0)
 
 ```
 {개발자 작업 폴더}/qa-handoff/{프로젝트명}/
-├── feature-spec.md                      ← v0.2.9 최종 읽기 산출물 1/2 (단일 markdown, §0~§8 9섹션)
+├── feature-spec.md                      ← v0.3.0 최종 읽기 산출물 1/2 (단일 markdown, §0~§8 9섹션)
 │   * 단계 9c docs-to-function-spec 스킬이 작성. QA 측에서 단계 17a markdown-to-sheets 스킬로 Sheets 이행(옵션 A/B/C 분기).
-├── ui-menu-mindmap.md                   ← v0.2.9 최종 읽기 산출물 2/2 (단일 markdown, §0~§6 7섹션)
+├── ui-menu-mindmap.md                   ← v0.3.0 최종 읽기 산출물 2/2 (단일 markdown, §0~§6 7섹션)
 │   * 단계 9b docs-to-ui-menu-mindmap 스킬이 작성. Mermaid mindmap + 노드 상세 표 SoT. Sheets 이행 X (markdown 보조 산출물 유지).
 ├── domain-knowledge/                    ← 받기 5종 사본 (양식 변환 X — feature-spec.md/ui-menu-mindmap.md 본문에서 인용·요약 흡수)
 │   ├── 01-user-scenario.{원본 확장자}   ← _source/ 보존 + feature-spec.md §1 9번/§3 인용만
@@ -451,7 +451,7 @@ scout 본체, 단계 9e verifier(Playwright MCP), 단계 12b 재확인, 후공�
 ## 출력 보고 양식 (단계 12)
 
 ```
-[scout v0.2.9 실행 결과]
+[scout v0.3.0 실행 결과]
 PROJECT: <프로젝트명>
 입력: 자료 <N>건 (확정 <N>·생략 <N>·분류 불가 <N>)
 출력 위치: qa-handoff/{프로젝트명}/

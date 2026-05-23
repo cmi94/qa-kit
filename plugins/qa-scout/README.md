@@ -17,33 +17,37 @@
 개발팀 산출물 zip → QA 인사팀 → 6종 markdown 정형화 (30~60분, QA 부담)
 ```
 
-v0.2.9 구조:
+v0.3.0 구조:
 ```
 개발자 (Claude Code + 본 플러그인)
    ↓ scout 호출
    ├── 단계 1c execution gate (환경·금지 액션·진행 승인 3문 1회)
    ├── 단계 4a README discovery (repo root/docs README 탐색 힌트)
-   ├── 단계 5~8c 자료 큐레이션·빠진 카테고리 보강
-   ├── 단계 9c → feature-spec.md (§0~§8 9섹션 단일 markdown — "무엇을 해야 하는가")
+   ├── 단계 5~8c 자료 큐레이션 — **6 tier 합집합 변환** (F-catalog + FS-derived + PRD-derived + domain-derived + user-manual-derived + mindmap-leaf-derived)
+   ├── 단계 9c → feature-spec.md (§0~§8 9섹션 단일 markdown — "무엇을 해야 하는가") — **§1 9번 컬럼 8 카테고리 정형 강제**
+   ├── 단계 9c.5 UI surface 감지 (unmapped-leaves.yaml candidate 분리)
+   ├── 단계 9c.6 자가 검증 9항 (verify-8-categories.py)
    ├── 단계 9b → ui-menu-mindmap.md (§0~§6 7섹션 단일 markdown — "어디에 있고 어떻게 연결되는가")
-   └── 단계 9d.5 cross-check (feature-spec.md §8 ↔ ui-menu-mindmap.md §6 양방향 검증)
+   └── 단계 9d.5 cross-check 3 방향 (방향 A·B + **방향 C unmapped-leaves status candidate 0건**)
    ↓ qa-handoff/<project>/ 폴더에 저장 (markdown 2종 + 메타·재현 자산)
    ↓ zip / git / 클라우드로 QA에게 인계
    ↓
 QA 측 (별도 후공정)
-   ├── 단계 17a markdown-to-sheets (옵션 A/B/C 분기 — feature-spec.md → Sheets)
+   ├── 단계 17a markdown-to-sheets (옵션 A/B/C/D 분기 — feature-spec.md → Sheets, **D=18컬럼 인풋 출처 매핑**)
+   ├── 단계 17b D-3 readback diff 차단 게이트 (verify-readback.py)
    └── tc-writer · script-generator · spec-analyzer 등 후공정
 ```
 
-**v0.2.9 핵심 표현 변경**: v0.2.8 표현 layer → **"승인 범위 밖 상태 변경 액션 금지"**. execution_gate.decision(`full-execute` / `partial-execute` / `observe-only` / `context-insufficient`) 기반 실행 범위 결정. 운영 환경·운영 데이터 환경 상태 변경 액션은 항상 금지 (운영 보호 유지).
+**v0.3.0 핵심**: F-카탈로그 단일 SoT 폐기 → 6 인풋 합집합 변환. §1 9번 컬럼 8 카테고리 (핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조) 정형 강제. UI surface 감지로 §1 본문 자동 진입 금지 (Auto-Healing Loop 차단). D-3 readback diff 차단 게이트로 Sheets 발행 후 자모 단위 정합 보장.
 
-## v0.2 → v0.2.9 누적 변경 (v0.1 대비)
+## v0.2 → v0.3.0 누적 변경 (v0.1 대비)
 
 - **v0.2.0** — 6종 markdown → Google Sheets 5시트 + 받기 5종, 17컬럼 평면 양식, qa-handoff/{project}/ 표준 폴더, 단계 -1~20 양방향 인계, ID 체계, 신규 스킬 `curate-input`·`docs-to-function-spec`·`markdown-to-sheets`, 모델 라우팅 (Sonnet/Opus/Haiku 분담)
 - **v0.2.6** — 단계 12a 커버리지 자가 검증, 자료부족 마커 self-check, operations-guide 카테고리, 다중 매핑, archive 정책
 - **v0.2.7** — 개발자 환경 하네스 엔지니어링, engagement 단계 1 게이트, 분류 카테고리 8개, sub-agent 4종(curator·supplementer·analyzer·verifier), 2단계 hash 무결성, 마이그레이션 4단계, 옵션 C 단순화
 - **v0.2.8** — deep screen coverage 게이트, 단계 1b deep-scope 5문 + 단계 12b post-crawl 재확인, `downstream_enrichment` optional 블록, research-seed·ui-crawl-manifest 신규
-- **v0.2.9** (현재) — **최종 읽기 산출물 2종 압축** (`feature-spec.md` + `ui-menu-mindmap.md`), **단계 1c execution gate** (decision 4종 × reviewer_status 4종 1:1 매핑), **단계 4a README discovery gate**, **단계 9 5분기** (9a/9b/9c/9d/9d.5 cross-check), **단계 17a Sheets 옵션 A/B/C 분기**, **신규 스킬 `docs-to-ui-menu-mindmap`**, **`migrate-to-v029.mjs` 마이그레이션 유틸**, 핵심 규약 7번 표현 변경
+- **v0.2.9** — 최종 읽기 산출물 2종 압축 (`feature-spec.md` + `ui-menu-mindmap.md`), 단계 1c execution gate, 단계 4a README discovery gate, 단계 9 5분기, 단계 17a Sheets 옵션 A/B/C 분기, 신규 스킬 `docs-to-ui-menu-mindmap`, 핵심 규약 7번 표현 변경
+- **v0.3.0** (현재) — **Coverage Completeness Gate 통합** (6 인풋 합집합 변환 + §1 9번 컬럼 8 카테고리 정형 강제 + 단계 9c.5 UI surface 감지 + 단계 9c.6 자가 검증 9항 + 단계 9d.5 방향 C 게이트 + 단계 17a 옵션 D 18컬럼 신설 + 단계 17b D-3 readback diff 차단 게이트), 신규 스크립트 3종 (`verify-8-categories.py`·`apply-cells.py`·`verify-readback.py`), 신규 템플릿 `unmapped-leaves.yaml`, **`migrate-to-v030.py` 마이그레이션 유틸**
 
 ## 효과
 
@@ -68,17 +72,17 @@ QA 측 (별도 후공정)
 ### 옵션 B — 수동 install
 
 ```bash
-# 1. 에이전트 배치 (v0.2.9 — 5종 agent)
+# 1. 에이전트 배치 (v0.3.0 — 5종 agent)
 cp plugins/qa-scout/agents/scout.md ~/.claude/agents/             # 메인 (Sonnet)
 cp plugins/qa-scout/agents/scout-curator.md ~/.claude/agents/     # 단계 5 (Haiku)
 cp plugins/qa-scout/agents/scout-supplementer.md ~/.claude/agents/ # 단계 8b (Sonnet)
 cp plugins/qa-scout/agents/scout-analyzer.md ~/.claude/agents/    # 단계 9c (Opus)
 cp plugins/qa-scout/agents/scout-verifier.md ~/.claude/agents/    # 단계 9e (Sonnet, 조건부 Playwright MCP)
 
-# 2. 스킬 배치 (v0.2.9 — 4종 skill)
+# 2. 스킬 배치 (v0.3.0 — 4종 skill)
 cp -r plugins/qa-scout/skills/curate-input ~/.claude/skills/                # 단계 5
 cp -r plugins/qa-scout/skills/docs-to-function-spec ~/.claude/skills/       # 단계 9c → feature-spec.md
-cp -r plugins/qa-scout/skills/docs-to-ui-menu-mindmap ~/.claude/skills/     # 단계 9b → ui-menu-mindmap.md (v0.2.9 신규)
+cp -r plugins/qa-scout/skills/docs-to-ui-menu-mindmap ~/.claude/skills/     # 단계 9b → ui-menu-mindmap.md (v0.3.0 신규)
 cp -r plugins/qa-scout/skills/markdown-to-sheets ~/.claude/skills/          # 단계 17a QA 측 Sheets 이행
 
 # 3. 양식 템플릿 (선택 — scout이 자동 카피)
@@ -112,23 +116,23 @@ QA가 개발자에게 1회 발송:
 
 ```bash
 # 1. dry-run preview (파일 미수정)
-node plugins/qa-scout/scripts/migrate-to-v029.mjs qa-handoff/<project>/input-manifest.yaml dry-run
+python plugins/qa-scout/scripts/migrate-to-v030.py qa-handoff/<project>/input-manifest.yaml dry-run
 
 # 2. 사용자 확인 — 변경될 schema_version + 추가될 슬롯 검토 후 Y/N
 
 # 3. write 적용 (backup 생성 후 원본 갱신)
-node plugins/qa-scout/scripts/migrate-to-v029.mjs qa-handoff/<project>/input-manifest.yaml write
+python plugins/qa-scout/scripts/migrate-to-v030.py qa-handoff/<project>/input-manifest.yaml write
 ```
 
 `write` 모드는 다음을 수행:
 - backup 생성: `<manifest>.v<현재버전>-backup-<YYYYMMDDTHHMMSSZ>`
 - schema_version 갱신 (`0.2.7` 또는 `0.2.8` → `0.2.9`)
-- 누락된 v0.2.9 신규 슬롯 4종을 EOF에 append (이미 존재 시 보존):
+- 누락된 v0.3.0 신규 슬롯 4종을 EOF에 append (이미 존재 시 보존):
   - `final_artifacts` (feature-spec.md + ui-menu-mindmap.md 경로·hash)
   - `execution_gate` (decision 4종, 마이그레이션 시 안전 기본값 `context-insufficient`)
   - `readme_discovery` (마이그레이션 시 `scanned: false`)
   - `two_doc_cross_check` (마이그레이션 시 `result: NOT_RUN`)
-- 이미 v0.2.9 manifest면 no-op (멱등성)
+- 이미 v0.3.0 manifest면 no-op (멱등성)
 - 기존 `downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]` 구조는 모두 보존
 
 **마이그레이션은 게이트 결과를 추정하지 않는다.** 안전 기본값만 채운 뒤 단계 1c/4a/9d.5 재실행으로 실제 결과를 채워야 한다 (Auto-Healing Loop 차단 패턴).
@@ -154,12 +158,12 @@ scout이 다음 순서로 사용자 입력을 받음:
 
 1. **단계 1**: engagement context 5항목 (개발자 gmail·테스트 URL·테스트 계정·관리자 계정·인계 매체)
 2. **단계 1b**: deep-scope 5문 (핵심 기능·깊은 뎁스 화면·복잡 동작·must_open_targets·forbidden_actions 후보)
-3. **단계 1c (v0.2.9 신규 — execution gate)**: 환경·금지 액션·진행 승인 3문
+3. **단계 1c (v0.3.0 신규 — execution gate)**: 환경·금지 액션·진행 승인 3문
 4. **단계 4**: 자료 폴더 경로 입력
-5. **단계 4a (v0.2.9 신규 — README discovery gate)**: README 후보 4 패턴 탐색 + 개발자 확인
+5. **단계 4a (v0.3.0 신규 — README discovery gate)**: README 후보 4 패턴 탐색 + 개발자 확인
 6. **단계 5**: 자료 큐레이션 진입
 
-### 단계 1c (v0.2.9 신규 — execution gate)
+### 단계 1c (v0.3.0 신규 — execution gate)
 
 단계 1b 직후·단계 2 직전 1회 실시. **액션별 재확인 폐기 — 시작 1회 게이트로 환경·금지 액션·진행 승인을 한 번에 결정**.
 
@@ -186,7 +190,7 @@ decision 4종 × reviewer_status 4종 1:1 매핑:
 - `feature-spec.md` frontmatter `execution_policy:` (5필드)
 - `ui-menu-mindmap.md` frontmatter `execution_policy:` (5필드, feature-spec.md와 1:1 일치 강제)
 
-### 단계 4a (v0.2.9 신규 — README discovery gate)
+### 단계 4a (v0.3.0 신규 — README discovery gate)
 
 단계 4 자료 폴더 경로 수신 직후·단계 5 자동 스캔 직전 1회 실시.
 
@@ -213,27 +217,27 @@ scout이 `Skill: curate-input` 호출 → 단일 보고서 출력 (8 카테고�
 
 scout-supplementer가 미매칭 문서를 정독하고 PRD 연관 후보 markdown 반환.
 
-### 단계 9 (v0.2.9 5분기 — ★ 최종 읽기 산출물 2종 생성)
+### 단계 9 (v0.3.0 5분기 — ★ 최종 읽기 산출물 2종 생성)
 
 scout이 다음 순서로 산출물 생성 — `qa-handoff/<project>/` 안:
 
 - **9a**: 받기 5종 → `domain-knowledge/` 사본 (양식 변환 X) + `_source/` 원본 + `input-manifest.yaml` 생성
-- **9b (v0.2.9 신규)**: `Skill: docs-to-ui-menu-mindmap` 호출 → `ui-menu-mindmap.md` §0~§6 7섹션 자동 도출
+- **9b (v0.3.0 신규)**: `Skill: docs-to-ui-menu-mindmap` 호출 → `ui-menu-mindmap.md` §0~§6 7섹션 자동 도출
 - **9c (기존 단계 9 통합)**: `Skill: docs-to-function-spec` 호출 → `feature-spec.md` §0~§8 9섹션 작성
 - **9d**: `input-manifest.yaml > final_artifacts:` 슬롯에 두 산출물 경로 + SHA-256 hash 기록
-- **9d.5 (v0.2.9 신규 — cross-check)**: feature-spec.md ↔ ui-menu-mindmap.md 양방향 검증
+- **9d.5 (v0.3.0 신규 — cross-check)**: feature-spec.md ↔ ui-menu-mindmap.md 양방향 검증
   - 방향 A: FR → 화면/상태/권한/위험 액션 매핑 (누락 시 §8에 marker)
   - 방향 B: leaf 노드 → FR 인용 (누락 시 §6에 marker)
   - 판정 4종: `PASS | PASS_WITH_NOTES | FAIL | NOT_RUN`
   - 결과 3곳 동기: feature-spec.md §8 + ui-menu-mindmap.md §6 + manifest `two_doc_cross_check:`
   - **자동 보정 X** — marker만 남기고 명인 검토 후 반영
 
-### 산출물 폴더 구조 (v0.2.9)
+### 산출물 폴더 구조 (v0.3.0)
 
 ```
 qa-handoff/<project>/
-├── feature-spec.md                      ← v0.2.9 최종 읽기 산출물 1/2 (§0~§8 9섹션 단일 markdown)
-├── ui-menu-mindmap.md                   ← v0.2.9 최종 읽기 산출물 2/2 (§0~§6 7섹션 단일 markdown)
+├── feature-spec.md                      ← v0.3.0 최종 읽기 산출물 1/2 (§0~§8 9섹션 단일 markdown)
+├── ui-menu-mindmap.md                   ← v0.3.0 최종 읽기 산출물 2/2 (§0~§6 7섹션 단일 markdown)
 ├── domain-knowledge/                    ← 받기 5종 (양식 변환 X, feature-spec.md/ui-menu-mindmap.md 본문에서 인용·요약 흡수)
 │   ├── 01-user-scenario.<원본 확장자>   ← _source/ 보존 + feature-spec.md §1·§3 인용
 │   ├── 02-state-transition.<원본 확장자> ← _source/ 보존 + feature-spec.md §5 요약 흡수
@@ -246,7 +250,7 @@ qa-handoff/<project>/
 └── research-seed.md                     ← 연구팀 입력 자산 (후공정용, 옵션)
 ```
 
-**기존 v0.2.8까지의 분산 산출물(`feature-spec/` 폴더 5 md + `domain-knowledge/` 5종)은 v0.2.9에서 최종 읽기 산출물이 아닌 내부 이행·호환·후공정 자산으로 위계가 분리됐다.**
+**기존 v0.2.8까지의 분산 산출물(`feature-spec/` 폴더 5 md + `domain-knowledge/` 5종)은 v0.3.0에서 최종 읽기 산출물이 아닌 내부 이행·호환·후공정 자산으로 위계가 분리됐다.**
 
 ### 단계 10~11: 모호점 추가 인터뷰
 
@@ -255,12 +259,12 @@ scout이 5개 패턴 발견 시 질의: 같은 용어 2가지 의미 / 행위자
 ### 단계 12: 완료 보고
 
 ```
-[scout v0.2.9 정제 완료]
+[scout v0.3.0 정제 완료]
 PROJECT: <project>
 입력: 자료 <N>건 (확정 <N>·생략 <N>·분류 불가 <N>)
 출력 위치: qa-handoff/<project>/
 
-v0.2.9 최종 산출 문서 (2종):
+v0.3.0 최종 산출 문서 (2종):
 - feature-spec.md (§0~§8)
 - ui-menu-mindmap.md (§0~§6)
 
@@ -299,7 +303,7 @@ git push
 
 ---
 
-## 3. 환각·운영 위반 방지 — scout v0.2.9 7가지 가드
+## 3. 환각·운영 위반 방지 — scout v0.3.0 7가지 가드
 
 | # | 룰 | 의미 |
 |---|---|---|
@@ -315,8 +319,8 @@ git push
 
 ## 4. 자주 묻는 질문
 
-### Q1. v0.2.7/v0.2.8 산출물은 어떻게 v0.2.9로 마이그레이션합니까?
-`plugins/qa-scout/scripts/migrate-to-v029.mjs` 사용 (§2 단계 -1a). dry-run → 사용자 확인 → write 순서. write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 4종 append. 이미 v0.2.9면 no-op (멱등성). 마이그레이션은 게이트 결과를 추정하지 않고 안전 기본값만 채움.
+### Q1. v0.2.9 산출물은 어떻게 v0.3.0으로 마이그레이션합니까?
+`plugins/qa-scout/scripts/migrate-to-v030.py` 사용 (§2 단계 -1a). dry-run → 사용자 확인 → write 순서. write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 4종 append. 이미 v0.3.0면 no-op (멱등성). 마이그레이션은 게이트 결과를 추정하지 않고 안전 기본값만 채움.
 
 ### Q2. 자료가 부족하면?
 scout이 빈 셀에 `[자료 부족]` 마커 부착하고 보고. 자료 보충 후 재호출하면 해당 셀만 갱신.
@@ -344,14 +348,14 @@ ID 패턴: `FR-<PROJECT>-NNN`·`SCR-<PROJECT>-NNN`·`NFR-<PROJECT>-NNN`·`US-<PR
 
 ---
 
-## 5. 양식 참조 (v0.2.9)
+## 5. 양식 참조 (v0.3.0)
 
 - 최종 산출물 #1: `templates/feature-spec.md` (단일 markdown §0~§8)
 - 최종 산출물 #2: `templates/ui-menu-mindmap.md` (단일 markdown §0~§6)
 - 메타·재현 자산: `templates/input-manifest.yaml` (schema_version 0.2.9)
 - 연구팀 입력: `templates/research-seed.md`
 - crawl 증거: `templates/ui-crawl-manifest.yaml`
-- 마이그레이션: `scripts/migrate-to-v029.mjs` (dry-run | write)
+- 마이그레이션: `scripts/migrate-to-v030.py` (dry-run | write)
 
 ---
 
@@ -370,4 +374,4 @@ ID 패턴: `FR-<PROJECT>-NNN`·`SCR-<PROJECT>-NNN`·`NFR-<PROJECT>-NNN`·`US-<PR
 | 0.2.6 | 2026-05-07 | 단계 12a 커버리지 자가 검증·자료부족 마커 self-check·operations-guide 카테고리·다중 매핑·archive 정책. |
 | 0.2.7 | 2026-05-08 | **개발자 환경 하네스 엔지니어링** — engagement 단계 1 게이트, 분류 카테고리 8개, sub-agent 신설 2종(scout-supplementer·scout-verifier 조건부 Playwright MCP), 2단계 hash 무결성, 마이그레이션 4단계, 옵션 C 단순화, 양식 변수형 일괄 교체. |
 | 0.2.8 | 2026-05-20 | **deep screen coverage 게이트** — 단계 1b deep-scope 5문 인터뷰(pre-crawl 1회) + 단계 12b post-crawl 재확인. 핵심 규약 7번 v0.2.8 표현 layer (자동 클릭 회피). `downstream_enrichment` optional 블록, 신규 템플릿 2종(research-seed·ui-crawl-manifest). |
-| 0.2.9 | 2026-05-21 | **최종 산출 문서 2종 압축 + 단계 1c/4a/9d.5 게이트 신설** — feature-spec/ 5 md → `feature-spec.md` 단일 markdown(§0~§8) + `ui-menu-mindmap.md` 신규 markdown(§0~§6, Mermaid mindmap + 노드 상세 표 SoT). 받기 5종 중 02/04/05 본문 흡수, 03-screen-layout 마인드맵 대체, 01 인용만. 단계 1c execution gate(3문 + decision 4종 × reviewer_status 4종 1:1 매핑, 액션별 재확인 폐기). 단계 4a README discovery gate(4 후보 패턴 + 개발자 확인). 단계 9 5단계 분기(9a/9b/9c/9d/9d.5 cross-check). 핵심 규약 7번 표현 변경 v0.2.8 표현 layer → "승인 범위 밖 상태 변경 액션 금지" (운영 보호 유지). 단계 17a Sheets 옵션 A/B/C 분기(마인드맵 Sheets 미이행). 신규 스킬 `docs-to-ui-menu-mindmap`, 신규 마이그레이션 유틸 `migrate-to-v029.mjs`. input-manifest schema_version 0.2.9 + 신규 슬롯 4종(final_artifacts·execution_gate·readme_discovery·two_doc_cross_check). |
+| 0.2.9 | 2026-05-21 | **최종 산출 문서 2종 압축 + 단계 1c/4a/9d.5 게이트 신설** — feature-spec/ 5 md → `feature-spec.md` 단일 markdown(§0~§8) + `ui-menu-mindmap.md` 신규 markdown(§0~§6, Mermaid mindmap + 노드 상세 표 SoT). 받기 5종 중 02/04/05 본문 흡수, 03-screen-layout 마인드맵 대체, 01 인용만. 단계 1c execution gate(3문 + decision 4종 × reviewer_status 4종 1:1 매핑, 액션별 재확인 폐기). 단계 4a README discovery gate(4 후보 패턴 + 개발자 확인). 단계 9 5단계 분기(9a/9b/9c/9d/9d.5 cross-check). 핵심 규약 7번 표현 변경 v0.2.8 표현 layer → "승인 범위 밖 상태 변경 액션 금지" (운영 보호 유지). 단계 17a Sheets 옵션 A/B/C 분기(마인드맵 Sheets 미이행). 신규 스킬 `docs-to-ui-menu-mindmap`, 신규 마이그레이션 유틸 `migrate-to-v030.py`. input-manifest schema_version 0.2.9 + 신규 슬롯 4종(final_artifacts·execution_gate·readme_discovery·two_doc_cross_check). |

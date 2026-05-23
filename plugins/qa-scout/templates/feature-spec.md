@@ -310,9 +310,10 @@ SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양
 | 항목 | 값 |
 |---|---|
 | executed_at | `<ISO 8601>` |
-| result | `<PASS | PASS_WITH_NOTES | FAIL>` |
+| result | `<PASS | PASS_WITH_NOTES | FAIL | NOT_RUN>` |
 | FR 매핑률 (방향 A) | `<0.00 ~ 1.00>` |
 | leaf 매핑률 (방향 B) | `<0.00 ~ 1.00>` |
+| unmapped-leaves candidate (방향 C) | `<0건 — 발행 게이트 PASS 필수>` |
 | forbidden_actions 양쪽 표시 | `<yes | no | n/a — full-execute decision>` |
 | input-manifest 슬롯 | `two_doc_cross_check` |
 | 마인드맵 대응 섹션 | `ui-menu-mindmap.md` §6 |

@@ -21,7 +21,7 @@ scout v0.3.0의 단계 9c (정형화 — 기능정의서) 진입 시 호출. 최
 v0.2.9 manifest는 신규 4 슬롯(sources/source_tier_review/fr_sources/unmapped_leaves_path) 부재 상태로도 유효 — `migrate-to-v030.py`로 빈 슬롯 추가 후 scout 단계 5/9c 재실행에서 채움.
 
 ## 사용 시점
-- scout v0.2.9 단계 9c에서 호출 (단계 9 분기 시작 직후, 단계 9d hash 기록 직전).
+- scout v0.3.0 단계 9c에서 호출 (단계 9 분기 시작 직후, 단계 9d hash 기록 직전).
 - 단계 9b(`docs-to-ui-menu-mindmap` 호출)와 병행 가능하나 cross-check(단계 9d.5)는 양쪽 산출물이 완성된 뒤 별도로 실행.
 - 단계 1c execution gate 결정·단계 4a README discovery 결과가 `input-manifest.yaml`에 기록된 상태여야 frontmatter 동기 가능.
 
@@ -81,7 +81,7 @@ templates/feature-spec.md의 frontmatter 슬롯을 다음 SoT에서 채운다.
 | frontmatter 필드 | SoT |
 |---|---|
 | `project` / `domain` | `input-manifest.yaml > project` / 단계 4 도메인 입력 |
-| `ai_author` | `scout v0.2.9 (<model>)` (Sonnet/Opus 모델명) |
+| `ai_author` | `scout v0.3.0 (<model>)` (Sonnet/Opus 모델명) |
 | `created` / `last_updated` | ISO 8601 (오늘) |
 | `linked_artifacts.ui_menu_mindmap` | `ui-menu-mindmap.md` 고정 |
 | `linked_artifacts.input_manifest` / `scout_log` / `research_seed` / `source_dir` | manifest 경로 그대로 |
@@ -192,7 +192,7 @@ abc 정렬. ubiquitous language 원본은 `_source/`에 보존.
 #### 5-6. §7 변경 이력 (기존 02_변경이력 흡수 — append-only, template SoT 정합)
 | 버전 | 변경일 | 변경자 | 변경 유형 | 변경 내용 | 영향받는 ID | 리뷰/승인자 |
 
-`templates/feature-spec.md` §7(7컬럼)과 1:1 정합. 본 스킬 호출 시점에 0.1 초안 entry 1행 작성 — `버전=0.1`, `변경일=<YYYY-MM-DD>`, `변경자=scout v0.2.9 (<model>)`, `변경 유형=최초 작성`, `변경 내용=<project> 도메인 정형화 1차 초안: FR <N>건·NFR <N>건·US <N>건`, `영향받는 ID=FR-<PROJECT>-001~NNN, NFR-<PROJECT>-001~NNN, US-<PROJECT>-001~NNN`, `리뷰/승인자=[현업 확인 필요]`.
+`templates/feature-spec.md` §7(7컬럼)과 1:1 정합. 본 스킬 호출 시점에 0.1 초안 entry 1행 작성 — `버전=0.1`, `변경일=<YYYY-MM-DD>`, `변경자=scout v0.3.0 (<model>)`, `변경 유형=최초 작성`, `변경 내용=<project> 도메인 정형화 1차 초안: FR <N>건·NFR <N>건·US <N>건`, `영향받는 ID=FR-<PROJECT>-001~NNN, NFR-<PROJECT>-001~NNN, US-<PROJECT>-001~NNN`, `리뷰/승인자=[현업 확인 필요]`.
 
 scout 작성·후공정 정정·검수자 의견 반영 모두 본 §7에 append. 기존 행 수정 X. 변경 유형 enum은 `templates/feature-spec.md` §7 변경 유형 섹션 SoT — `최초 작성 (Draft 0.1)` / `검수 후 수정` / `사람 검수 통과 (1.0 정식 발행)` / `고도화 (V2 신규 기능)` / `폐기 (Deprecated)` / `revert (롤백)` 6종. enum 외 사용 금지.
 
@@ -365,7 +365,7 @@ scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 sco
 - §8 cross-check 결과는 본 스킬에서 채우지 않음 — 단계 9d.5 cross-check 게이트가 채움.
 - 받기 5종 중 03-screen-layout은 본 스킬 범위 외 (마인드맵 스킬 처리).
 - Sheets 이행은 본 스킬 범위 외 — 단계 17a `markdown-to-sheets` 스킬이 처리.
-- 마이그레이션 (v0.2.7/v0.2.8 → v0.2.9)은 본 스킬 범위 외 — `scripts/migrate-to-v029.mjs`가 처리.
+- 마이그레이션 (v0.2.9 → v0.3.0)은 본 스킬 범위 외 — `scripts/migrate-to-v030.py`가 처리.
 
 ## 참조
 - spec: `../../docs/qa-scout/spec.md` §5-1-1 · §5-2 · §5-8 단계 9c · §5-9 cross-check

@@ -45,27 +45,34 @@ SUPPORTED_FROM = ["0.2.9"]
 TARGET_VERSION = "0.3.0"
 NEW_SLOTS = ["sources", "source_tier_review", "fr_sources", "unmapped_leaves_path"]
 
-NEW_SLOT_DEFAULTS = """
-# -------------------------------------------------------
-# v0.3.0 신규 — Coverage Completeness Gate (SDD §3·§4-1·§4-2-3·§4-5)
-# 4 슬롯 필수 — migrate-to-v030.py로 빈 슬롯 추가됨. scout 단계 5/9c에서 채움.
-# -------------------------------------------------------
+SLOT_BLOCKS = {
+    "sources": (
+        "\n# 단계 5 자료 큐레이션 6 tier 합집합 — 각 자료를 source_tier enum 6종으로 분류\n"
+        "sources: []\n"
+        "# 예: [{tier: F-catalog, path: docs/reference/function-spec.md, entries: [...], absorbed_into: F-catalog}, ...]\n"
+    ),
+    "source_tier_review": (
+        "\n# 단계 5 tier별 검토 흔적 — 각 tier에 대해 검토했는지/누락 없는지 기록\n"
+        "source_tier_review: []\n"
+        "# 예: [{tier: F-catalog, reviewed: true, gaps: []}, ...]\n"
+    ),
+    "fr_sources": (
+        "\n# 단계 9c FR별 인풋 출처 객체 (primary + secondary_sources)\n"
+        "fr_sources: {}\n"
+        '# 예: {FR-<PROJECT>-001: {primary: "F-catalog F-001", secondary_sources: ["FS_X §3.5.1"]}}\n'
+    ),
+    "unmapped_leaves_path": (
+        "\n# 단계 9c.5 UI surface 감지 — mindmap leaf ↔ §1 매핑 안 되는 후보 등록 경로\n"
+        "unmapped_leaves_path: unmapped-leaves.yaml\n"
+    ),
+}
 
-# 단계 5 자료 큐레이션 6 tier 합집합 — 각 자료를 source_tier enum 6종으로 분류
-sources: []
-# 예: [{tier: F-catalog, path: docs/reference/function-spec.md, entries: [...], absorbed_into: F-catalog}, ...]
-
-# 단계 5 tier별 검토 흔적 — 각 tier에 대해 검토했는지/누락 없는지 기록
-source_tier_review: []
-# 예: [{tier: F-catalog, reviewed: true, gaps: []}, ...]
-
-# 단계 9c FR별 인풋 출처 객체 (primary + secondary_sources)
-fr_sources: {}
-# 예: {FR-<PROJECT>-001: {primary: "F-catalog F-001", secondary_sources: ["FS_X §3.5.1"]}}
-
-# 단계 9c.5 UI surface 감지 — mindmap leaf ↔ §1 매핑 안 되는 후보 등록 경로
-unmapped_leaves_path: unmapped-leaves.yaml
-"""
+HEADER_BLOCK = (
+    "\n# -------------------------------------------------------\n"
+    "# v0.3.0 신규 — Coverage Completeness Gate (SDD §3·§4-1·§4-2-3·§4-5)\n"
+    "# 4 슬롯 필수 — migrate-to-v030.py로 빈 슬롯 추가됨. scout 단계 5/9c에서 채움.\n"
+    "# -------------------------------------------------------\n"
+)
 
 
 def detect_version(text: str) -> str | None:
@@ -96,7 +103,12 @@ def append_missing_slots(text: str, missing: set[str]) -> str:
         return text
     if not text.endswith("\n"):
         text += "\n"
-    return text + NEW_SLOT_DEFAULTS
+    # 누락된 슬롯만 개별 append (idempotency — partial-slot 시 전체 블록 중복 방지)
+    text += HEADER_BLOCK
+    for slot in NEW_SLOTS:
+        if slot in missing:
+            text += SLOT_BLOCKS[slot]
+    return text
 
 
 def main():

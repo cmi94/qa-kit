@@ -1,5 +1,20 @@
 # qa-scout Changelog
 
+## [0.3.0] — 2026-05-23
+
+### Added — Coverage Completeness Gate 통합
+
+- **6 인풋 합집합 변환** — F-카탈로그 단일 SoT 폐기, 6 tier 합집합 (F-catalog + FS-derived + PRD-derived + domain-derived + user-manual-derived + mindmap-leaf-derived). 단계 5 `sources[]` + `source_tier_review[]` 작성 강제 (6 tier 검토 흔적, input-manifest schema 0.3.0).
+- **§1 9번 컬럼 8 카테고리 정형 강제** — `핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조` 8단 bullet + 통일 자료부족 마커. `verify-8-categories.py` 호출로 검증 (set equality + extra 감지).
+- **단계 9c.5 UI surface 감지 신규** — mindmap leaf ↔ §1 매핑 + 미매핑 후보를 `unmapped-leaves.yaml`에 candidate 등록, §1 본문 자동 진입 금지 (Auto-Healing Loop 차단).
+- **단계 9c.6 자가 검증 9항 신규** — verify-8-categories.py + grep + yaml parse.
+- **단계 9d.5 cross-check 3 방향 확장** — 방향 C (unmapped-leaves status candidate 0건) 추가.
+- **단계 17a Sheets 옵션 D 신설** — 1시트 18컬럼 (03_기능정의서 + 인풋 출처 17번 컬럼 직접 매핑, GxP 추적성 강화). 옵션 A=5시트 기본, B=8시트(06권한·07상태·08용어집 추가), C=1시트/17col, D=1시트/18col.
+- **단계 17b D-3 Readback Diff 차단 게이트 신규** — `verify-readback.py` exit 0 (diff 0건) 전까지 `feature-spec.yaml published=false` 유지 + `share_spreadsheet` 금지 + scout-log 미작성. Auto-Healing Loop 차단.
+- **신규 스크립트 3종** — `scripts/feature-spec-coverage/verify-8-categories.py` · `scripts/markdown-to-sheets/apply-cells.py` · `scripts/markdown-to-sheets/verify-readback.py`.
+- **신규 템플릿** — `templates/unmapped-leaves.yaml` (schema 0.3.0, status enum: candidate/approved/out-of-scope).
+- input-manifest schema_version 0.3.0 + 4 신규 슬롯 (sources·source_tier_review·fr_sources·unmapped_leaves_path).
+
 ## [0.2.9] — 2026-05-21
 
 ### Added — 최종 산출 문서 2종 압축 + 게이트 3종 신설
@@ -154,7 +169,7 @@ plugin v0.2.5까지의 4개 구조적 갭 해소:
 ## [0.2.4] — 2026-05-07
 
 ### Docs
-- README 재구성 — 사용자 가이드 SoT를 public README로 통합. 이전엔 사내 별도 안내서(qa-workbench private)에 흩어져 있던 내용:
+- README 재구성 — 사용자 가이드 SoT를 public README로 통합. 이전엔 사내 별도 안내서(private)에 흩어져 있던 내용:
   - **§1 사전 준비** (3분, 4항목 표) — Claude Code 설치·자료 폴더 정리·인계 채널 합의·단계 11b 사전 합의 정보
   - **§5 보안 — credentials 인계** — 권장 인계 매체 표 (zip 암호화·1password·암호화 메시지·git 지양)
   - **§7 트러블슈팅** — 7개 증상별 1차 대응 (`/plugin` 미지원·자동완성 누락·0 skills misleading·PROJECT 헤더·자료 폴더·운영 계정 거부 등)

@@ -7,7 +7,7 @@
 # 위험 액션은 자동 클릭 금지. 본 manifest에 risky_actions_not_clicked로 명시 기록.
 
 schema_version: "0.1.0"
-project: <project>                        # 예: ebr
+project: <project>                        # 예: <project_slug>
 crawled_at: <ISO 8601>
 crawler: <playwright-mcp | chrome-mcp | python-playwright | manual>
 live_url: <URL 또는 null>

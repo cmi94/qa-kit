@@ -1,10 +1,10 @@
-# qa-scout (v0.2.9)
+# qa-scout (v0.3.0)
 
-> 개발자가 보유한 5종 도메인 지식을 인계받고 PRD + 자료를 v0.2.9에서 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)으로 압축 정형화하는 Claude Code 플러그인. 단계 1c execution gate · 단계 4a README discovery · 단계 9d.5 cross-check 게이트 포함.
+> 개발자가 보유한 5종 도메인 지식을 인계받고 PRD + 자료를 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)으로 압축 정형화하는 Claude Code 플러그인. v0.3.0 Coverage Completeness Gate — 6 인풋 합집합 변환 + 8 카테고리 정형 강제 + D-3 readback diff 차단 게이트 + Sheets 옵션 D(18컬럼 인풋 출처 매핑) 신설.
 
 **spec**: [../../docs/qa-scout/spec.md](../../docs/qa-scout/spec.md)
 
-**최신 publish 버전**: v0.2.9 (2026-05-21) — 최종 산출 문서 2종 압축 + 단계 1c/4a/9d.5 게이트 신설. [CHANGELOG](CHANGELOG.md) 참조.
+**최신 publish 버전**: v0.3.0 (2026-05-23) — Coverage Completeness Gate 통합 (6 인풋 합집합 + 8 카테고리 강제 + 옵션 D + D-3 게이트). [CHANGELOG](CHANGELOG.md) 참조.
 
 **최초 실행 가이드**: [`docs/developer-first-run-guide.md`](docs/developer-first-run-guide.md) — 개발자가 처음 받았을 때 단계별로 따라할 변수형 가이드.
 
@@ -138,7 +138,7 @@ node plugins/qa-scout/scripts/migrate-to-v029.mjs qa-handoff/<project>/input-man
 ### 단계 0~1: 개발자 환경 셋업
 
 ```bash
-cd <자기 개발 폴더>     # 예: D:/work/<project>-dev/
+cd <자기 개발 폴더>     # 예: <자기 개발 폴더 절대 경로>
 claude                  # Claude Code 세션 시작
 ```
 

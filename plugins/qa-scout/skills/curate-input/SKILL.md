@@ -104,7 +104,7 @@ found_files:
 ```
 
 ### 6) 빠진 카테고리 가이드 (보고서 안 포함)
-- **와이어프레임 부재**: 라이브 URL+계정 받음 → live-verifier 활용 (qa-workbench 측)
+- **와이어프레임 부재**: 라이브 URL+계정 받음 → live-verifier 활용 (운영자 사내 측)
 - **ERD 부재**: 개발자 자기 AI에게 요청 (프롬프트 템플릿 옵션 제공)
 - **권한 자료 부재**: PRD에 권한 섹션(예: §3.4) 있는지 확인 → 발췌 (G16 정책)
 - **PRD 부재**: 작업 진행 불가 — 단계 4 재입력 또는 중단
@@ -167,7 +167,7 @@ excluded_locations: [...]             # v0.2.6 — 명시 제외 위치 (P4)
 ## 한계
 - 본 스킬은 단계 5 (큐레이션) 전용
 - 단계 9 정형화는 `docs-to-function-spec` 스킬
-- 라이브 탐색은 `live-verifier` 에이전트 (qa-workbench 측)
+- 라이브 탐색은 `live-verifier` 에이전트 (운영자 사내 측)
 
 ## 참조
 - spec: `../../../docs/qa-scout/spec.md` §5-2

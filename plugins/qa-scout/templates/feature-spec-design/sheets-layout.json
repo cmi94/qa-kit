@@ -120,6 +120,59 @@
         "확인 요청 사항",
         "개발팀 회신"
       ]
+    },
+    {
+      "index": 6,
+      "title": "06_권한매트릭스",
+      "type": "permission_matrix",
+      "design_managed": true,
+      "visible_in": ["B"],
+      "_comment": "옵션 B 전용 — feature-spec.md §4 권한 매트릭스를 시트로 이행. headers는 동적 (role × FR × action) — 본 layout은 base headers만 정의, apply.py가 role 컬럼 동적 확장.",
+      "headers": [
+        "No.",
+        "FR ID",
+        "기능명",
+        "역할 (role)",
+        "조회 (read)",
+        "생성 (create)",
+        "수정 (update)",
+        "삭제 (delete)"
+      ]
+    },
+    {
+      "index": 7,
+      "title": "07_상태전이",
+      "type": "state_transition",
+      "design_managed": true,
+      "visible_in": ["B"],
+      "_comment": "옵션 B 전용 — feature-spec.md §5 상태 전이 요약을 시트로 이행.",
+      "headers": [
+        "No.",
+        "엔티티",
+        "현재 상태",
+        "전이 트리거",
+        "다음 상태",
+        "권한",
+        "부수 효과",
+        "관련 FR"
+      ]
+    },
+    {
+      "index": 8,
+      "title": "08_용어집",
+      "type": "glossary",
+      "design_managed": true,
+      "visible_in": ["B"],
+      "_comment": "옵션 B 전용 — feature-spec.md §6 용어집을 시트로 이행.",
+      "headers": [
+        "No.",
+        "용어 (한글)",
+        "용어 (영문)",
+        "도메인",
+        "정의",
+        "관련 FR",
+        "비고"
+      ]
     }
   ]
 }

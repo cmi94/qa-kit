@@ -33,6 +33,12 @@ Exit code:
 import argparse
 import json
 import sys
+
+# Windows cp949 회피 — stdout/stderr UTF-8 강제
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 import unicodedata
 from pathlib import Path
 

@@ -10,15 +10,15 @@
       "title": "01_표지",
       "type": "cover",
       "design_managed": false,
-      "visible_in": ["A", "B", "D"],
-      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X. 옵션 C(03_기능정의서 단독)에서는 미생성."
+      "visible_in": ["A", "B"],
+      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X. 옵션 C·D(03_기능정의서 단독)에서는 미생성."
     },
     {
       "index": 1,
       "title": "02_변경이력",
       "type": "changelog",
       "design_managed": true,
-      "visible_in": ["A", "B", "D"],
+      "visible_in": ["A", "B"],
       "headers": [
         "버전",
         "일자",
@@ -74,7 +74,7 @@
       "title": "04_비기능요구",
       "type": "nfr",
       "design_managed": true,
-      "visible_in": ["A", "B", "D"],
+      "visible_in": ["A", "B"],
       "headers": [
         "No.",
         "NFR ID",
@@ -91,7 +91,7 @@
       "title": "05_사용자스토리",
       "type": "user_story",
       "design_managed": true,
-      "visible_in": ["A", "B", "D"],
+      "visible_in": ["A", "B"],
       "headers": [
         "No.",
         "US ID",
@@ -109,8 +109,8 @@
       "type": "dev_query",
       "design_managed": true,
       "optional": true,
-      "visible_in": ["A", "B", "D"],
-      "_comment": "선택 시트 — 외부 검수·개발팀 질의 발생 시 추가. apply.py --include-optional 플래그로 생성. 옵션 C(03 단독)에서는 미생성.",
+      "visible_in": ["A", "B"],
+      "_comment": "선택 시트 — 외부 검수·개발팀 질의 발생 시 추가. apply.py --include-optional 플래그로 생성. 옵션 C·D(03 단독)에서는 미생성.",
       "headers": [
         "No.",
         "카테고리",

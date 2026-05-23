@@ -34,7 +34,7 @@ QA가 단계 13~16 인계 패키지 수령 + 무결성 점검(`scripts/validate-
 - `mode`: `new` (옵션 A 기본 — 신규 생성) | `pre-shared` (사전 공유 시트)
 - `google_sheets_id`: `pre-shared` 모드일 때 사전 시트 ID (필수)
 - `sheets_option`: **`A` (기본, 5시트) | `B` (8시트, §4·§5·§6 포함) | `C` (1시트 최소) | `D` (1시트 18컬럼, 인풋 출처 직접 매핑 — v0.3.0 신규)** — 단계 17a 입력
-- `include_optional`: 06_18c_개발팀_질의 시트 포함 여부 (선택, 기본 false — 옵션 A/B/D 시만 적용. 옵션 C는 03 단독이라 미지원)
+- `include_optional`: 06_18c_개발팀_질의 시트 포함 여부 (선택, 기본 false — 옵션 A/B 시만 적용. 옵션 C·D는 03 단독이라 미지원)
 
 ## 출력
 - Google Sheets 시트 채움 + 표준 디자인 적용 (옵션별 시트 수 변동)
@@ -111,7 +111,8 @@ python plugins/qa-scout/scripts/markdown-to-sheets/verify-readback.py \
 |---|---|---|---|
 | **A (기본, 권장)** | 5 | 01_표지·02_변경이력·03_기능정의서·04_비기능요구·05_사용자스토리 | 표준 발행. §4 권한·§5 상태·§6 용어는 markdown 본문에만 (Sheets 정형 데이터 한정) |
 | **B** | 8 | A + 06_권한매트릭스·07_상태전이·08_용어집 | §4·§5·§6도 Sheets 정형화 필요한 경우 (감사·검수자 요청 시) |
-| **C** | 1 | 03_기능정의서 단일 | 최소 발행 — 검수 비용 최소화, 다른 섹션은 markdown 본문으로만 |
+| **C** | 1 | 03_기능정의서 단일 (17 컬럼) | 최소 발행 — 검수 비용 최소화, 다른 섹션은 markdown 본문으로만 |
+| **D (v0.3.0 신규)** | 1 | 03_기능정의서 단일 (18 컬럼, 인풋 출처 직접 매핑) | GxP 추적성 강화 발행 — spec col 16(인풋 출처)을 sheet 17번 컬럼으로 직접 이행 |
 
 기본값은 옵션 A. 단계 17a 인터뷰에서 사용자 명시 입력으로 옵션 선택.
 
@@ -189,8 +190,8 @@ python {PLUGIN_ROOT}/scripts/feature-spec-design/apply.py \
 옵션별 시트 생성 수:
 - 옵션 A: 5시트 (`--include-optional` 시 6시트)
 - 옵션 B: 8시트 (`--include-optional` 시 9시트)
-- 옵션 C: 1시트 (`include-optional` 무시)
-- **옵션 D**: 5시트 (옵션 A와 동일 시트 5종 + 03_기능정의서가 18컬럼) (`--include-optional` 시 6시트)
+- 옵션 C: 1시트 17 컬럼 (`include-optional` 무시)
+- **옵션 D**: 1시트 18 컬럼 (03_기능정의서 단독, `include-optional` 무시)
 
 stdout JSON의 `requests` 배열을 `mcp__google-sheets__batch_update`에 전달. 생성 완료 후 `list_sheets` 재호출하여 sheetId 매핑 갱신.
 
@@ -239,25 +240,25 @@ python {PLUGIN_ROOT}/scripts/markdown-to-sheets/apply-cells.py \
 batch_update_cells(
   spreadsheet_id=sheets_id,
   sheet="03_기능정의서",
-  ranges={"A2:Q22": [[FR-<PROJECT>-001~021 행]]}  # 21행 × 17컬럼
+  ranges={"A2:Q<N+1>": [[FR-<PROJECT>-001~<N> 행]]}  # <N>행 × 17컬럼
 )
 
 # 옵션 B 추가 — 06_권한매트릭스 (§4)
 batch_update_cells(
   spreadsheet_id=sheets_id,
   sheet="06_권한매트릭스",
-  ranges={"A2:H10": [[role × FR × action 매트릭스]]}
+  ranges={"A2:H<M+1>": [[role × FR × action 매트릭스]]}
 )
 
 # 옵션 D 예시 (03_기능정의서 — §1 18컬럼, spec col 16 인풋 출처 포함, v0.3.0)
 batch_update_cells(
   spreadsheet_id=sheets_id,
   sheet="03_기능정의서",
-  ranges={"A2:R63": [[FR-<PROJECT>-001~062 행 × 18컬럼]]}  # 62행 × 18컬럼
+  ranges={"A2:R<N+1>": [[FR-<PROJECT>-001~<N> 행 × 18컬럼]]}  # <N>행 × 18컬럼
 )
 ```
 
-01_표지는 자유 디자인 — markdown 표 그대로 매핑(키-값 2컬럼). 옵션 C는 03_기능정의서만 채움. 옵션 D는 03_기능정의서 18컬럼 + 옵션 A 동일 5시트.
+01_표지는 자유 디자인 — markdown 표 그대로 매핑(키-값 2컬럼). 옵션 C·D는 03_기능정의서만 채움 (C=17컬럼, D=18컬럼).
 
 ### 6-1. v0.3.0 신규 — D-3 Readback Diff 차단 게이트 (§4-3-1)
 
@@ -365,10 +366,11 @@ scout-log.md append (timestamp + 이행 시트 수 + 행 수 + 디자인 PASS �
 - [ ] §0·§2·§3·§4·§5·§6·§7·§8 시트 미생성
 - [ ] feature-spec.yaml `excluded_from_sheets`에 §0·§2·§3·§4·§5·§6·§7·§8·마인드맵 모두 명시
 
-옵션 D (1시트 18컬럼 + 옵션 A 5시트, v0.3.0 신규):
-- [ ] 옵션 A 5시트 (01_표지·02_변경이력·03_기능정의서·04_비기능요구·05_사용자스토리) + 03_기능정의서가 18컬럼
+옵션 D (1시트 18컬럼, v0.3.0 신규):
+- [ ] 03_기능정의서 단일 시트만 생성 (18컬럼)
 - [ ] 03_기능정의서 17번 컬럼 (인풋 출처) 값이 spec col 16에서 직접 매핑 (markdown SoT 동시 유지)
-- [ ] §4·§5·§6·§8 시트 미생성 (markdown SoT)
+- [ ] §0·§2·§3·§4·§5·§6·§7·§8 시트 미생성 (markdown SoT)
+- [ ] feature-spec.yaml `excluded_from_sheets`에 §0·§2·§3·§4·§5·§6·§7·§8·마인드맵 모두 명시
 - [ ] feature-spec.yaml `sheets_mapping.input_source_column_published: true` 마킹
 
 공통 (v0.3.0):

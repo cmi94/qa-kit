@@ -240,8 +240,8 @@ def main():
         choices=["A", "B", "C", "D"],
         default=None,
         help=(
-            "v0.3.0 옵션 분기 — A(5시트 기본) / B(8시트, 06·07·08 포함) / C(1시트 03 단독) / "
-            "D(03 18컬럼, 인풋 출처 포함). 미지정 시 v1.0 호환 동작 (visible_in 무시, fallback headers·column_widths 사용)."
+            "v0.3.0 옵션 분기 — A(5시트 기본) / B(8시트, 06·07·08 포함) / C(1시트 03 17col 단독) / "
+            "D(1시트 03 18col, 인풋 출처 포함). 미지정 시 v1.0 호환 동작 (visible_in 무시, fallback headers·column_widths 사용)."
         ),
     )
     parser.add_argument("--compact", action="store_true", help="indent 없는 컴팩트 JSON 출력")

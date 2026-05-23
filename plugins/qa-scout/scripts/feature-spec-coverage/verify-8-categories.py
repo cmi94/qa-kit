@@ -79,16 +79,28 @@ def verify(spec_path: Path) -> dict:
 
         policy_cell = unicodedata.normalize("NFC", policy_match.group(1))
 
+        # bullet pattern: `• 카테고리명:` (NFC 정규화 후 매칭). set equality로 검증.
+        BULLET_RE = re.compile(r"•\s*([^:：\n]+?)\s*[:：]")
+        found_categories = {m.group(1).strip() for m in BULLET_RE.finditer(policy_cell)}
+        required = set(REQUIRED_CATEGORIES)
+        missing = required - found_categories
+        extra = found_categories - required
+
         for cat in REQUIRED_CATEGORIES:
-            # bullet pattern: `• 카테고리명:` (NFC 정규화 후 매칭)
-            pattern = f"• {cat}:"
-            if pattern not in policy_cell:
+            if cat in missing:
                 failures.append({
                     "fr_id": fr_id,
                     "category": cat,
                     "type": "bullet_missing",
                     "detail": f"`• {cat}:` bullet 미존재",
                 })
+        if extra:
+            failures.append({
+                "fr_id": fr_id,
+                "category": "(extra)",
+                "type": "bullet_extra",
+                "detail": f"규정 외 카테고리 bullet 발견: {sorted(extra)}",
+            })
 
     return {
         "total_fr": len(fr_blocks),

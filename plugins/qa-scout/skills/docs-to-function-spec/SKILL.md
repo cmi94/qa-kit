@@ -383,6 +383,6 @@ scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 sco
 |---|---|---|
 | 0.1 | 2026-04-30 | 초기 작성 (markdown function-spec.md 자유 양식, 35컬럼 base) |
 | 0.2 | 2026-05-06 | 17컬럼 표준 양식 적응 (영역 헤더 폐지·이모티콘 제거·TC ID·인풋 출처·비고 추가). spec: ../../docs/qa-scout/spec.md |
-| 0.2.6 | 2026-05-07 | [자료 부족] 마커 self-check (단계 4-4 grep 자동 검증) 추가. dogfood 프로젝트 산출물 검증 9건 회피 경험 반영. |
+| 0.2.6 | 2026-05-07 | [자료 부족] 마커 self-check (단계 4-4 grep 자동 검증) 추가. dogfood 프로젝트 산출물 검증 누락 회피 경험 반영. |
 | 0.2.9 | 2026-05-21 | 5 md → 1 md 압축 (feature-spec.md 단일 산출물). §0~§8 9섹션 작성 + frontmatter execution_policy 동기 + 받기 5종 중 02/04/05 본문 흡수 + 03-screen-layout 분리(마인드맵 스킬) + §8 cross-check placeholder + README 출처 마커. spec: ../../docs/qa-scout/spec.md |
 | 0.3.0 | 2026-05-23 | Coverage Completeness Gate 통합 — F-카탈로그 단일 SoT 폐기, 6 인풋 합집합 변환. §1 9번 컬럼(상세 정책) 8단 bullet 정형 강제 (§4-2-1 카테고리별 검색 범위·증거 인용 형식 + 통일 자료부족 마커). 각 §1 FR에 input-manifest.yaml fr_sources 객체 부착 (primary + secondary_sources). 단계 9c.5 UI surface 감지 신규 (unmapped-leaves.yaml candidates 분리). 단계 9c.6 자가 검증 9항 + verify-8-categories.py 호출. 단계 9d.5 cross-check 발행 게이트 3 방향 검증. spec: ../../docs/qa-scout/spec.md |

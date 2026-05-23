@@ -13,8 +13,8 @@
 #   schema_version 0.2.9 manifest는 4 신규 슬롯 부재 상태로도 유효 (하위 호환). 0.3.0 schema는 4 슬롯 의무 — migrate-to-v030.py로 빈 슬롯 추가, scout 단계 5/9c 재실행에서 채움.
 
 schema_version: "0.3.0"
-project: <project_name>           # 예: ebr
-scan_root: <자료 폴더 경로>        # 예: D:/work/ebr-dev/docs (다중 시 배열)
+project: <project_name>           # 예: <project_slug>
+scan_root: <자료 폴더 경로>        # 다중 시 배열
 scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
 
 # 발견된 모든 파일
@@ -453,7 +453,7 @@ two_doc_cross_check:
 sources:
   - tier: <F-catalog | FS-derived | PRD-derived | domain-derived | user-manual-derived | mindmap-leaf-derived>
     path: <상대 경로>                                                                 # 예: docs/reference/function-spec.md
-    entries: []                                                                       # tier=F-catalog 시 F-NNN ID list (예: ["F-001", ..., "F-062"])
+    entries: []                                                                       # tier=F-catalog 시 F-NNN ID list (예: ["F-001", ..., "F-<NNN>"])
     absorbed_into: <F-catalog | null>                                                # tier=FS-derived·PRD-derived 시 F-catalog 흡수 여부 / 흡수 안 됨 = null
     partial_absorption: false                                                         # F-catalog가 부분만 흡수한 경우 true
     uncovered_sections: []                                                            # partial_absorption=true 시 미커버 section list (예: ["§3.5.2", "§3.5.3"])

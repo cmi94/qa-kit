@@ -10,7 +10,7 @@ google-sheets MCP `batch_update_cells` 호출용 ranges payload를 생성.
 verify-readback.py(D-3 게이트)로 검증.
 
 Usage:
-    # source JSON: {"rows": [["<col1>", "<col2>", ...], ...]} — 62 FR × 17(또는 18) cells
+    # source JSON: {"rows": [["<col1>", "<col2>", ...], ...]} — <N> FR × 17(또는 18) cells
     python apply-cells.py \\
         --spreadsheet-id <ID> \\
         --sheet "03_기능정의서" \\

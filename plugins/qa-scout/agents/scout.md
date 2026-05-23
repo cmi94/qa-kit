@@ -163,7 +163,7 @@ scout 본체, 단계 9e verifier(Playwright MCP), 단계 12b 재확인, 후공�
 
 ## deep screen coverage 운영 (v0.2.8, SDD ../../docs/qa-scout/spec.md)
 
-본 절차는 `docs/specs/2026-05-18-qa-scout-feature-spec-enrichment.md`의 3.0 후공정(연구팀 enrichment + Sheets 업로드 + Playwright reviewer)이 surface crawl로 누락하는 깊은 화면 뎁스·변수 lifecycle·상태별 분기를 잡기 위한 게이트다. scout 본체는 텍스트 인터뷰 + manifest 기록만 수행하며 Gemini/Codex/Playwright를 필수 의존성으로 호출하지 않는다.
+본 절차는 `../../docs/qa-scout/spec.md`의 3.0 후공정(연구팀 enrichment + Sheets 업로드 + Playwright reviewer)이 surface crawl로 누락하는 깊은 화면 뎁스·변수 lifecycle·상태별 분기를 잡기 위한 게이트다. scout 본체는 텍스트 인터뷰 + manifest 기록만 수행하며 Gemini/Codex/Playwright를 필수 의존성으로 호출하지 않는다.
 
 ### manifest 키 (input-manifest.yaml > downstream_enrichment, 모두 optional — 부재해도 schema_version "0.2.7" 유효)
 
@@ -560,7 +560,7 @@ deep screen coverage (v0.2.8):
 |---|---|---|
 | 0.1.0 | 2026-05-04 | 초기 출시 (개발팀 파일럿 — 6종 markdown 양식) |
 | 0.2.0 | 2026-05-06 | 골격 재설계 — 5종 도메인 지식 인계 + 기능 정의서 GxP 정형화 (Google Sheets 5시트, 17컬럼) + qa-handoff/ 표준 폴더 + 단계 -1~20 양방향 인계 + ID 체계 1차안 + 17갭 정정. spec: ../../docs/qa-scout/spec.md |
-| 0.2.6 | 2026-05-07 | 단계 12a 커버리지 자가 검증·자료부족 마커 self-check·operations-guide 카테고리·다중 매핑·archive 정책. spec: docs/specs/2026-05-07-qa-scout-coverage-self-check.md |
+| 0.2.6 | 2026-05-07 | 단계 12a 커버리지 자가 검증·자료부족 마커 self-check·operations-guide 카테고리·다중 매핑·archive 정책. spec: ../../docs/qa-scout/spec.md |
 | 0.2.7 | 2026-05-08 | **개발자 환경 하네스 엔지니어링** — engagement 단계 1 게이트(단계 11b 삭제), 분류 카테고리 8개 명시(필수 6 + ERD 상태 게이트 enum + 권장 1), sub-agent 4종(curator Haiku · supplementer Sonnet · analyzer Opus · verifier Sonnet 조건부 Playwright MCP), 단계 8b/8c 보충자 spawn·자동 추가, 단계 9e/9f 검증자 spawn·옵션 B 사용자 인터뷰, 2단계 hash(단계 5·8d 원본 + 단계 9a·13 _source), 단계 -1a 마이그레이션 게이트, 옵션 C 단순화(.meta.yaml 5파일 X → received_artifacts 통합), 분석가 정독 우선순위(`status ∈ {confirmed, related}`), self-check 인풋 범위 확장, 양식 변수형 일괄 교체 23+ 곳 + NFD→NFC + .gitattributes, allowlist 기반 검증 스크립트 + hash-source-integrity 유틸. spec: ../../docs/qa-scout/spec.md |
 | 0.2.8 | 2026-05-20 | **deep screen coverage 게이트** — 단계 1b deep-scope 5문 인터뷰(pre-crawl 1회) + 단계 12b post-crawl 재확인(crawl 후 1회) + 핵심 규약 7번 위험 액션 자동 클릭 금지. `input-manifest.yaml > downstream_enrichment` optional 블록(schema_version 0.2.7 하위호환 유지)에 developer_deep_scope·deep_screen_targets[]·research_seed.required_focus[] 기록. Gemini/Codex/Playwright는 필수 의존성 추가 없음 — scout 본체는 인터뷰·manifest 기록만 수행. spec: ../../docs/qa-scout/spec.md |
 | 0.2.9 | 2026-05-21 | **최종 산출 문서 2종 압축** — feature-spec/ 폴더 5 markdown → `feature-spec.md` 단일 markdown(§0~§8 9섹션) + `ui-menu-mindmap.md` 신규 markdown(§0~§6 7섹션, Mermaid mindmap + 노드 상세 표 SoT). 받기 5종 중 02/04/05 본문 흡수, 03-screen-layout 마인드맵 대체, 01 인용만. **단계 1c execution gate 신규** (3문 + decision 4종 × reviewer_status 4종 1:1 매핑, 액션별 재확인 폐기). **단계 4a README discovery gate 신규** (4 후보 패턴 + 개발자 확인 게이트, README는 탐색 힌트로만). **단계 9 5단계 분기** (9a 받기 5종 / 9b ui-menu-mindmap 호출 / 9c feature-spec.md 호출 / 9d final_artifacts hash / 9d.5 cross-check). **핵심 규약 7번 표현 변경**: "위험 액션 자동 클릭 금지" → "승인 범위 밖 상태 변경 액션 금지" (운영 보호 운영 룰은 유지). **단계 17a Sheets 옵션 A/B/C 분기** (마인드맵 Sheets 미이행). input-manifest schema_version 0.2.9 + 5 신규 슬롯(final_artifacts·execution_gate·playwright_verification·readme_discovery·two_doc_cross_check). spec: ../../docs/qa-scout/spec.md + ../../docs/qa-scout/spec.md |

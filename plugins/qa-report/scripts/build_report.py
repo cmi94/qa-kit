@@ -13,12 +13,12 @@ payload 스키마:
   "round": 2,
   "period_start": "2026-06-01", "period_end": "2026-06-02",
   "build_ver": "1.2.0",
-  "qa_staff": "QA: {담당자}",
+  "qa_staff": "QA: 최명인",
   "cause_field_available": true,
   "issues": [{"key","kind"(신규|이월),"cause","summary"}, ...],
   "agg": {"new":2,"carry":1,"cumulative_found":5,"resolved":2,"remaining":3},
-  "cause_breakdown": {"배포/형상 관리":{"count":1,"resolved":0,"remaining":1}, ...},
-  "trend": [{"round_label":"1차 통합테스트","new":3,"cumulative":3}, ...],
+  "cause_breakdown": {"배포/형상 관리": 1, ...},          # 원인별 건수(분포%는 렌더러가 계산)
+  "trend": [{"round_label":"1차 통합테스트","new":3}, ...],  # 누적은 렌더러가 new running sum으로 계산
   "verdict": "판정: ...\n근거: ...",
   "output_path": "<출력폴더>/MYAPP QA 2차 통합테스트 결과서.xlsx",
   "meta": { ... 다음 차수가 읽을 동결값 ... }
@@ -231,32 +231,26 @@ def build(payload):
         subhdr(R, "2) 결함 원인 유형별 분포")
         R += 1
         grp("B", "E", R, "결함 원인 유형", F_TH, FILL_TH, A_C)
-        W(f"F{R}", "건수", F_TH, FILL_TH, A_C)
-        W(f"G{R}", "해결", F_TH, FILL_TH, A_C)
-        grp("H", LASTL, R, "잔여", F_TH, FILL_TH, A_C)
+        grp("F", "G", R, "건수", F_TH, FILL_TH, A_C)
+        grp("H", LASTL, R, "비율", F_TH, FILL_TH, A_C)
         ws.row_dimensions[R].height = 20
         R += 1
         cb = payload.get("cause_breakdown", {})
+        def _cnt(v):
+            return v.get("count", 0) if isinstance(v, dict) else (v or 0)
+        tot_c = sum(_cnt(cb.get(n, 0)) for n in CAUSE_ORDER)
         top2 = R
-        tot_c = tot_d = tot_r = 0
         for name in CAUSE_ORDER:
-            row = cb.get(name, {})
-            cnt = row.get("count", 0)
-            done = row.get("resolved", 0)
-            rem = row.get("remaining", 0)
-            tot_c += cnt
-            tot_d += done
-            tot_r += rem
+            cnt = _cnt(cb.get(name, 0))
+            pct = (cnt / tot_c) if tot_c else 0
             grp("B", "E", R, name, F_DATA, NOFILL, A_L)
-            W(f"F{R}", cnt, F_DATA, NOFILL, A_R)
-            W(f"G{R}", done, F_DATA, NOFILL, A_R)
-            grp("H", LASTL, R, rem, F_DATA, NOFILL, A_R)
+            grp("F", "G", R, cnt, F_DATA, NOFILL, A_R)
+            grp("H", LASTL, R, pct, F_DATA, NOFILL, A_R, "0.0%")
             ws.row_dimensions[R].height = 19
             R += 1
         grp("B", "E", R, "Total", F_BOLD, FILL_TOTAL, A_C)
-        W(f"F{R}", tot_c, F_BOLD, FILL_TOTAL, A_R)
-        W(f"G{R}", tot_d, F_BOLD, FILL_TOTAL, A_R)
-        grp("H", LASTL, R, tot_r, F_BOLD, FILL_TOTAL, A_R)
+        grp("F", "G", R, tot_c, F_BOLD, FILL_TOTAL, A_R)
+        grp("H", LASTL, R, (1 if tot_c else 0), F_BOLD, FILL_TOTAL, A_R, "0.0%")
         ws.row_dimensions[R].height = 20
         rect(top2 - 1, R)
         R += 2
@@ -270,10 +264,13 @@ def build(payload):
     ws.row_dimensions[R].height = 20
     R += 1
     top3 = R
+    run = 0
     for t in payload.get("trend", []):
+        new = t.get("new", 0)
+        run += new  # 누적 = 신규 발견의 running sum (cumulative는 넘겨도 무시 — 불일치 방지)
         grp("B", "E", R, t["round_label"], F_BOLD, NOFILL, A_C)
-        grp("F", "G", R, t["new"], F_DATA, NOFILL, A_R)
-        grp("H", LASTL, R, t["cumulative"], F_DATA, NOFILL, A_R)
+        grp("F", "G", R, new, F_DATA, NOFILL, A_R)
+        grp("H", LASTL, R, run, F_DATA, NOFILL, A_R)
         ws.row_dimensions[R].height = 20
         R += 1
     rect(top3 - 1, R - 1)

@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "QA용 Claude Code 플러그인 컬렉션 — 1인 QA 운영, GxP 환경, 환각 가드 설계 사례.",
-    "version": "1.1.4"
+    "version": "1.1.5"
   },
   "plugins": [
     {
@@ -23,7 +23,7 @@
       "name": "qa-report",
       "source": "./plugins/qa-report",
       "description": "N차 통합테스트 결과 보고서(.xlsx)를 양식 고정·데이터만 채우는 방식으로 결정론적 생성. /qa-report가 입력 5개를 강제 수집하고 Atlassian(Jira) MCP로 신규/이월 버그를 fetch해 count-only 보고서(이슈 수 집계·결함 원인 유형별 분포·차수별 추이·결론)를 만든다. 회차 자동 감지·누적 이음은 결과 .xlsx 내장 메타 블록(이전 차수 파일 체인). 보고자는 기본 currentUser(), 지정 시 타 QA·팀 데이터도 집계.",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "category": "qa",
       "tags": ["qa", "integration-test", "report", "jira", "defect", "xlsx"],
       "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-report"

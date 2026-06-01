@@ -1,6 +1,6 @@
 {
   "name": "qa-report",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "N차 통합테스트 결과 보고서(.xlsx)를 양식 고정·데이터만 채우는 방식으로 결정론적 생성하는 QA용 Claude Code 플러그인. /qa-report 커맨드가 입력 5개(솔루션명·Jira 프로젝트 키·QA 일정·이전 차수 파일·출력 폴더)를 강제 수집하고, Atlassian(Jira) MCP로 신규/이월 버그를 fetch한 뒤 build_report.py가 count-only 보고서(이슈 수 집계·결함 원인 유형별 분포·차수별 추이·결론)를 생성한다. 회차 자동 감지·누적 이음은 결과 .xlsx 내장 메타 블록(이전 차수 파일 체인). 우선순위 집계·차트·버그리스트 별도 양식·최종 결과서는 범위 외.",
   "author": {
     "name": "최명인",

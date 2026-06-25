@@ -10,7 +10,7 @@ google-sheets MCP `batch_update_cells` 호출용 ranges payload를 생성.
 verify-readback.py(D-3 게이트)로 검증.
 
 Usage:
-    # source JSON: {"rows": [["<col1>", "<col2>", ...], ...]} — <N> FR × 17(또는 18) cells
+    # source JSON: {"rows": [["<col1>", "<col2>", ...], ...]} — 62 FR × 14(또는 15) cells
     python apply-cells.py \\
         --spreadsheet-id <ID> \\
         --sheet "03_기능정의서" \\
@@ -57,8 +57,8 @@ def col_letter(idx: int) -> str:
 
 
 def expected_col_count(sheets_option: str) -> int:
-    """sheets_option ↔ src col 수 정합 — D=18, A/B/C=17 (§4-3-1 정합)."""
-    return 18 if sheets_option == "D" else 17
+    """sheets_option ↔ src col 수 정합 — D=15, A/B/C=14 (SPEC-2026-06-25: 사전 조건·입력·상태 전이·출력 4개 컬럼 제거)."""
+    return 15 if sheets_option == "D" else 14
 
 
 def build_ranges(rows: list, sheets_option: str, start_row: int) -> dict:

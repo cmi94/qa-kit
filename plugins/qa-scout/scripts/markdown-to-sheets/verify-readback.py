@@ -26,8 +26,8 @@ Exit code:
 
 호출자 처리 룰 (SDD §4-3-2·§4-3-5 정합):
     exit 0 → published=true + share_spreadsheet + scout-log entry
-    exit 1 → published=false 유지 + share_spreadsheet 금지 + 명인 diff 보고
-    명인 승인 후 D-1/D-2 경로 재시도. Auto-Healing Loop 차단
+    exit 1 → published=false 유지 + share_spreadsheet 금지 + QA diff 보고
+    QA 승인 후 D-1/D-2 경로 재시도. Auto-Healing Loop 차단
     ([[bridge-wrapping-pattern]] 메모리 준수).
 """
 import argparse
@@ -44,8 +44,8 @@ from pathlib import Path
 
 
 def expected_col_count(sheets_option: str) -> int:
-    """§4-3-1 sheets_option 정합 검증."""
-    return 18 if sheets_option == "D" else 17
+    """§4-3-1 sheets_option 정합 검증. A/B/C=14, D=15 (SPEC-2026-06-25: 4개 컬럼 제거)."""
+    return 15 if sheets_option == "D" else 14
 
 
 def col_letter(idx: int) -> str:
@@ -159,7 +159,7 @@ def readback_diff_gate(source_json_path: Path, sheet_data_json_path: Path, sheet
             ),
         })
 
-    # 4-b. 각 data row col count exact match — 짧으면 부족 / 길면 옵션 불일치 (예: 옵션 C 시트에 18 컬럼 잔존)
+    # 4-b. 각 data row col count exact match — 짧으면 부족 / 길면 옵션 불일치 (예: 옵션 C 시트(14열)에 이전 컬럼 잔존)
     for ri, sheet_row in enumerate(sheet_values[1:1 + src_row_count]):
         if len(sheet_row) != src_col_count:
             bounds_issues.append({

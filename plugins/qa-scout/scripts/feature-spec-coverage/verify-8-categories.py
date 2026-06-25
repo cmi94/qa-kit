@@ -3,7 +3,7 @@
 
 SDD §4-2 + §4-2-3 정합. 단계 9c.6 자가 검증 #4 항목.
 
-각 §1 FR의 17 컬럼 vertical table 9번 row(상세 정책 / 기능 설명)에
+각 §1 FR의 vertical table 중 상세 정책 / 기능 설명 row(번호 비의존)에
 8단 bullet(`핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·
 화면 동작·부수 효과·참조`)이 모두 존재하는지 grep.
 
@@ -43,10 +43,10 @@ REQUIRED_CATEGORIES = [
 # §1 FR 헤더 패턴: `#### FR-<PROJECT>-NNN: <name>` (FR ID prefix는 프로젝트별)
 FR_HEADER_RE = re.compile(r"^####\s+(FR-[A-Z_]+-\d+)\s*[:：]", re.MULTILINE)
 
-# §1 행은 17 컬럼 vertical table — `| 9 | 상세 정책 / 기능 설명 | <8 bullet> |`
-# table row cell 추출 — 9번 row의 값 컬럼 (3번째 컬럼)
+# §1 행은 13 컬럼 vertical table — `| N | 상세 정책 / 기능 설명 | <8 bullet> |` (N=컬럼 번호, 양식 변경 비의존)
+# table row cell 추출 — 상세 정책 row의 값 컬럼 (3번째 컬럼)
 DETAIL_POLICY_ROW_RE = re.compile(
-    r"^\|\s*9\s*\|\s*상세\s*정책[^|]*?\|\s*(.+?)\s*\|\s*$",
+    r"^\|\s*\d+\s*\|\s*상세\s*정책[^|]*?\|\s*(.+?)\s*\|\s*$",
     re.MULTILINE,
 )
 
@@ -58,7 +58,7 @@ def verify(spec_path: Path) -> dict:
 
     text = spec_path.read_text(encoding="utf-8")
 
-    # 1. FR 행 추출 — header + 17 row vertical table 블록
+    # 1. FR 행 추출 — header + 13 row vertical table 블록
     fr_matches = list(FR_HEADER_RE.finditer(text))
     fr_blocks = []
     for i, m in enumerate(fr_matches):
@@ -79,7 +79,7 @@ def verify(spec_path: Path) -> dict:
                 "fr_id": fr_id,
                 "category": "(전체)",
                 "type": "row_missing",
-                "detail": "9번 row(상세 정책 / 기능 설명) 미발견",
+                "detail": "상세 정책 / 기능 설명 row 미발견",
             })
             continue
 

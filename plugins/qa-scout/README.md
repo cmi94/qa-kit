@@ -1,10 +1,10 @@
-# qa-scout (v0.3.0)
+# qa-scout (v0.3.1)
 
-> 개발자가 보유한 5종 도메인 지식을 인계받고 PRD + 자료를 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)으로 압축 정형화하는 Claude Code 플러그인. v0.3.0 Coverage Completeness Gate — 6 인풋 합집합 변환 + 8 카테고리 정형 강제 + D-3 readback diff 차단 게이트 + Sheets 옵션 D(18컬럼 인풋 출처 매핑) 신설.
+> 개발자가 보유한 5종 도메인 지식을 인계받고 PRD + 자료를 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)으로 압축 정형화하는 Claude Code 플러그인. v0.3.0 Coverage Completeness Gate — 6 인풋 합집합 변환 + 8 카테고리 정형 강제 + D-3 readback diff 차단 게이트 + Sheets 옵션 D(15컬럼 인풋 출처 매핑) 신설.
 
 **spec**: [../../docs/qa-scout/spec.md](../../docs/qa-scout/spec.md)
 
-**최신 publish 버전**: v0.3.0 (2026-05-23) — Coverage Completeness Gate 통합 (6 인풋 합집합 + 8 카테고리 강제 + 옵션 D + D-3 게이트). [CHANGELOG](CHANGELOG.md) 참조.
+**최신 publish 버전**: v0.3.1 (2026-06-25) — 03_기능정의서 컬럼 표준 정비 (사전 조건·입력·상태 전이·출력 4개 컬럼 제거, 옵션 A/B/C 14열·D 15열) + 04_TestCase 시트. [CHANGELOG](CHANGELOG.md) 참조.
 
 **최초 실행 가이드**: [`docs/developer-first-run-guide.md`](docs/developer-first-run-guide.md) — 개발자가 처음 받았을 때 단계별로 따라할 변수형 가이드.
 
@@ -33,21 +33,22 @@ v0.3.0 구조:
    ↓ zip / git / 클라우드로 QA에게 인계
    ↓
 QA 측 (별도 후공정)
-   ├── 단계 17a markdown-to-sheets (옵션 A/B/C/D 분기 — feature-spec.md → Sheets, **D=18컬럼 인풋 출처 매핑**)
+   ├── 단계 17a markdown-to-sheets (옵션 A/B/C/D 분기 — feature-spec.md → Sheets, **D=15컬럼 인풋 출처 매핑**)
    ├── 단계 17b D-3 readback diff 차단 게이트 (verify-readback.py)
    └── tc-writer · script-generator · spec-analyzer 등 후공정
 ```
 
 **v0.3.0 핵심**: F-카탈로그 단일 SoT 폐기 → 6 인풋 합집합 변환. §1 9번 컬럼 8 카테고리 (핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조) 정형 강제. UI surface 감지로 §1 본문 자동 진입 금지 (Auto-Healing Loop 차단). D-3 readback diff 차단 게이트로 Sheets 발행 후 자모 단위 정합 보장.
 
-## v0.2 → v0.3.0 누적 변경 (v0.1 대비)
+## v0.2 → v0.3.1 누적 변경 (v0.1 대비)
 
 - **v0.2.0** — 6종 markdown → Google Sheets 5시트 + 받기 5종, 17컬럼 평면 양식, qa-handoff/{project}/ 표준 폴더, 단계 -1~20 양방향 인계, ID 체계, 신규 스킬 `curate-input`·`docs-to-function-spec`·`markdown-to-sheets`, 모델 라우팅 (Sonnet/Opus/Haiku 분담)
 - **v0.2.6** — 단계 12a 커버리지 자가 검증, 자료부족 마커 self-check, operations-guide 카테고리, 다중 매핑, archive 정책
 - **v0.2.7** — 개발자 환경 하네스 엔지니어링, engagement 단계 1 게이트, 분류 카테고리 8개, sub-agent 4종(curator·supplementer·analyzer·verifier), 2단계 hash 무결성, 마이그레이션 4단계, 옵션 C 단순화
 - **v0.2.8** — deep screen coverage 게이트, 단계 1b deep-scope 5문 + 단계 12b post-crawl 재확인, `downstream_enrichment` optional 블록, research-seed·ui-crawl-manifest 신규
 - **v0.2.9** — 최종 읽기 산출물 2종 압축 (`feature-spec.md` + `ui-menu-mindmap.md`), 단계 1c execution gate, 단계 4a README discovery gate, 단계 9 5분기, 단계 17a Sheets 옵션 A/B/C 분기, 신규 스킬 `docs-to-ui-menu-mindmap`, 핵심 규약 7번 표현 변경
-- **v0.3.0** (현재) — **Coverage Completeness Gate 통합** (6 인풋 합집합 변환 + §1 9번 컬럼 8 카테고리 정형 강제 + 단계 9c.5 UI surface 감지 + 단계 9c.6 자가 검증 9항 + 단계 9d.5 방향 C 게이트 + 단계 17a 옵션 D 18컬럼 신설 + 단계 17b D-3 readback diff 차단 게이트), 신규 스크립트 3종 (`verify-8-categories.py`·`apply-cells.py`·`verify-readback.py`), 신규 템플릿 `unmapped-leaves.yaml`, **`migrate-to-v030.py` 마이그레이션 유틸**
+- **v0.3.0** — **Coverage Completeness Gate 통합** (6 인풋 합집합 변환 + §1 9번 컬럼 8 카테고리 정형 강제 + 단계 9c.5 UI surface 감지 + 단계 9c.6 자가 검증 9항 + 단계 9d.5 방향 C 게이트 + 단계 17a 옵션 D 18컬럼 신설 + 단계 17b D-3 readback diff 차단 게이트), 신규 스크립트 3종 (`verify-8-categories.py`·`apply-cells.py`·`verify-readback.py`), 신규 템플릿 `unmapped-leaves.yaml`, **`migrate-to-v030.py` 마이그레이션 유틸**
+- **v0.3.1** (현재) — **03_기능정의서 컬럼 표준 정비** (사전 조건·입력·상태 전이·출력 4개 컬럼 제거 → 9번 상세 정책 8단 카테고리 흡수, 옵션 A/B/C 14열·D 15열) + **04_TestCase 시트** + URS ID·TC ID 컬럼 정합. scout 문서류·sheets-layout·design-tokens·skills·scripts 전수 동기. spec SPEC-2026-06-25-feature-spec-column-trim.
 
 ## 효과
 
@@ -230,7 +231,7 @@ scout이 다음 순서로 산출물 생성 — `qa-handoff/<project>/` 안:
   - 방향 B: leaf 노드 → FR 인용 (누락 시 §6에 marker)
   - 판정 4종: `PASS | PASS_WITH_NOTES | FAIL | NOT_RUN`
   - 결과 3곳 동기: feature-spec.md §8 + ui-menu-mindmap.md §6 + manifest `two_doc_cross_check:`
-  - **자동 보정 X** — marker만 남기고 명인 검토 후 반영
+  - **자동 보정 X** — marker만 남기고 QA 검토 후 반영
 
 ### 산출물 폴더 구조 (v0.3.0)
 
@@ -338,7 +339,7 @@ scout이 빈 셀에 `[자료 부족]` 마커 부착하고 보고. 자료 보충 
 Mermaid mindmap은 트리 구조라 Sheets 친화도가 낮습니다. markdown 보조 산출물로 유지하고 GitHub markdown viewer / Notion import / VS Code preview로 봅니다.
 
 ### Q7. 두 산출물이 서로 어긋나면 어떻게 됩니까?
-단계 9d.5 cross-check 게이트가 양방향 검증을 1회 실행. 누락은 marker(`[화면 위치 확인 필요]` / `SPEC-MISSING` 등)로 양쪽에 남깁니다. 자동 보정 X — 명인 검토 후 결정.
+단계 9d.5 cross-check 게이트가 양방향 검증을 1회 실행. 누락은 marker(`[화면 위치 확인 필요]` / `SPEC-MISSING` 등)로 양쪽에 남깁니다. 자동 보정 X — QA 검토 후 결정.
 
 ### Q8. ID 체계는 어떻게 정해지나요?
 ID 패턴: `FR-<PROJECT>-NNN`·`SCR-<PROJECT>-NNN`·`NFR-<PROJECT>-NNN`·`US-<PROJECT>-NNN`·`TC-<PROJECT>-NNN` (모듈 코드는 PROJECT 헤더로 동적 치환, 결번 허용 3자리).
@@ -348,7 +349,7 @@ ID 패턴: `FR-<PROJECT>-NNN`·`SCR-<PROJECT>-NNN`·`NFR-<PROJECT>-NNN`·`US-<PR
 
 ---
 
-## 5. 양식 참조 (v0.3.0)
+## 5. 양식 참조 (v0.3.1)
 
 - 최종 산출물 #1: `templates/feature-spec.md` (단일 markdown §0~§8)
 - 최종 산출물 #2: `templates/ui-menu-mindmap.md` (단일 markdown §0~§6)

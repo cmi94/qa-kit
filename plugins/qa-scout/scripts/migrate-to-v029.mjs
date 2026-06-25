@@ -2,30 +2,32 @@
 /**
  * qa-scout v0.2.9 — input-manifest.yaml 마이그레이션 유틸 (v0.2.7/v0.2.8 → v0.2.9)
  *
- * SDD: ../../docs/qa-scout/spec.md §5-7 마이그레이션 4단계.
+ * SDD: ../../docs/qa-scout/spec.md §5-7 마이그레이션 4단계
+ *      + ../../docs/qa-scout/spec.md Playwright 검증 슬롯.
  *
  * 사용법:
  *   node plugins/qa-scout/scripts/migrate-to-v029.mjs <input-manifest.yaml> <mode>
  *
  * mode:
  *   dry-run — 변경 preview 출력만, 파일 미수정 (기본 검토 시 권장)
- *   write   — backup 생성 + schema_version 갱신 + 누락 슬롯 4종 append (실제 파일 수정)
+ *   write   — backup 생성 + schema_version 갱신 + 누락 슬롯 5종 append (실제 파일 수정)
  *
  * 마이그레이션 룰:
  *   - 대상 manifest의 schema_version이 "0.2.9"면 no-op (이미 마이그레이션됨)
  *   - schema_version "0.2.7" 또는 "0.2.8" → "0.2.9" 갱신
- *   - 신규 슬롯 4종(final_artifacts / execution_gate / readme_discovery / two_doc_cross_check)
+ *   - 신규 슬롯 5종(final_artifacts / execution_gate / playwright_verification / readme_discovery / two_doc_cross_check)
  *     중 manifest top-level에 이미 존재하는 슬롯은 보존하고, 누락된 슬롯만 EOF에 append
  *   - 기존 downstream_enrichment / developer_deep_scope / deep_screen_targets / received_artifacts
  *     등 v0.2.7/v0.2.8 구조는 모두 보존 (텍스트 라인 그대로)
  *   - write 모드는 backup 파일 생성 후 원본 덮어쓰기
  *     backup 경로: <manifest>.v0.2.<X>-backup-<YYYYMMDDTHHMMSSZ>
  *
- * 신규 슬롯 기본값 (SDD §5-9·§5-10·§5-11 + 본 step 5 입력):
+ * 신규 슬롯 기본값 (SDD §5-9·§5-10·§5-11 + 2026-05-22 UX 강화):
  *   final_artifacts.feature_spec        = "feature-spec.md"
  *   final_artifacts.ui_menu_mindmap     = "ui-menu-mindmap.md"
  *   execution_gate.decision             = "context-insufficient"
  *   execution_gate.reviewer_status      = "CONTEXT-INSUFFICIENT"
+ *   playwright_verification.status      = "NOT_RUN"
  *   readme_discovery.scanned            = false
  *   two_doc_cross_check.result          = "NOT_RUN"
  *   나머지 필드는 null / [] / "" 의 안전한 빈 값
@@ -44,7 +46,13 @@ import { resolve } from 'path';
 
 const SUPPORTED_FROM = ['0.2.7', '0.2.8'];
 const TARGET_VERSION = '0.2.9';
-const NEW_SLOTS = ['final_artifacts', 'execution_gate', 'readme_discovery', 'two_doc_cross_check'];
+const NEW_SLOTS = [
+  'final_artifacts',
+  'execution_gate',
+  'playwright_verification',
+  'readme_discovery',
+  'two_doc_cross_check'
+];
 
 const [, , manifestArg, mode] = process.argv;
 
@@ -172,6 +180,27 @@ execution_gate:
   confirmed_at: null
   notes: "migrated from v0.2.7/v0.2.8 by migrate-to-v029.mjs — rerun 단계 1c to fill"
 `,
+  playwright_verification: `# -------------------------------------------------------
+# v0.2.9 신규 슬롯 — playwright_verification (2026-05-22 UX 강화 — migrated by migrate-to-v029.mjs)
+# -------------------------------------------------------
+# 마이그레이션 시점 기본값은 NOT_RUN — 단계 9e 라이브 검증 재실행 필요.
+# URL·테스트 계정·execution_gate가 있으면 기본 실행 시도하고, 화면↔문서 gap을 양방향 기록한다.
+playwright_verification:
+  status: "NOT_RUN"
+  tested_url: null
+  login_account_role: null
+  screens_visited: []
+  evidence_files: []
+  spec_missing_count: null
+  screen_missing_count: null
+  mismatch_count: null
+  forbidden_actions_observed: []
+  skip_reason: "migrated from v0.2.7/v0.2.8 by migrate-to-v029.mjs — rerun 단계 9e to fill"
+  blocked_reason: null
+  failed_reason: null
+  notes:
+    - "Capture SPEC-MISSING / SCREEN-MISSING / DOC-SCREEN-MISMATCH during 단계 9e."
+`,
   readme_discovery: `# -------------------------------------------------------
 # v0.2.9 신규 슬롯 — readme_discovery (SDD §5-11 — migrated by migrate-to-v029.mjs)
 # -------------------------------------------------------
@@ -222,7 +251,7 @@ const HEADER = `# -------------------------------------------------------
 # v0.2.9 마이그레이션 append 영역 (by plugins/qa-scout/scripts/migrate-to-v029.mjs)
 # 원본 manifest schema_version ${currentVersion} → ${TARGET_VERSION}로 갱신됨.
 # 누락된 v0.2.9 신규 슬롯 ${missing.length}개 추가: ${missing.join(', ') || '(none)'}.
-# 기본값은 안전한 빈 상태이며 단계 1c/4a/9d.5 재실행으로 채워야 한다.
+# 기본값은 안전한 빈 상태이며 단계 1c/4a/9e/9d.5 재실행으로 채워야 한다.
 # -------------------------------------------------------
 `;
 

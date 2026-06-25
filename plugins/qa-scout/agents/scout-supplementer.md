@@ -11,7 +11,7 @@ scout v0.2.7 신설. 단계 8b (보충자) 전용 sub-agent. 메인 scout(Sonnet
 
 **모델 선택 사유**: 단계 8b는 미매칭 문서를 정독하고 PRD와 키워드 매칭하여 연관성 평가가 필요 — Haiku 단순 패턴은 부족, Opus 깊이는 불필요. Sonnet 중간 깊이가 비용·정확도 균형.
 
-**spec**: [`../../docs/qa-scout/spec.md`](../../docs/qa-scout/spec.md) §4-1 P1-1a
+**spec**: [../../docs/qa-scout/spec.md](../../docs/qa-scout/spec.md) §4-1 P1-1a
 
 ## 역할
 

@@ -1,5 +1,19 @@
 # qa-scout Changelog
 
+## [0.3.1] — 2026-06-25
+
+### Changed — 03_기능정의서 컬럼 표준 정비 (SPEC-2026-06-25-feature-spec-column-trim)
+
+- **표준 컬럼 4개 제거** — `사전 조건`·`입력(Input)`·`상태 전이`·`출력(Output)` 컬럼 제거. 해당 정보는 9번 `상세 정책 / 기능 설명`의 8단 카테고리(상태 전이·경계 조건·데이터 무결성 등)에 흡수.
+- **옵션별 컬럼 수 정합** — 03_기능정의서 옵션 A/B/C = 14열(`No.` 포함), 옵션 D = 15열(인풋 출처 추가). 이전 17/18열에서 축소.
+- **04_TestCase 시트 추가** — 전체 TC 취합 시트(옵션 A~D 공통). 기능정의서 TC ID와 1:1 매핑, 테스트 결과(PASS·FAIL·N/A) 드롭다운.
+- **URS ID·TC ID 컬럼 정합** — 03_기능정의서에 URS ID(고객 URS 매핑)·TC ID(04_TestCase 연결) 컬럼 정렬.
+- 영향 자산 — `templates/feature-spec/03_기능정의서.md` · `templates/feature-spec-design/sheets-layout.json` · `design-tokens.json` · `skills/markdown-to-sheets` · `scripts/feature-spec-design` · scout 문서류 전수 동기.
+
+### Why
+
+기능정의서 컬럼이 17/18개로 비대해 작성·검수 부담이 컸다. 사전 조건·입력·상태 전이·출력 4개 컬럼은 9번 상세 정책의 8단 카테고리와 중복되어, 제거하고 상세 정책으로 흡수해 평면 13 콘텐츠 컬럼(시트 14/15열)으로 정비했다. TC 추적성을 위해 04_TestCase 시트와 URS ID·TC ID 컬럼을 정합했다.
+
 ## [0.3.0] — 2026-05-23
 
 ### Added — Coverage Completeness Gate 통합
@@ -40,7 +54,7 @@
   - 방향 B (마인드맵 → 기능정의서): leaf 노드 → FR 인용 / 위험 액션 비고 / deep target FR 분해 (누락 시 §6에 marker)
   - 판정 enum 4종: `PASS | PASS_WITH_NOTES | FAIL | NOT_RUN` (NOT_RUN = 마이그레이션 직후 또는 단계 9d.5 진입 전 초기 상태)
   - 결과 3곳 동기: `feature-spec.md` §8 + `ui-menu-mindmap.md` §6 + manifest `two_doc_cross_check:` (별도 제3 문서 금지)
-  - **자동 보정 X** — marker만 남기고 명인 검토 후 반영 (Auto-Healing Loop 차단)
+  - **자동 보정 X** — marker만 남기고 QA 검토 후 반영 (Auto-Healing Loop 차단)
 - **신규 스킬 `docs-to-ui-menu-mindmap`** — `ui-menu-mindmap.md` 작성 전용 (단일 writer 원칙 SDD §7). 깊이 최대 6단계 + 노드 enum 14종 + Mermaid syntax 안전성 + ★·★상세·⚠·marker 5종.
 - **신규 스크립트 `scripts/migrate-to-v029.mjs`** — v0.2.7/v0.2.8 → v0.2.9 마이그레이션 유틸. dry-run | write 2 mode + backup + 멱등성. write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 4종 append. 기존 구조(`downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]`) 모두 보존. **마이그레이션이 게이트 결과를 추정하지 않고 안전 기본값만 채움** (`context-insufficient` / `NOT_RUN` / `scanned: false`). 외부 의존성 X (Node stdlib만).
 - **단계 17a Sheets 옵션 A/B/C 분기** 신설 — `markdown-to-sheets` 스킬이 단일 `feature-spec.md`를 Sheets로 이행 시 옵션 선택:

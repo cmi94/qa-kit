@@ -25,6 +25,28 @@ scout가 단계 5 진입 시 호출. 단계 4(자료 폴더 경로 확정)가 �
 - 제외 디렉토리: `.git/`, `node_modules/`, `dist/`, `build/`, `.venv/`, `__pycache__/`
 - 메타: mtime + git 마지막 commit (있으면)
 
+#### 1-1) 한글 파일명 NFD→NFC 정규화 (v0.2.7 신규 — P3-1)
+
+**Why**: macOS zip 파일을 Windows에서 추출 시 한글 파일명이 NFD(자모 분리 형태)로 잔존하는 경우가 빈번. NFC로 통일하지 않으면 후공정에서 path 일관성 깨짐 + 입력 manifest와 실제 파일 매칭 실패.
+
+**How**:
+
+```python
+import unicodedata
+
+# 스캔 결과 모든 path를 NFC 정규화
+for entry in scan_results:
+    entry['path'] = unicodedata.normalize('NFC', entry['path'])
+
+# 검증
+assert unicodedata.is_normalized('NFC', entry['path']), \
+    f"NFC 정규화 실패: {entry['path']}"
+```
+
+`input-manifest.yaml > found_files[].path`에 기록되는 모든 경로는 NFC 형식으로 통일. 검증: `unicodedata.is_normalized('NFC', path) == True` 100%.
+
+**spec**: `../../docs/qa-scout/spec.md` §4-3 P3-1, AC1.
+
 ### 2) 1차 매핑 (저비용 — 신뢰도 ★★★)
 
 | 카테고리 | 파일명 패턴 | 디렉토리 패턴 |
@@ -104,10 +126,18 @@ found_files:
 ```
 
 ### 6) 빠진 카테고리 가이드 (보고서 안 포함)
-- **와이어프레임 부재**: 라이브 URL+계정 받음 → live-verifier 활용 (운영자 사내 측)
-- **ERD 부재**: 개발자 자기 AI에게 요청 (프롬프트 템플릿 옵션 제공)
-- **권한 자료 부재**: PRD에 권한 섹션(예: §3.4) 있는지 확인 → 발췌 (G16 정책)
+
+**분류 카테고리 8개** = 필수 확인 6 + ERD 상태 게이트 1 + 권장 1:
+
 - **PRD 부재**: 작업 진행 불가 — 단계 4 재입력 또는 중단
+- **사용자 시나리오·상태 전이도·권한 매트릭스·도메인 용어집 부재** (필수 확인 4종): 단계 7~8 가이드 (자기 AI 생성·다른 자료 발췌·생략 옵션)
+- **화면 전개도 부재** (필수 확인 1종): 라이브 URL+계정 받음 → 단계 9e 검증자(scout-verifier) 활용 가능 + scout-handoff 단계 17a 이후 live-verifier(qa-kit 측)
+- **ERD/아키텍처** (v0.2.7 상태 게이트 — P5-3): `input-manifest.yaml > erd_status` 슬롯에 enum 3종 중 하나 명시 강제:
+  - `provided`: 개발자가 ERD 제공 → 정상 진행
+  - `generated-draft`: 개발자가 자기 AI 생성 후 제공 → 정상 진행 + scout-log에 "AI 생성 ERD" 명시
+  - `explicitly-missing`: 개발자 부재 명시 + `erd_missing_reason` 사유 입력 → 가이드 통과 + scout-log에 사유 기록
+  - **부재 사유 미입력은 게이트 차단** — 사용자에 상태 명시 재요청
+- **operations-guide 부재** (권장 1종): 부재 OK. 보충자·12a coverage 보강 인풋 없으면 스킵
 - **기타**: 생략 옵션
 
 ### 6-1) archive·legacy 폴더 처리 (v0.2.6 신규 — P4)
@@ -132,7 +162,7 @@ archive 폴더 발견 시 보고서에 별도 표시:
 - (b) 일부 포함 → 해당 파일은 `found_files`에 추가, 나머지는 `excluded_locations`
 - (c) 전체 포함 → 모든 파일 `found_files`에 추가
 
-**why**: MYAPP.zip 산출물 검증에서 archive 폴더 안 결정 자료(회수 전자서명 결정·SLA 수치·코드 삭제 정책)가 일률 무시되어 [자료 부족] 또는 모호점으로 처리됨. 본 정책으로 archive 결정 자료 누락 차단.
+**why**: 실측 산출물 검증에서 archive 폴더 안 결정 자료가 일률 무시되어 [자료 부족] 또는 모호점으로 처리됨. 본 정책으로 archive 결정 자료 누락 차단.
 
 ### 7) 개발자 텍스트 답변 → AI 파싱
 자연어 답변 처리:
@@ -167,9 +197,9 @@ excluded_locations: [...]             # v0.2.6 — 명시 제외 위치 (P4)
 ## 한계
 - 본 스킬은 단계 5 (큐레이션) 전용
 - 단계 9 정형화는 `docs-to-function-spec` 스킬
-- 라이브 탐색은 `live-verifier` 에이전트 (운영자 사내 측)
+- 라이브 탐색은 `live-verifier` 에이전트 (qa-kit 측)
 
 ## 참조
-- spec: `../../../docs/qa-scout/spec.md` §5-2
+- spec: `../../docs/qa-scout/spec.md` §5-2
 - scout 에이전트: `agents/scout.md`
 - 후속 스킬: `skills/docs-to-function-spec/SKILL.md`

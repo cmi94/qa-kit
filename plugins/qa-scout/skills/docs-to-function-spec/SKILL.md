@@ -1,6 +1,6 @@
 ---
 name: docs-to-function-spec
-description: scout v0.3.0 에이전트가 단계 9c (정형화) 진입 시 호출하는 스킬. **6 인풋 자료(F-카탈로그 + FS + PRD + domain + user-manual + mindmap)의 합집합**을 흡수하여 최종 읽기 산출물 1/2인 `feature-spec.md` 단일 markdown(§0~§8 9섹션)을 작성한다. §1 9번 컬럼(상세 정책)은 **8단 bullet 정형 강제** (`핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조`), 카테고리별 자료 부재 시 `[자료 부족] (카테고리명 — 확인한 입력)` 통일 마커. 각 §1 FR에 source 객체 부착 (input-manifest.yaml fr_sources). 단계 9c.5 UI surface 감지 + 9c.6 자가 검증 + 9d.5 cross-check 발행 게이트 연쇄. 추정 금지·자동 채움 X (bridge-wrapping-pattern 준수).
+description: scout v0.3.0 에이전트가 단계 9c (정형화) 진입 시 호출하는 스킬. **6 인풋 자료(F-카탈로그 + FS + PRD + domain + user-manual + mindmap)의 합집합**을 흡수하여 최종 읽기 산출물 1/2인 `feature-spec.md` 단일 markdown(§0~§8 9섹션)을 작성한다. §1 8번 컬럼(상세 정책)은 **8단 bullet 정형 강제** (`핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조`), 카테고리별 자료 부재 시 `[자료 부족] (카테고리명 — 확인한 입력)` 통일 마커. 각 §1 FR에 source 객체 부착 (input-manifest.yaml fr_sources). 단계 9c.5 UI surface 감지 + 9c.6 자가 검증 + 9d.5 cross-check 발행 게이트 연쇄. 추정 금지·자동 채움 X (bridge-wrapping-pattern 준수).
 ---
 
 # docs-to-function-spec (v0.3.0)
@@ -10,7 +10,7 @@ scout v0.3.0의 단계 9c (정형화 — 기능정의서) 진입 시 호출. 최
 ## v0.3.0 변경 (SDD ../../docs/qa-scout/spec.md)
 
 - **다중 SoT 합집합** (§4-1): v0.2.9의 F-카탈로그 단일 SoT 채택 폐기. 6 인풋(F-catalog / FS-derived / PRD-derived / domain-derived / user-manual-derived / mindmap-leaf-derived) 합집합에서 §1 FR 도출. 이로써 카탈로그 외 UI 기능 누락(예: 알림·로그북·이력 분리) 회피
-- **8 카테고리 정형 강제** (§4-2): §1 9번 컬럼은 8단 bullet 의무. 카테고리별 자료 부재 시 `[자료 부족] (카테고리명 — 확인한 입력)` 통일 마커. 자유 흐름·dash-only 금지
+- **8 카테고리 정형 강제** (§4-2): §1 8번 컬럼은 8단 bullet 의무. 카테고리별 자료 부재 시 `[자료 부족] (카테고리명 — 확인한 입력)` 통일 마커. 자유 흐름·dash-only 금지
 - **source 객체 부착** (§4-1-2): 각 §1 FR에 input-manifest.yaml `fr_sources[<FR-ID>]` 생성 (primary_tier + primary_path + primary_section + secondary_sources[]). F-catalog 흡수 시 secondary_sources에 FS/PRD 인용
 - **단계 9c.5 UI surface 감지** (§4-1-4): ui-menu-mindmap.md leaf 중 §1 미매핑 후보를 `qa-handoff/{project}/unmapped-leaves.yaml` candidate로 등록. §1 본문 자동 진입 금지 (Auto-Healing Loop 차단, `bridge-wrapping-pattern` 메모리 준수)
 - **단계 9c.6 자가 검증** (§4-5): pre-publish 9항 체크리스트 — `verify-8-categories.py` exit code 0 + source_tier_review 6 tier + fr_sources primary 부착 + 자료부족 마커 통일 + mindmap 매핑 + candidate 0건 + 옵션 D layout 정합 + 변경 이력 row
@@ -43,7 +43,7 @@ v0.2.9 manifest는 신규 4 슬롯(sources/source_tier_review/fr_sources/unmappe
 - `domain-knowledge/02-state-transition.{ext}` → §5 상태 전이 요약 흡수
 - `domain-knowledge/04-permission-matrix.{ext}` → §4 권한 매트릭스 흡수
 - `domain-knowledge/05-glossary.{ext}` → §6 용어집 흡수
-- `domain-knowledge/01-user-scenario.{ext}` → §1 9번 컬럼·§3 사용자 스토리 인용 (본문 흡수 X)
+- `domain-knowledge/01-user-scenario.{ext}` → §1 8번 컬럼·§3 사용자 스토리 인용 (본문 흡수 X)
 - `domain-knowledge/03-screen-layout.{ext}` → 본 스킬 범위 외 (`docs-to-ui-menu-mindmap` 처리)
 
 ### input-manifest.yaml 슬롯 (메타 동기용)
@@ -120,7 +120,7 @@ frontmatter `gate_decided_at`은 manifest `execution_gate.confirmed_at`과 의�
 - 프로젝트명·솔루션 종류·핵심 가치·대상 사용자·플랫폼·문서 버전·문서 상태·AI 작성자·최초 작성일·최종 수정일·관련 문서 → PRD + manifest
 - 사람 검수자·배포 지역 → `[현업 확인 필요]` 마커 (검수자가 채움)
 
-### 4) §1 17컬럼 본체 채움 (기존 03_기능정의서 본체 — 양식 유지)
+### 4) §1 13컬럼 본체 채움 (기존 03_기능정의서 본체 — 양식 유지)
 
 #### 4-1. F-NNN 단위 분해
 한 섹션 = 한 기능. F-NNN 번호 순차 부여.
@@ -138,7 +138,9 @@ frontmatter `gate_decided_at`은 manifest `execution_gate.confirmed_at`과 의�
 
 결번 허용 (삭제된 ID 재사용 금지 — GxP 추적 무결성). 0 패딩 3자리 (`001` ~ `999`).
 
-#### 4-2. 17컬럼 채움 (각 F-NNN당)
+#### 4-2. 13컬럼 채움 (각 F-NNN당)
+
+> 사전 조건·입력(Input)·상태 전이·출력(Output) 4개 컬럼은 SPEC-2026-06-25에서 제거. 해당 정보는 8번 상세 정책의 8단 카테고리(경계 조건·상태 전이 등)에 흡수.
 
 | # | 컬럼 | 채움 가이드 |
 |---|---|---|
@@ -149,16 +151,12 @@ frontmatter `gate_decided_at`은 manifest `execution_gate.confirmed_at`과 의�
 | 5 | 기능명 | 명사형, 15~30자 |
 | 6 | 기능 목적 (Why) | "···을 위해 ···한다" 한 줄 |
 | 7 | 기능 요약 (1줄) | 행위·결과 요약 |
-| 8 | 사전 조건 | 권한·상태·이전 단계 등 |
-| 9 | 상세 정책 / 기능 설명 | **v0.3.0 8단 bullet 정형 강제 (§4-2)** — `핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조`. 카테고리별 자료 부재 시 `[자료 부족] (카테고리명 — 확인한 입력)` 통일 마커. 자유 흐름·dash-only 금지. PRD 본문 인용 + BR 코드 매핑은 핵심 룰·데이터 무결성 bullet에 부착. 01-user-scenario 줄거리는 화면 동작 bullet에 인용. 자가 검증: `verify-8-categories.py` (§4-2-3) |
-| 10 | 입력 (Input) | 필드/타입/필수/검증 규칙 (자유 텍스트 또는 미니 표) |
-| 11 | 처리 로직 (Process) | 1) 2) 3) 단계 |
-| 12 | 상태 전이 | "X → Y" (예: `(none) → ACTIVE`). 02-state-transition이 있으면 본 컬럼·§5 양쪽 동기. |
-| 13 | 출력 (Output) | 화면 갱신·이벤트·DB 변경 |
-| 14 | 예외/에러 처리 | 케이스/메시지·동작/HTTP 코드/BR 코드 — 음성·예외 TC 도출 핵심 |
-| 15 | TC ID | `TC-<PROJECT>-NNN` 다중 (RTM 매핑) — 후공정에서 채움 (공란 OK) |
-| 16 | 인풋 출처 | 행 단위 GxP 추적 — `(PRD §x.x; USER_MANUAL §y.y; BR-XXX-NN; README §z.z [README 출처 — 본문 확인 필요])`. **v0.3.0 추가**: input-manifest.yaml `fr_sources[<FR-ID>]`에 동시 기록 (primary_tier + primary_path + primary_section + secondary_sources[]) — 기계 추적 + Sheets 옵션 D 17번 컬럼 매핑 (§4-1-2·§4-4) |
-| 17 | 비고 | FR↔NFR 연결 노트 등 자유 (예: `<정책명> → NFR-<PROJECT>-NNN 참조`). README에서 추출한 값이면 `[README 출처 — 본문 확인 필요]` 마커 필수. |
+| 8 | 상세 정책 / 기능 설명 | **v0.3.0 8단 bullet 정형 강제 (§4-2)** — `핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조`. 카테고리별 자료 부재 시 `[자료 부족] (카테고리명 — 확인한 입력)` 통일 마커. 자유 흐름·dash-only 금지. PRD 본문 인용 + BR 코드 매핑은 핵심 룰·데이터 무결성 bullet에 부착. 01-user-scenario 줄거리는 화면 동작 bullet에 인용. 사전 조건은 경계 조건, 상태 전이·출력은 상태 전이·부수 효과 bullet에 흡수 (단독 컬럼 SPEC-2026-06-25 제거). 자가 검증: `verify-8-categories.py` (§4-2-3) |
+| 9 | 처리 로직 (Process) | 1) 2) 3) 단계 |
+| 10 | 예외/에러 처리 | 케이스/메시지·동작/HTTP 코드/BR 코드 — 음성·예외 TC 도출 핵심 |
+| 11 | TC ID | `TC-<PROJECT>-NNN` 다중 (RTM 매핑) — 후공정에서 채움 (공란 OK) |
+| 12 | 인풋 출처 | 행 단위 GxP 추적 — `(PRD §x.x; USER_MANUAL §y.y; BR-XXX-NN; README §z.z [README 출처 — 본문 확인 필요])`. **v0.3.0 추가**: input-manifest.yaml `fr_sources[<FR-ID>]`에 동시 기록 (primary_tier + primary_path + primary_section + secondary_sources[]) — 기계 추적 + Sheets 옵션 D 인풋 출처 컬럼 매핑 (§4-1-2·§4-4) |
+| 13 | 비고 | FR↔NFR 연결 노트 등 자유 (예: `<정책명> → NFR-<PROJECT>-NNN 참조`). README에서 추출한 값이면 `[README 출처 — 본문 확인 필요]` 마커 필수. |
 
 ### 5) §2~§7 받기 5종 흡수 + 변경이력
 
@@ -182,7 +180,7 @@ frontmatter `gate_decided_at`은 manifest `execution_gate.confirmed_at`과 의�
 #### 5-4. §5 상태 전이 요약 (받기 02-state-transition 흡수)
 | 상태 | 허용 행위 | 발화 조건 | 다음 상태 | 관련 FR |
 
-§1 12번 상태 전이 컬럼과 동기. Mermaid·PNG 원본은 `_source/`에 그대로.
+§1 8번 상세 정책의 '상태 전이' 카테고리 bullet과 동기 (상태 전이 단독 컬럼은 SPEC-2026-06-25 제거). Mermaid·PNG 원본은 `_source/`에 그대로.
 
 #### 5-5. §6 용어집 (받기 05-glossary 흡수)
 | 용어 | 정의 | 동의어 | 영문 표기 | 출처 |
@@ -198,7 +196,7 @@ scout 작성·후공정 정정·검수자 의견 반영 모두 본 §7에 append
 
 ### 5-5. v0.3.0 신규 — 8 카테고리 정형 작성 룰 (§4-2-1)
 
-§1 9번 컬럼(상세 정책)은 8단 bullet 의무 — `핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조`. 각 카테고리별 검색 범위·증거 인용 형식:
+§1 8번 컬럼(상세 정책)은 8단 bullet 의무 — `핵심 룰·경계 조건·상태 전이·권한 게이트·데이터 무결성·화면 동작·부수 효과·참조`. 각 카테고리별 검색 범위·증거 인용 형식:
 
 | 카테고리 | 정의 | 검색 범위 (자료) | 증거 인용 형식 |
 |---|---|---|---|
@@ -237,11 +235,11 @@ for leaf in ui-menu-mindmap.leaves:
         (leaf_id + leaf_path + leaf_screen_id + detected_at + proposed_fr_summary + status: candidate)
 ```
 
-§1 본문 자동 진입 금지 — Auto-Healing Loop 차단 (`bridge-wrapping-pattern` 메모리). 단계 18c에서 명인 또는 검수자가 `status: approved`(§1 승격) 또는 `status: out-of-scope` 결정.
+§1 본문 자동 진입 금지 — Auto-Healing Loop 차단 (`bridge-wrapping-pattern` 메모리). 단계 18c에서 QA 또는 검수자가 `status: approved`(§1 승격) 또는 `status: out-of-scope` 결정.
 
 ### 5-7. v0.3.0 신규 — 단계 9c.6 자가 검증 (§4-5)
 
-`verify-8-categories.py` + 9항 체크리스트 자동 실행. 1건 FAIL 시 scout pre-publish 차단 + 명인 보고. 9항 PASS 후 단계 9d.5 진입.
+`verify-8-categories.py` + 9항 체크리스트 자동 실행. 1건 FAIL 시 scout pre-publish 차단 + QA 보고. 9항 PASS 후 단계 9d.5 진입.
 
 ### 5-8. v0.3.0 신규 — 단계 9d.5 cross-check 발행 게이트 (§4-1-5)
 
@@ -269,7 +267,7 @@ for leaf in ui-menu-mindmap.leaves:
 - 자료에 명시 안 된 항목 X
 - "보통 이런 시스템은..." 일반 지식 채움 X
 - 비즈니스 정책 단정 X — 원본 인용만
-- **README 출처 단정 금지** (SDD §5-11) — README에서 추출한 값은 §1 16번에 `README §x.x` 인용 + 17번에 `[README 출처 — 본문 확인 필요]` 마커
+- **README 출처 단정 금지** (SDD §5-11) — README에서 추출한 값은 §1 12번에 `README §x.x` 인용 + 13번에 `[README 출처 — 본문 확인 필요]` 마커
 
 #### 7-2. 모호 시 즉시 중단
 다음 신호 발견 시 작성 중단·사용자 질의 (5개 패턴):
@@ -310,8 +308,8 @@ B) {해석 2}
    - `candidates_total`·`confirmed`·`rejected` 카운트
    - `rejected_details`에 키워드·발견 위치·취해진 조치 명시
 
-### 8) 출처 표기 (16번 컬럼 핵심 + §4~§6 출처)
-모든 채움 항목 끝에 16번 컬럼에 출처:
+### 8) 출처 표기 (12번 컬럼 핵심 + §4~§6 출처)
+모든 채움 항목 끝에 12번 컬럼에 출처:
 ```
 <PRD 파일> §x.x; <보완 문서> §y.y; BR-<도메인>-NN
 ```
@@ -330,21 +328,21 @@ B) {해석 2}
 - [ ] `execution_policy:` 5필드가 manifest `execution_gate:` 값과 1:1 일치
 - [ ] §0~§8 9섹션 모두 존재 (§8은 placeholder 골격이라도 존재)
 - [ ] 모든 F-NNN에 컬럼 1~13 채움 또는 `[자료 부족]` 마커
-- [ ] 14번 예외/에러 처리 채움 (음성 TC 도출 핵심)
-- [ ] 15번 TC ID는 후공정에서 채움 — 공란 OK
-- [ ] 16번 인풋 출처 누락 행 없음 (행 단위 GxP 추적)
-- [ ] 17번 비고: NFR 연결 등 cross-reference 명시 + README 출처 시 마커 부착
+- [ ] 10번 예외/에러 처리 채움 (음성 TC 도출 핵심)
+- [ ] 11번 TC ID는 후공정에서 채움 — 공란 OK
+- [ ] 12번 인풋 출처 누락 행 없음 (행 단위 GxP 추적)
+- [ ] 13번 비고: NFR 연결 등 cross-reference 명시 + README 출처 시 마커 부착
 - [ ] 사용자 질의 항목 `scout-log.md` 누적
 - [ ] 영역 헤더 이모티콘 X (Sheets 그룹 헤더 mergeCells 적용 X)
 - [ ] **[자료 부족] 마커 self-check 통과 (v0.2.6+)**: 모든 마커가 §단계 7-4 grep 검증 거침. `self_check_results.candidates_total == confirmed + rejected`
 - [ ] §4 권한 매트릭스의 role enum은 프로젝트별 정의 (프로젝트별 고유 명사 X — placeholder만)
-- [ ] §5 상태 전이가 §1 12번 컬럼과 동기 (불일치 시 §7 변경이력 entry)
+- [ ] §5 상태 전이가 §1 8번 상세 정책의 '상태 전이' 카테고리 bullet과 동기 (불일치 시 §7 변경이력 entry)
 - [ ] §7 변경 이력에 본 스킬 호출 entry append (timestamp + 작성자 + 변경 개요)
 - [ ] §8 cross-check 결과 메타 enum이 4종 중 하나 (`PASS | PASS_WITH_NOTES | FAIL | NOT_RUN`) — 초기 작성 시 `NOT_RUN`
 
 #### 9-B. v0.3.0 단계 9c.6 pre-publish 통합 게이트 9항 (SDD §4-5)
 
-scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 scout pre-publish 차단 + 명인 보고 ([[bridge-wrapping-pattern]] 준수). 9항 PASS 후 단계 9d.5 진입 가능.
+scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 scout pre-publish 차단 + QA 보고 ([[bridge-wrapping-pattern]] 준수). 9항 PASS 후 단계 9d.5 진입 가능.
 
 | # | 항목 | 영역 | 검증 방법 | 통과 조건 |
 |---|---|---|---|---|
@@ -355,7 +353,7 @@ scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 sco
 | 5 | 자료부족 마커 통일 | §4-2 | 자유 흐름 cell·`-` 마커 사용 0건. `[자료 부족] (카테고리명 — ...)` 형식만 사용 | regex match `\[자료 부족\] \(.+\)` |
 | 6 | mindmap leaf 매핑 | §4-1 | mindmap leaf와 §1 FR ID 매핑률 100% 또는 unmapped-leaves.yaml에 등록 | 미매핑 + 미등록 leaf 0건 |
 | 7 | unmapped-leaves.yaml status | §4-1 | 모든 항목 `status: approved` 또는 `status: out-of-scope` | `status: candidate` 0건 |
-| 8 | 옵션 D layout 정합 | §4-4 | sheets-layout.json `headers_by_option[<option>]` 길이 == 옵션별 source col 수 (A/B/C=17, D=18) | length match |
+| 8 | 옵션 D layout 정합 | §4-4 | sheets-layout.json `headers_by_option[<option>]` 길이 == 옵션별 source col 수 (A/B/C=14, D=15) | length match |
 | 9 | 변경 이력 v0.x row 존재 | (메타) | spec 마지막 §변경 이력에 본 발행 시점 row 부착 | regex match `^\|\s*0\.\d+\s*\|` |
 
 **§4-3 D-3 readback diff는 본 9항 대상 아님** — D-3은 단계 17b post-publish 전용 차단 게이트 (`markdown-to-sheets` 스킬이 호출). pre-publish ↔ post-publish 경계 분리 (§4-5).
@@ -365,7 +363,7 @@ scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 sco
 - §8 cross-check 결과는 본 스킬에서 채우지 않음 — 단계 9d.5 cross-check 게이트가 채움.
 - 받기 5종 중 03-screen-layout은 본 스킬 범위 외 (마인드맵 스킬 처리).
 - Sheets 이행은 본 스킬 범위 외 — 단계 17a `markdown-to-sheets` 스킬이 처리.
-- 마이그레이션 (v0.2.9 → v0.3.0)은 본 스킬 범위 외 — `scripts/migrate-to-v030.py`가 처리.
+- 마이그레이션 (v0.2.7/v0.2.8 → v0.2.9)은 본 스킬 범위 외 — `scripts/migrate-to-v030.py`가 처리.
 
 ## 참조
 - spec: `../../docs/qa-scout/spec.md` §5-1-1 · §5-2 · §5-8 단계 9c · §5-9 cross-check
@@ -383,6 +381,6 @@ scout 단계 9c 완료 직후 단계 9c.6에서 자동 실행. 1건 FAIL 시 sco
 |---|---|---|
 | 0.1 | 2026-04-30 | 초기 작성 (markdown function-spec.md 자유 양식, 35컬럼 base) |
 | 0.2 | 2026-05-06 | 17컬럼 표준 양식 적응 (영역 헤더 폐지·이모티콘 제거·TC ID·인풋 출처·비고 추가). spec: ../../docs/qa-scout/spec.md |
-| 0.2.6 | 2026-05-07 | [자료 부족] 마커 self-check (단계 4-4 grep 자동 검증) 추가. dogfood 프로젝트 산출물 검증 누락 회피 경험 반영. |
+| 0.2.6 | 2026-05-07 | [자료 부족] 마커 self-check (단계 4-4 grep 자동 검증) 추가. dogfood 프로젝트 산출물 검증 9건 회피 경험 반영. |
 | 0.2.9 | 2026-05-21 | 5 md → 1 md 압축 (feature-spec.md 단일 산출물). §0~§8 9섹션 작성 + frontmatter execution_policy 동기 + 받기 5종 중 02/04/05 본문 흡수 + 03-screen-layout 분리(마인드맵 스킬) + §8 cross-check placeholder + README 출처 마커. spec: ../../docs/qa-scout/spec.md |
-| 0.3.0 | 2026-05-23 | Coverage Completeness Gate 통합 — F-카탈로그 단일 SoT 폐기, 6 인풋 합집합 변환. §1 9번 컬럼(상세 정책) 8단 bullet 정형 강제 (§4-2-1 카테고리별 검색 범위·증거 인용 형식 + 통일 자료부족 마커). 각 §1 FR에 input-manifest.yaml fr_sources 객체 부착 (primary + secondary_sources). 단계 9c.5 UI surface 감지 신규 (unmapped-leaves.yaml candidates 분리). 단계 9c.6 자가 검증 9항 + verify-8-categories.py 호출. 단계 9d.5 cross-check 발행 게이트 3 방향 검증. spec: ../../docs/qa-scout/spec.md |
+| 0.3.0 | 2026-05-23 | Coverage Completeness Gate 통합 — F-카탈로그 단일 SoT 폐기, 6 인풋 합집합 변환. §1 8번 컬럼(상세 정책) 8단 bullet 정형 강제 (§4-2-1 카테고리별 검색 범위·증거 인용 형식 + 통일 자료부족 마커). 각 §1 FR에 input-manifest.yaml fr_sources 객체 부착 (primary + secondary_sources). 단계 9c.5 UI surface 감지 신규 (unmapped-leaves.yaml candidates 분리). 단계 9c.6 자가 검증 9항 + verify-8-categories.py 호출. 단계 9d.5 cross-check 발행 게이트 3 방향 검증. spec: ../../docs/qa-scout/spec.md |

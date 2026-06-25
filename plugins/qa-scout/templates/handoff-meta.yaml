@@ -1,10 +1,10 @@
 # domain-knowledge/{N}-{받기5종}.meta.yaml 템플릿
 # 받기 5종 자료 (사용자 시나리오·상태 전이도·화면 전개도·권한 매트릭스·도메인 용어집)에 첨부되는 메타
-# 본 양식은 spec docs/qa-scout/spec.md §4-3 기반
+# 본 양식은 spec ../../docs/qa-scout/spec.md §4-3 기반
 
 # 필수 필드
-project: <project_name>          # PROJECT 헤더 값 (예: myapp)
-domain: <domain_name>            # 중분류 (예: USER_PERMISSION)
+project: <project_name>          # PROJECT 헤더 값 (예: <project>)
+domain: <domain_name>            # 중분류 (예: <중분류 코드> — 프로젝트별 정의)
 category: <category>             # user-scenario | state-transition | screen-layout | permission-matrix | glossary
 source:                          # 원본 파일명 — 다중 인풋 결합 시 (G17) 배열
   - <원본 파일1 상대 경로>

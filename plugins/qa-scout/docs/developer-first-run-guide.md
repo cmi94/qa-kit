@@ -1,16 +1,16 @@
-# Scouter (qa-scout) v0.3.0 — 개발자 최초 실행 가이드
+# Scouter (qa-scout) v0.2.9 — 개발자 최초 실행 가이드
 
 > 본 가이드는 처음 Scouter를 받는 개발자가 자기 개발 폴더에서 1회차 실행을 완료하기 위한 단계별 안내다. 변수형(`<project>`, `<도메인>` 등)으로 작성됐으며 특정 프로젝트 도메인을 가정하지 않는다.
 
-- **버전**: v0.3.0 (최종 읽기 산출물 2종 압축 + 단계 1c execution gate + 단계 4a README discovery + 단계 9d.5 cross-check)
+- **버전**: v0.2.9 (최종 읽기 산출물 2종 압축 + 단계 1c execution gate + 단계 4a README discovery + 단계 9d.5 cross-check)
 - **대상**: 개발자(자기 개발 환경에서 Scouter 1회차 호출)
 - **선행 안내서**: [qa-kit README (public)](https://github.com/cmi94/qa-kit/blob/main/plugins/qa-scout/README.md)
-- **SDD (v0.3.0 최신)**: `../../docs/qa-scout/spec.md`
+- **SDD (v0.2.9 최신)**: `../../docs/qa-scout/spec.md`
 - **이전 SDD (역사적 참조)**: `../../docs/qa-scout/spec.md` (v0.2.8) · `../../docs/qa-scout/spec.md` (v0.2.7)
 
 ---
 
-## 1. Scouter v0.3.0 목적
+## 1. Scouter v0.2.9 목적
 
 Scouter는 개발자가 보유한 다음 자료를 받아 QA용 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)으로 압축 정형화하는 Claude Code 플러그인이다.
 
@@ -23,24 +23,24 @@ Scouter는 개발자가 보유한 다음 자료를 받아 QA용 **단일 markdow
 - ERD / 아키텍처
 - 운영가이드 / 매뉴얼 / 상세 설계 문서
 
-### v0.3.0 핵심 변화 — 최종 읽기 산출물 2종 압축
+### v0.2.9 핵심 변화 — 최종 읽기 산출물 2종 압축
 
 v0.2.8까지 검수자가 읽는 산출물은 `feature-spec/` 폴더의 markdown 5개(표지·변경이력·기능정의서·비기능·사용자스토리) + `domain-knowledge/` 5종(사용자시나리오·상태전이·화면전개도·권한·용어집)로 분산되어 한 행의 근거를 보려면 5~6개 파일을 동시에 열어야 했다.
 
-v0.3.0는 다음 2개 markdown으로 압축한다.
+v0.2.9는 다음 2개 markdown으로 압축한다.
 
 1. **`feature-spec.md`** — "무엇을 해야 하는가" §0~§8 9섹션 단일 markdown. 기존 5 md(01~05) + 받기 5종 중 02/04/05(상태·권한·용어집)를 본문 흡수 + §8에 cross-check 결과.
 2. **`ui-menu-mindmap.md`** — "어디에 있고 어떻게 연결되는가" §0~§6 7섹션 단일 markdown. 메인 화면 → 대메뉴 → 중메뉴 → 화면 → 탭/패널/모달 → 버튼/폼/테이블/row action 트리. Mermaid mindmap 시각 + 노드 상세 표(SoT) + deep_screen_targets[] 매핑 + cross-check 결과.
 
-**기존 5시트·분산 문서는 v0.3.0에서 최종 읽기 산출물이 아닌 내부 이행·호환·후공정 자산으로 위계가 정리됐다.** feature-spec/ 5 md는 단일 `feature-spec.md` 9섹션으로 흡수 통합되고, domain-knowledge/ 5종은 `_source/`에 보존 + 본문 인용·요약 흡수.
+**기존 5시트·분산 문서는 v0.2.9에서 최종 읽기 산출물이 아닌 내부 이행·호환·후공정 자산으로 위계가 정리됐다.** feature-spec/ 5 md는 단일 `feature-spec.md` 9섹션으로 흡수 통합되고, domain-knowledge/ 5종은 `_source/`에 보존 + 본문 인용·요약 흡수.
 
-### v0.3.0 신규 게이트 3종
+### v0.2.9 신규 게이트 3종
 
 - **단계 1c execution gate** — 환경·금지 액션·진행 승인 3문 1회. decision 4종 × reviewer_status 4종 1:1 매핑. 액션별 재확인 폐기.
 - **단계 4a README discovery gate** — repo root + 자료 폴더의 README 4 후보 패턴 탐색. README는 요구사항 SoT가 아닌 탐색 힌트.
 - **단계 9d.5 cross-check 게이트** — feature-spec.md ↔ ui-menu-mindmap.md 양방향 정합 검증. 판정 4종(`PASS | PASS_WITH_NOTES | FAIL | NOT_RUN`). 자동 보정 X.
 
-### v0.3.0 표현 변경
+### v0.2.9 표현 변경
 
 v0.2.8 표현 layer → **"승인 범위 밖 상태 변경 액션 금지"**. execution_gate.decision 기반 실행 범위 결정 — 개발/QA/테스트 환경 + 금지 항목 없음 + 진행 승인 시 상태 변경 액션까지 실행 검증 가능. 운영 환경(prod)·운영 데이터 환경 상태 변경 액션은 항상 금지 (운영 보호 유지).
 
@@ -88,27 +88,28 @@ v0.2.8 표현 layer → **"승인 범위 밖 상태 변경 액션 금지"**. exe
 
 ## 3. v0.2.7/v0.2.8 산출물 보유 시 — 마이그레이션 안내 (단계 -1a)
 
-기존 `qa-handoff/<project>/input-manifest.yaml`이 v0.2.7 또는 v0.2.8 schema면 본 단계에서 v0.3.0으로 마이그레이션한다.
+기존 `qa-handoff/<project>/input-manifest.yaml`이 v0.2.7 또는 v0.2.8 schema면 본 단계에서 v0.2.9로 마이그레이션한다.
 
 ```bash
 # 1. dry-run preview — 변경될 schema_version + 추가될 슬롯 검토 (파일 미수정)
-python plugins/qa-scout/scripts/migrate-to-v030.py qa-handoff/<project>/input-manifest.yaml dry-run
+node plugins/qa-scout/scripts/migrate-to-v029.mjs qa-handoff/<project>/input-manifest.yaml dry-run
 
 # 2. 사용자 확인 — 출력 JSON의 schema_version_change + slots_to_append 검토 후 Y/N
 
 # 3. write 적용 — backup 생성 후 원본 갱신
-python plugins/qa-scout/scripts/migrate-to-v030.py qa-handoff/<project>/input-manifest.yaml write
+node plugins/qa-scout/scripts/migrate-to-v029.mjs qa-handoff/<project>/input-manifest.yaml write
 ```
 
 `write` 모드 동작:
 - backup 생성: `<manifest>.v<현재버전>-backup-<YYYYMMDDTHHMMSSZ>`
 - schema_version 갱신 (`0.2.7` 또는 `0.2.8` → `0.2.9`)
-- 누락된 v0.3.0 신규 슬롯 4종을 EOF에 append (이미 존재 시 보존):
+- 누락된 v0.2.9+ 신규 슬롯을 EOF에 append (이미 존재 시 보존):
   - `final_artifacts` (feature-spec.md + ui-menu-mindmap.md 경로·hash)
   - `execution_gate` (decision 4종, 마이그레이션 시 안전 기본값 `context-insufficient`)
+  - `playwright_verification` (단계 9e 실행 상태·evidence·문서-화면 gap)
   - `readme_discovery` (마이그레이션 시 `scanned: false`)
   - `two_doc_cross_check` (마이그레이션 시 `result: NOT_RUN`)
-- 이미 v0.3.0 manifest면 no-op (멱등성)
+- 이미 v0.2.9 manifest면 no-op (멱등성)
 - 기존 `downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]` · `received_artifacts` 구조는 모두 보존
 
 **마이그레이션은 게이트 결과를 추정하지 않는다.** 안전 기본값만 채운 뒤 단계 1c/4a/9d.5 재실행으로 실제 결과를 채워야 한다 (Auto-Healing Loop 차단 패턴 — memory `feedback_bridge_wrapping_pattern`).
@@ -136,16 +137,31 @@ python plugins/qa-scout/scripts/migrate-to-v030.py qa-handoff/<project>/input-ma
 
 1. **단계 1**: engagement context 5항목 (개발자 gmail·테스트 URL·테스트 계정·어드민 계정·인계 매체)
 2. **단계 1b**: deep-scope 5문 (§5)
-3. **단계 1c (v0.3.0 신규)**: execution gate 3문 (§6)
+3. **단계 1c (v0.2.9 신규)**: execution gate 3문 (§6)
 4. **단계 2~4**: 자료 폴더 경로 입력
-5. **단계 4a (v0.3.0 신규)**: README discovery gate (§7)
+5. **단계 4a (v0.2.9 신규)**: README discovery gate (§7)
 6. **단계 5~12**: 자료 큐레이션 → 정형화 → 완료 보고
+
+게이트 질문은 모두 선택지형으로 묻는다. 각 질문은 `권장 선택`·`선택지`·`직접 입력`을 제공하고, Scouter가 `CLAUDE.md`·`README*`·`docs/**/README.*`에서 찾은 근거 파일 또는 `근거: 후보 없음 - 자유 입력 필요`를 함께 표시한다.
+
+게이트 완료 후와 백그라운드 대기 중에는 한 줄 요약 대신 진행표를 출력한다. `진행 중`은 항상 1개 단계만 표시한다.
+
+| 단계 | 작업 | 상태 |
+|---|---|---|
+| 1~1c | 게이트 인터뷰 | 완료/진행 중/대기 |
+| 4a | README discovery | 완료/진행 중/대기 |
+| 5 | 자료 큐레이션 | 완료/진행 중/대기 |
+| 9b | UI 마인드맵 초안 | 완료/진행 중/대기 |
+| 9c | 기능정의서 초안 | 완료/진행 중/대기 |
+| 9e | Playwright 라이브 검증 | 완료/진행 중/대기/스킵/차단/실패 |
+| 9d.5 | 문서-화면 cross-check | 완료/진행 중/대기 |
+| 12 | 완료 보고 | 완료/진행 중/대기 |
 
 ---
 
 ## 5. Scouter가 묻는 deep-scope 질문 5개 (단계 1b)
 
-engagement context 5항목 답변 직후·단계 1c execution gate 직전에 Scouter가 다음 5개 질문을 **한 번에 묶어서** 묻는다. 답변은 자유 텍스트 가능.
+engagement context 5항목 답변 직후·단계 1c execution gate 직전에 Scouter가 다음 5개 질문을 **한 번에 묶어서** 묻는다. 답변은 자유 텍스트 가능하다. 각 질문은 권장 선택·선택지·직접 입력 형식으로 표시되며, 근거 파일을 함께 표시한다.
 
 1. 이 프로젝트에서 **기능정의서 누락이 절대 나면 안 되는 핵심 기능**은 무엇입니까?
 2. 화면 depth가 깊거나 내부 구조가 복잡해 반드시 **상세 확인해야 하는 화면/기능**은 무엇입니까?
@@ -159,9 +175,9 @@ engagement context 5항목 답변 직후·단계 1c execution gate 직전에 Sco
 
 ---
 
-## 6. 단계 1c — execution gate 3문 (v0.3.0 신규)
+## 6. 단계 1c — execution gate 3문 (v0.2.9 신규)
 
-deep-scope 5문 직후·자료 폴더 경로 입력 직전에 Scouter가 다음 3문을 묻는다. **액션별 재확인 폐기 — 시작 1회 게이트로 환경·금지 액션·진행 승인을 한 번에 결정**한다.
+deep-scope 5문 직후·자료 폴더 경로 입력 직전에 Scouter가 다음 3문을 묻는다. **액션별 재확인 폐기 — 시작 1회 게이트로 환경·금지 액션·진행 승인을 한 번에 결정**한다. 각 문항은 권장 선택·선택지·직접 입력 형식으로 표시되며, 근거 파일을 함께 표시한다.
 
 ```
 1. 현재 URL/접근 조건은 local/dev/QA/staging 중 어느 환경입니까?
@@ -184,13 +200,13 @@ decision 4종 × reviewer_status 4종 1:1 매핑:
 - `feature-spec.md` frontmatter `execution_policy:` (5필드)
 - `ui-menu-mindmap.md` frontmatter `execution_policy:` (5필드, feature-spec.md와 1:1 일치 강제)
 
-**v0.3.0 표현 변경**: v0.2.8 표현 layer → "**승인 범위 밖 상태 변경 액션 금지**". 본 게이트의 decision이 결정한 실행 범위 안의 액션만 수행하고, 범위 밖은 관찰만 또는 금지. 운영 환경·운영 데이터 환경 상태 변경 액션은 decision 무관 항상 금지.
+**v0.2.9 표현 변경**: v0.2.8 표현 layer → "**승인 범위 밖 상태 변경 액션 금지**". 본 게이트의 decision이 결정한 실행 범위 안의 액션만 수행하고, 범위 밖은 관찰만 또는 금지. 운영 환경·운영 데이터 환경 상태 변경 액션은 decision 무관 항상 금지.
 
 본 게이트는 시작 1회만 묻는다. 단계 9e verifier·후공정 reviewer는 본 게이트 결정만 참조하고 액션별 재확인 안 함.
 
 ---
 
-## 7. 단계 4a — README discovery gate (v0.3.0 신규)
+## 7. 단계 4a — README discovery gate (v0.2.9 신규)
 
 자료 폴더 경로 수신 직후·단계 5 자동 스캔 직전에 Scouter가 다음 4 후보 패턴으로 README를 탐색한다.
 
@@ -257,7 +273,7 @@ README 부재 시 본 게이트 skip + `readme_discovery.scanned: false` 기록.
 
 특정 질문에 대해 자료가 없거나 정책이 확정되지 않은 경우 "모름" 또는 "현재 미정"으로 답변하면 된다. Scouter는 해당 항목을 `[자료 부족]` 또는 `[상세 화면 구조 부족]` 마커로 남기고 추정하지 않는다.
 
-단계 1c execution gate 3문 중 답변이 부재하거나 환경이 불명확하면 decision = `context-insufficient`로 결정되어 **실행 금지** 상태가 된다. 답변 갱신은 명인 명시 재실행 시만 가능.
+단계 1c execution gate 3문 중 답변이 부재하거나 환경이 불명확하면 decision = `context-insufficient`로 결정되어 **실행 금지** 상태가 된다. 답변 갱신은 QA 명시 재실행 시만 가능.
 
 ### 8-3. 민감 접근 정보는 본 문서에 직접 적지 말 것
 
@@ -283,17 +299,33 @@ README 부재 시 본 게이트 skip + `readme_discovery.scanned: false` 기록.
 
 명시하지 않은 액션은 단계 1c 게이트의 decision을 따른다. 명시한 액션 + decision 둘 다 보존되어 후공정에서 참조 가능.
 
+### 8-5. Playwright 라이브 검증은 기본 실행 시도
+
+단계 9e는 `[자료 부족]` 조건이 아니라 테스트 URL·테스트 계정·execution_gate 정보 존재 여부를 기준으로 실행 시도한다.
+
+- `full-execute`: 테스트 데이터 기준 상태 변경 액션까지 실행 가능
+- `partial-execute`: 허용 액션만 실행, forbidden_actions[]는 관찰만
+- `observe-only`: read-only 탐색
+- `context-insufficient`: 실행하지 않고 사유 기록
+
+검증 결과는 `RUN | SKIP | FAIL | BLOCKED` 중 하나로 기록한다. `RUN`은 브라우저 실행, 로그인 또는 로그인 불필요 확인, 1개 이상 화면 방문, evidence 1건 이상이 모두 충족될 때만 허용된다.
+
+Playwright가 잡는 gap:
+- `SPEC-MISSING`: 화면에는 있으나 기능정의서/문서에 없는 항목
+- `SCREEN-MISSING`: 문서에는 있으나 화면에서 확인되지 않는 항목
+- `DOC-SCREEN-MISMATCH`: 문서 내용과 화면 동작/라벨/흐름이 다른 항목
+
 ---
 
-## 9. 산출물 기대값 (v0.3.0 최종 읽기 산출물 2종)
+## 9. 산출물 기대값 (v0.2.9 최종 읽기 산출물 2종)
 
-Scouter 실행이 완료되면 자기 개발 폴더의 `qa-handoff/<project>/`에 다음 산출물이 생성된다.
+Scouter 실행이 완료되면 자기 개발 폴더의 `qa-handoff/<project>/`에 최종 산출물 2종과 보조 자산이 생성된다.
 
 ```
 qa-handoff/<project>/
-├── feature-spec.md                      ← v0.3.0 최종 읽기 산출물 1/2 (단일 markdown, §0~§8 9섹션)
+├── feature-spec.md                      ← v0.2.9 최종 읽기 산출물 1/2 (단일 markdown, §0~§8 9섹션)
 │   * §0 표지 (메타 14항목 + execution_gate 3행)
-│   * §1 기능 행 17컬럼 (FR-<PROJECT>-NNN)
+│   * §1 기능 행 13컬럼 (FR-<PROJECT>-NNN)
 │   * §2 비기능 요구 9컬럼 (NFR-<PROJECT>-NNN)
 │   * §3 사용자 스토리 9컬럼 (US-<PROJECT>-NNN)
 │   * §4 권한 매트릭스 (받기 04 흡수)
@@ -301,7 +333,7 @@ qa-handoff/<project>/
 │   * §6 용어집 (받기 05 흡수)
 │   * §7 변경 이력 (append-only 7컬럼)
 │   * §8 마인드맵 대조 결과 (단계 9d.5 cross-check 결과 — 방향 A 검증 1~4 marker)
-├── ui-menu-mindmap.md                   ← v0.3.0 최종 읽기 산출물 2/2 (단일 markdown, §0~§6 7섹션)
+├── ui-menu-mindmap.md                   ← v0.2.9 최종 읽기 산출물 2/2 (단일 markdown, §0~§6 7섹션)
 │   * §0 범례 (★·★상세·⚠·marker 5종)
 │   * §1 Mermaid mindmap (시각 보조 — 최대 6단계 깊이)
 │   * §2 노드 상세 표 (SoT — 11컬럼, 노드 enum 14종)
@@ -316,7 +348,7 @@ qa-handoff/<project>/
 │   ├── 04-permission-matrix.<원본 확장자> ← _source/ 보존 + feature-spec.md §4 요약 흡수
 │   └── 05-glossary.<원본 확장자>        ← _source/ 보존 + feature-spec.md §6 요약 흡수
 ├── _source/                             ← 모든 입력 자료 원본 사본 (read-only, GxP 추적 + 재현 자산)
-├── input-manifest.yaml                  ← 메타·재현 자산 (schema_version "0.2.9" + 신규 슬롯 4종)
+├── input-manifest.yaml                  ← 메타·재현 자산 (schema_version "0.2.9" + execution_gate/readme/playwright/cross-check 슬롯)
 ├── scout-log.md                         ← 질의·결정·게이트 이력 (append-only)
 └── research-seed.md                     ← 연구팀 입력 자산 (후공정용, deep_screen_targets[] 있을 때만 생성)
 
@@ -358,7 +390,7 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 - `FAIL`: marker 부착 누락 또는 위험 액션 한쪽만 표시
 - `NOT_RUN`: cross-check 미실행 초기 상태 (마이그레이션 직후 또는 단계 9d.5 진입 전)
 
-**자동 보정 X — marker만 남기고 명인 검토 후 결정** (Auto-Healing Loop 차단 패턴).
+**자동 보정 X — marker만 남기고 QA 검토 후 결정** (Auto-Healing Loop 차단 패턴).
 
 ### 9-3. 본 단계에서 만들어지지 않는 것
 
@@ -383,15 +415,15 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
    - **옵션 B**: 8시트 — 옵션 A + 06_권한매트릭스·07_상태전이·08_용어집. §8 cross-check는 markdown SoT.
    - **옵션 C**: 1시트 — 03_기능정의서만 (최소 발행).
    - **`ui-menu-mindmap.md`는 Sheets 이행 X** — markdown 보조 산출물로 유지 (Mermaid 트리는 Sheets 친화도 낮음).
-5. **reviewer 검증** — 새 Sheets를 기준으로 Codex Playwright reviewer 또는 명인 직접 검수를 진행. 10 enum 판정(PASS · FAIL · SCREEN-MISSING · SPEC-MISSING · PERMISSION-MISMATCH · BEHAVIOR-MISSING · VARIABLE-MISMATCH · STATE-MISMATCH · NOT-TESTED-RISKY-ACTION · CONTEXT-INSUFFICIENT) 중 하나로 모든 행을 분류.
-6. **반영 결정** — 명인 보고 + 개발팀 후속 확인(자료 요청·확정 요청 분리 패키지) 후 baseline에 머지.
+5. **reviewer 검증** — 새 Sheets를 기준으로 Codex Playwright reviewer 또는 QA 직접 검수를 진행. 10 enum 판정(PASS · FAIL · SCREEN-MISSING · SPEC-MISSING · PERMISSION-MISMATCH · BEHAVIOR-MISSING · VARIABLE-MISMATCH · STATE-MISMATCH · NOT-TESTED-RISKY-ACTION · CONTEXT-INSUFFICIENT) 중 하나로 모든 행을 분류.
+6. **반영 결정** — QA 보고 + 개발팀 후속 확인(자료 요청·확정 요청 분리 패키지) 후 baseline에 머지.
 
 ### 10-2. 책임 경계 요약
 
 | 영역 | 책임 | 산출물 종착점 |
 |---|---|---|
 | **Scouter (qa-scout 플러그인, 본 가이드 범위)** | 개발자 자료 → markdown 2종 정형화 + execution_gate + README discovery + cross-check 수집 | `qa-handoff/<project>/` |
-| **QA 후공정 (메인 QA 파트너)** | baseline 비교 · candidate 보정 · **Google Sheets 신규 생성 (옵션 A/B/C)** · reviewer 발주 · 명인 보고 | `knowledge/<project>/scout-handoff/` + Google Sheets |
+| **QA 후공정 (메인 QA 파트너)** | baseline 비교 · candidate 보정 · **Google Sheets 신규 생성 (옵션 A/B/C)** · reviewer 발주 · QA 보고 | `knowledge/<project>/scout-handoff/` + Google Sheets |
 | **연구팀 (`ai-research/`, Gemini CLI, 선택형)** | candidate research-pack 검증 + evidence-matrix 보강 | `ai-research/results/<date>-<project>-feature-spec-enrichment/` |
 | **감사팀 (`ai-audit/`, Codex, 선택형)** | Sheets 기준 reviewer 발주 | `ai-audit/results/<date>-<project>-feature-spec-playwright-review/` |
 
@@ -402,7 +434,7 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 1. 운영 환경과 분리된 스테이징/테스트 환경 정보 확보
 2. 테스트 전용 ID + PW 계정 확보 (운영 계정 사용 금지)
 3. 외부 메일/알림 차단 환경 확인
-4. 명인 명시 승인 + execution_gate.decision 준수 (`observe-only`·`context-insufficient` 시 read-only 진입 강제)
+4. QA 명시 승인 + execution_gate.decision 준수 (`observe-only`·`context-insufficient` 시 read-only 진입 강제)
 
 위 4 조건 중 하나라도 미충족 시 reviewer 결과는 `CONTEXT-INSUFFICIENT`로 남는다. Scouter 본체에서는 라이브 환경에 단계 1c execution gate decision 외 자율로 접속하지 않는다.
 
@@ -422,35 +454,35 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 
 단계 12b post-crawl 재확인 게이트에서 1회 다시 묻습니다. 큐레이션·정형화 1차 결과를 본 후 추가 후보(예: "이 화면도 깊은 뎁스로 보이는데 맞습니까?") + 빠진 상태 변경 액션 후보를 묻습니다. 이 1회로 종결되며 무한 질의 루프를 만들지 않습니다.
 
-단계 1c execution gate 3문은 시작 1회만 묻고, 액션별 재확인은 폐기됐습니다. 환경이 바뀐 경우 명인 명시 재실행으로만 갱신합니다.
+단계 1c execution gate 3문은 시작 1회만 묻고, 액션별 재확인은 폐기됐습니다. 환경이 바뀐 경우 QA 명시 재실행으로만 갱신합니다.
 
 ### Q3. Google Sheets MCP / Playwright MCP / Codex / Gemini CLI가 설치되어 있어야 합니까?
 
 **아니오**. 본 Scouter plugin의 필수 의존성은 Claude Code 본체뿐입니다.
 
 - **Google Sheets MCP**: QA 측 단계 17a `markdown-to-sheets` 호출 시만 필요 (개발자 본체 사용 X).
-- **Playwright MCP**: 단계 9e verifier가 라이브 URL 제공 + execution_gate가 허용 시 조건부 사용, 미등록 시 graceful skip(에러 X)으로 정상 종료.
+- **Playwright MCP**: 단계 9e verifier가 테스트 URL·테스트 계정·execution_gate 정보를 받으면 기본 실행을 시도. 미등록 시 `BLOCKED`와 사유를 남기고 정상 종료.
 - **Gemini CLI**: 연구팀(선택형 ai-research 발주) 사용 시만 필요.
 - **Codex exec**: 감사팀(선택형 ai-audit 발주) 사용 시만 필요.
 
-### Q4. v0.2.x 산출물을 v0.3.0으로 어떻게 옮깁니까?
+### Q4. v0.2.7/v0.2.8 산출물을 v0.2.9로 어떻게 옮깁니까?
 
-`plugins/qa-scout/scripts/migrate-to-v030.py` 사용 (§3 참조). dry-run → 사용자 확인 → write 순서.
+`plugins/qa-scout/scripts/migrate-to-v029.mjs` 사용 (§3 참조). dry-run → 사용자 확인 → write 순서.
 
-- write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 4종 append.
+- write 모드는 backup 생성 후 schema_version 갱신 + 누락된 신규 슬롯 append.
 - 기존 `downstream_enrichment` · `developer_deep_scope` · `deep_screen_targets[]` 구조는 모두 보존.
-- 이미 v0.3.0면 no-op (멱등성).
+- 이미 v0.2.9면 no-op (멱등성).
 - 마이그레이션은 게이트 결과를 추정하지 않고 안전 기본값만 채움. 실제 결과는 단계 1c/4a/9d.5 재실행으로 채워야 함.
 
 ### Q5. README가 발견됐는데 그 내용을 그대로 기능정의서에 옮겨도 되나요?
 
-안 됩니다. README는 요구사항 SoT가 아닌 **탐색 힌트**. README에서 추출한 값은 `feature-spec.md` §1 16번 인풋 출처에 `README §x.x` 인용 + 17번 비고에 `[README 출처 — 본문 확인 필요]` 마커를 부착합니다. 최신성·정합성은 단계 6 큐레이션에서 확인합니다.
+안 됩니다. README는 요구사항 SoT가 아닌 **탐색 힌트**. README에서 추출한 값은 `feature-spec.md` §1 12번 인풋 출처에 `README §x.x` 인용 + 13번 비고에 `[README 출처 — 본문 확인 필요]` 마커를 부착합니다. 최신성·정합성은 단계 6 큐레이션에서 확인합니다.
 
 `AGENTS.md` / `CLAUDE.md` / `.cursorrules`는 `readme_discovery.agent_guidance_files[]`에 운영 지침으로 별도 기록하되 제품 요구사항으로 변환하지 않습니다.
 
 ### Q6. `feature-spec.md`와 `ui-menu-mindmap.md`가 서로 어긋나면 어떻게 됩니까?
 
-단계 9d.5 cross-check 게이트가 양방향(FR → 노드 / 노드 → FR) 검증을 1회 실행합니다. 누락은 marker(`[화면 위치 확인 필요]` / `SPEC-MISSING` 등)로 양쪽에 남깁니다. 자동 보정 X — 명인 검토 후 결정합니다.
+단계 9d.5 cross-check 게이트가 양방향(FR → 노드 / 노드 → FR) 검증을 1회 실행합니다. 누락은 marker(`[화면 위치 확인 필요]` / `SPEC-MISSING` 등)로 양쪽에 남깁니다. 자동 보정 X — QA 검토 후 결정합니다.
 
 ### Q7. 본 가이드 산출물을 QA에 어떻게 인계합니까?
 
@@ -465,7 +497,7 @@ QA 측은 수령 후 무결성 점검(input-manifest 일치 + hash 검증)을 �
 
 ## 12. 참조
 
-- 본 plugin spec (v0.3.0 최신): `../../docs/qa-scout/spec.md` (최종 산출 문서 2종 + 단계 1c/4a/9d.5)
+- 본 plugin spec (v0.2.9 최신): `../../docs/qa-scout/spec.md` (최종 산출 문서 2종 + 단계 1c/4a/9d.5)
 - 이전 spec: `../../docs/qa-scout/spec.md` (v0.2.8 deep screen coverage)
 - 이전 spec: `../../docs/qa-scout/spec.md` (v0.2.7 개발자 환경 하네스)
 - 이전 spec: `../../docs/qa-scout/spec.md` (v0.2.6 커버리지 자가 검증)
@@ -476,4 +508,4 @@ QA 측은 수령 후 무결성 점검(input-manifest 일치 + hash 검증)을 �
 
 ## 13. 한 줄 요약
 
-> 본 가이드를 따라 `[PROJECT: <project>] scout 호출`로 시작하면, Scouter v0.3.0이 engagement context 5항목 + deep-scope 5문 + **execution gate 3문 (v0.3.0 신규)** + 자료 폴더 큐레이션 + **README discovery (v0.3.0 신규)**를 거쳐 `qa-handoff/<project>/`에 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)을 생성하고 **단계 9d.5 cross-check**로 양방향 정합을 검증한다. **승인 범위 밖 상태 변경 액션은 금지**되고(execution_gate.decision 기반), **Google Sheets 생성은 QA 후공정 책임 (옵션 A/B/C/D 분기)**이며, **모르는 것은 추정 채움 없이 `[자료 부족]` 마커로 남는다**.
+> 본 가이드를 따라 `[PROJECT: <project>] scout 호출`로 시작하면, Scouter v0.2.9가 engagement context 5항목 + deep-scope 5문 + **execution gate 3문 (v0.2.9 신규)** + 자료 폴더 큐레이션 + **README discovery (v0.2.9 신규)**를 거쳐 `qa-handoff/<project>/`에 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)을 생성하고 **단계 9d.5 cross-check**로 양방향 정합을 검증한다. **승인 범위 밖 상태 변경 액션은 금지**되고(execution_gate.decision 기반), **Google Sheets 생성은 QA 후공정 책임 (옵션 A/B/C 분기)**이며, **모르는 것은 추정 채움 없이 `[자료 부족]` 마커로 남는다**.

@@ -394,14 +394,14 @@ agent frontmatter는 alias 사용 (예: `model: haiku`).
     - feature-spec/ markdown 5개 → Sheets 5시트로 자동 이행 (batch_update_cells)
     - `feature-spec.yaml` 작성 (google_sheets_id·url·owner=QA·shared_with=개발자)
     - 04_변경이력 시트 첫 행 추가 (이행 시점 + QA 검수자 ID)
-17b. QA: qa-workbench 저장소 흡수
+17b. QA: QA 측 저장소 흡수
     - 위치: `knowledge/{프로젝트}/scout-handoff/` (제안)
     - markdown 5개 + Sheets URL 메타 + domain-knowledge/ + _source/ + input-manifest + scout-log 모두 보존
     - Sheets가 SoT, markdown은 인계 매개체로 archive
 18a. **인사팀 reviewer 자동 검수** (§5-3 자동 검증, G24 정정 — 검증 대상 명시)
     - **검증 대상** (G24): **Sheets 5시트** (단계 17a 이행 후 — Sheets가 SoT). markdown 단계 검증은 단계 16 무결성 점검에서 처리됨.
     - 헤더·자료부족 마커·환각 패턴·일관성·인풋 출처 ID 유효성 자동 점검 — Google Sheets MCP `get_sheet_data`로 시트 본문 읽어 검증
-    - reviewer 에이전트 호출 (qa-workbench 측)
+    - reviewer 에이전트 호출 (QA 측)
 18b. **인사팀 reviewer 사람 검수** (사람 검수 슬롯)
     - "현업 확인 필요" 슬롯 (배포 지역·검수자 ID 등)
     - "GxP 디테일 보강" 슬롯
@@ -576,7 +576,7 @@ MYAPP USER_PERMISSION이 본 게이트의 첫 인스턴스가 됨 (B/C/D 잔여 
 | 2026-05-06 | §4-4 작업 폴더 구조 신규 + feature-spec.xlsx 5시트 형식 결정 + PROJECT 헤더 입력 명시 | 사용자 지적 — 개발자 측 산출물 저장 표준 부재. qa-handoff/{프로젝트명}/ root 채택, .xlsx 1파일 5시트 채택, 트리거 시 PROJECT 헤더로 폴더명 결정. |
 | 2026-05-06 | 2차 self-review Minor 갭 4건 정정 | G4 (_source/ 범위 명확화 — 모든 입력 자료 사본·domain-knowledge 역할 분리) + G5 (트리거 결정·후속 경계 명확화 — PROJECT 헤더 원칙 확정, 키워드 패턴만 후속) + G6 (영역 헤더 폐지 — 17컬럼 평면, mergeCells 적용 X) + G7 (받기 5종 후공정 처리 정책 — .meta.yaml 식별·양식별 처리·사람 검수 활성화). spec 정합성·구현 명세 향상. |
 | 2026-05-06 | 3차 시나리오 검증 Major 5건 정정 | MYAPP 시나리오 단계 0~12 끝까지 시뮬레이션. G8(폴더 충돌 처리 정책 §4-4) + G9(자료 폴더 경로 형식·검증 §3-2·§5-1) + G10(산출물 도구·스키마 §4-5 신설, ID 체계 §4-6으로 번호 밀림) + G14(Glob 패턴 18개 형식 + 제외 디렉토리 §5-2) + G15(받기 5종 형식별 분기 §4-3 — markdown/Mermaid/PDF/이미지/Excel 처리). 입력→출력 흐름 일관성 + 구현 명세 명확화. |
-| 2026-05-06 | 4차 실제 동작 시나리오 검증 Critical 2 + Major 3 정정 | end-to-end 흐름 QA↔개발자 양방향 인계 보강. G16(PRD 다중 역할 — 정형화 + 권한 매트릭스 발췌, §4-3 정책 추가) + G17(받기 #1 다중 인풋 결합 — 별도 파일 + 인덱스 옵션, §4-3 정책 추가) + G18(단계 13~16 개발자→QA 인계 — zip/git/클라우드 3옵션, §5-1 추가) + G19(단계 17~20 QA 측 후속 처리 — qa-workbench 저장소 흡수·후공정 트리거·검수 피드백, §5-1 추가) + G20(단계 -1 QA→개발자 사전 인계 — install 가이드·사전 안내서·인계 약속, §5-1 추가). spec 범위 확장 (단계 -1 ~ 20 양방향). |
+| 2026-05-06 | 4차 실제 동작 시나리오 검증 Critical 2 + Major 3 정정 | end-to-end 흐름 QA↔개발자 양방향 인계 보강. G16(PRD 다중 역할 — 정형화 + 권한 매트릭스 발췌, §4-3 정책 추가) + G17(받기 #1 다중 인풋 결합 — 별도 파일 + 인덱스 옵션, §4-3 정책 추가) + G18(단계 13~16 개발자→QA 인계 — zip/git/클라우드 3옵션, §5-1 추가) + G19(단계 17~20 QA 측 후속 처리 — QA 측 저장소 흡수·후공정 트리거·검수 피드백, §5-1 추가) + G20(단계 -1 QA→개발자 사전 인계 — install 가이드·사전 안내서·인계 약속, §5-1 추가). spec 범위 확장 (단계 -1 ~ 20 양방향). |
 | 2026-05-06 | 5차 정정 — feature-spec.xlsx → Google Sheets 단일 채택 | 사용자 의견: ".xlsx 도구 부재 한계 + 받기 5종은 개발자 본인 관리". 정형화 산출물 = Google Sheets (Google Sheets MCP 단일 도구). 폴더 구조 `feature-spec.xlsx` → `feature-spec.yaml` (Sheets URL·ID 메타). 협업 친화·실시간 검수·외부 .xlsx 도구 의존 제거. §2-1·§4-1·§4-3·§4-4·§4-5·§5-1·§6 정정. 받기 5종 정책 그대로 — 본문 변환 X, 개발자 본인 원본 관리 강화 명시. |
 | 2026-05-06 | 5차-1 정정 — Sheets 계정·공유 운영 패턴 명시 (§4-5) | 사용자 질의 "개발자 PC에서 QA 계정 인증 가능?". 답: 보안상 권장 X. 표준 패턴 — 개발자 본인 계정으로 시트 생성 + scout-kit이 share_spreadsheet로 QA 이메일 자동 공유. owner=개발자·reviewer=QA 분리 추적 (GxP). feature-spec.yaml에 owner·shared_with 필드 추가. |
 | 2026-05-06 | 6차 정정 — 운영 모드 변경: markdown → QA 이행 + 양방향 검수 | 사용자 의견 "개발자 MCP 인증 안 된 케이스 多. markdown 받고 내가 Sheets 만들고 인사팀 reviewer 체크 + 개발팀 검수 순서?". 답: 권장. (1) 단계 9 산출물 = markdown 5개 (개발자 OAuth 불필요). (2) 단계 17a 신규 — QA 측 markdown→Sheets 이행 (markdown-to-sheets 신규 스킬). (3) 단계 18a~c — 인사팀 자동·사람 검수 + 개발팀 검수. (4) 단계 19 양방향 회귀. (5) Sheets owner=QA 단일점 통제 — 5차-1 패턴 갱신. 신규 스킬 `markdown-to-sheets` 추가. spec §5-1·§4-5·§9. |

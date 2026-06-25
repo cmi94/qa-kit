@@ -133,7 +133,7 @@ mindmap
 
 ## §6 기능정의서 대조 결과 (cross-check — v0.3.0 신규, SDD §5-9)
 
-> `feature-spec.md`와의 양방향 정합 검증 결과. 단계 9d.5에서 1회 실행. **자동 보정 X** — marker만 남기고 명인 검토 후 반영. 별도 제3 문서를 만들지 않는다.
+> `feature-spec.md`와의 양방향 정합 검증 결과. 단계 9d.5에서 1회 실행. **자동 보정 X** — marker만 남기고 QA 검토 후 반영. 별도 제3 문서를 만들지 않는다.
 
 ### cross-check 결과 메타
 
@@ -162,7 +162,7 @@ mindmap
 ### 판정 룰
 
 - **PASS**: 방향 A·B 모든 검증 매핑률 100% + forbidden_actions 양쪽 표시 (또는 full-execute decision으로 양쪽 표시 무관)
-- **PASS_WITH_NOTES**: 매핑률 < 100%이지만 모든 미매핑 항목이 marker(`SPEC-MISSING` / `[문서 근거 부족]` / `[승인 범위 밖 상태 변경 액션 비고 누락]` / `[상세 화면 FR 미분해]`)로 빠짐없이 부착됨. 자동 보정 X, 명인 검토 후 결정
+- **PASS_WITH_NOTES**: 매핑률 < 100%이지만 모든 미매핑 항목이 marker(`SPEC-MISSING` / `[문서 근거 부족]` / `[승인 범위 밖 상태 변경 액션 비고 누락]` / `[상세 화면 FR 미분해]`)로 빠짐없이 부착됨. 자동 보정 X, QA 검토 후 결정
 - **FAIL**: marker 부착 누락 또는 forbidden_actions 한쪽 누락 (`partial-execute`/`observe-only` decision일 때만)
 
 (자세한 검증 룰·방향 A 결과는 `feature-spec.md` §8 참조. 본 §6은 방향 B 결과만 기록 — 양쪽 분리 기록 원칙)

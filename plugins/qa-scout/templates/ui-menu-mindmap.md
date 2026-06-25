@@ -5,7 +5,7 @@ spec: ../../docs/qa-scout/spec.md
 upstream:
   - ../../docs/qa-scout/spec.md
 purpose: |
-  scout v0.2.9 최종 읽기 산출물 2/2. "어디에 있고 어떻게 연결되는가"를 UI 메뉴 마인드맵으로 표현한다.
+  scout v0.3.0 최종 읽기 산출물 2/2. "어디에 있고 어떻게 연결되는가"를 UI 메뉴 마인드맵으로 표현한다.
   v0.2.8까지의 domain-knowledge/03-screen-layout(화면 전개도)을 흡수·대체한다.
   Mermaid mindmap은 시각 보조, §2 노드 상세 표가 SoT.
 location_hint: qa-handoff/{project}/ui-menu-mindmap.md
@@ -13,7 +13,7 @@ project: <project>
 crawler: <playwright-mcp | chrome-mcp | python-playwright | manual | doc-only>
 crawl_evidence: knowledge/{project}/shared/pages/ui-crawl-manifest.yaml
 linked_feature_spec: feature-spec.md
-execution_policy:                         # v0.2.9 신규 — SDD §5-10 (feature-spec.md와 동기)
+execution_policy:                         # v0.3.0 신규 — SDD §5-10 (feature-spec.md와 동기)
   decision: <full-execute | partial-execute | observe-only | context-insufficient>
   reviewer_status: <EXECUTED-TEST-ENV | PARTIAL-OBSERVED | NOT-TESTED-PROD-RISK | CONTEXT-INSUFFICIENT>
   environment_class: <local | dev | qa | staging | prod | unknown>
@@ -27,7 +27,7 @@ related_specs:
 
 # {project} UI 메뉴 마인드맵
 
-> v0.2.9 최종 읽기 산출물. 메인 화면 → 대메뉴 → 중메뉴 → 화면 → 탭/패널/모달 → 버튼/폼/테이블/row action까지 메뉴 트리를 기준으로 파고든다. Mermaid mindmap은 시각 보조, **§2 노드 상세 표가 SoT**. 자동 도출 후 단계 9d.5 cross-check 게이트로 `feature-spec.md`와 양방향 정합 검증.
+> v0.3.0 최종 읽기 산출물. 메인 화면 → 대메뉴 → 중메뉴 → 화면 → 탭/패널/모달 → 버튼/폼/테이블/row action까지 메뉴 트리를 기준으로 파고든다. Mermaid mindmap은 시각 보조, **§2 노드 상세 표가 SoT**. 자동 도출 후 단계 9d.5 cross-check 게이트로 `feature-spec.md`와 양방향 정합 검증.
 
 ## §0 범례
 
@@ -131,18 +131,19 @@ mindmap
 - **gap 분포**: structure-depth-gap `<N>` / behavior-depth-gap `<N>` / variable-behavior-gap `<N>` / state-visibility-gap `<N>` / role-visibility-gap `<N>` / `<승인 범위 밖 상태 변경 액션 미실행>` `<N>` / doc-screen-conflict `<N>`
 - **README discovery (단계 4a)**: 발견 `<N>`건 / 개발자 include `<X>` / exclude `<Y>` — `[README 출처 — 본문 확인 필요]` 마커 노드 `<N>`개
 
-## §6 기능정의서 대조 결과 (cross-check — v0.2.9 신규, SDD §5-9)
+## §6 기능정의서 대조 결과 (cross-check — v0.3.0 신규, SDD §5-9)
 
-> `feature-spec.md`와의 양방향 정합 검증 결과. 단계 9d.5에서 1회 실행. **자동 보정 X** — marker만 남기고 명인 검토 후 반영. 별도 제3 문서를 만들지 않는다.
+> `feature-spec.md`와의 양방향 정합 검증 결과. 단계 9d.5에서 1회 실행. **자동 보정 X** — marker만 남기고 QA 검토 후 반영. 별도 제3 문서를 만들지 않는다.
 
 ### cross-check 결과 메타
 
 | 항목 | 값 |
 |---|---|
 | executed_at | `<ISO 8601>` |
-| result | `<PASS | PASS_WITH_NOTES | FAIL>` |
+| result | `<PASS | PASS_WITH_NOTES | FAIL | NOT_RUN>` |
 | FR 매핑률 (방향 A) | `<0.00 ~ 1.00>` |
 | leaf 매핑률 (방향 B) | `<0.00 ~ 1.00>` |
+| unmapped-leaves candidate (방향 C) | `<0건 — 발행 게이트 PASS 필수>` |
 | forbidden_actions 양쪽 표시 | `<yes | no | n/a — full-execute decision>` |
 | input-manifest 슬롯 | `two_doc_cross_check` |
 | 기능정의서 대응 섹션 | `feature-spec.md` §8 |
@@ -161,7 +162,7 @@ mindmap
 ### 판정 룰
 
 - **PASS**: 방향 A·B 모든 검증 매핑률 100% + forbidden_actions 양쪽 표시 (또는 full-execute decision으로 양쪽 표시 무관)
-- **PASS_WITH_NOTES**: 매핑률 < 100%이지만 모든 미매핑 항목이 marker(`SPEC-MISSING` / `[문서 근거 부족]` / `[승인 범위 밖 상태 변경 액션 비고 누락]` / `[상세 화면 FR 미분해]`)로 빠짐없이 부착됨. 자동 보정 X, 명인 검토 후 결정
+- **PASS_WITH_NOTES**: 매핑률 < 100%이지만 모든 미매핑 항목이 marker(`SPEC-MISSING` / `[문서 근거 부족]` / `[승인 범위 밖 상태 변경 액션 비고 누락]` / `[상세 화면 FR 미분해]`)로 빠짐없이 부착됨. 자동 보정 X, QA 검토 후 결정
 - **FAIL**: marker 부착 누락 또는 forbidden_actions 한쪽 누락 (`partial-execute`/`observe-only` decision일 때만)
 
 (자세한 검증 룰·방향 A 결과는 `feature-spec.md` §8 참조. 본 §6은 방향 B 결과만 기록 — 양쪽 분리 기록 원칙)

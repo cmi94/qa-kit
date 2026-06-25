@@ -1,6 +1,7 @@
 ---
 template: research-seed
 spec: ../../docs/qa-scout/spec.md
+upstream: ../../docs/qa-scout/spec.md
 purpose: qa-scout handoff 직후 연구팀(또는 enrichment 파이프라인)이 첫 번째로 읽는 입력. 깊은 화면 뎁스/핵심 기능 누락 방지 게이트.
 location_hint: qa-handoff/{project}/research-seed.md 또는 knowledge/{project}/scout-handoff/research-seed.md
 ---
@@ -28,7 +29,7 @@ location_hint: qa-handoff/{project}/research-seed.md 또는 knowledge/{project}/
 
 qa-scout가 산출한 기능정의서 md 초안의 골자를 1~2단락으로 요약한다.
 
-- 분해된 FR 개수, `[자료 부족]` 마커 개수, 17컬럼 채움률 요약.
+- 분해된 FR 개수, `[자료 부족]` 마커 개수, 13컬럼 채움률 요약.
 - 1차 누락이 의심되는 영역(예: detail / editor / variable / step / parameter).
 
 ## 3. known gap signals

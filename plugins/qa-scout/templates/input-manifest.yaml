@@ -8,10 +8,13 @@
 # v0.2.9: 최종 읽기 산출물 2종(feature-spec.md + ui-menu-mindmap.md) 압축 + 메타/재현/후공정 자산 분리 (SDD ../../docs/qa-scout/spec.md).
 #   schema_version 0.2.7 → 0.2.9 상향 + 신규 슬롯 5종(final_artifacts·execution_gate·playwright_verification·readme_discovery·two_doc_cross_check) 본 파일 하단 추가.
 #   schema_version 0.2.7 manifest는 5 신규 슬롯 부재 상태로도 유효 (하위 호환). 0.2.9 schema는 5 슬롯 의무 — 마이그레이션 4단계(SDD §5-7)에서 빈 슬롯으로 추가, dogfood 시점에 채움.
+# v0.3.0: Coverage Completeness Gate (SDD ../../docs/qa-scout/spec.md).
+#   schema_version 0.2.9 → 0.3.0 상향 + 신규 슬롯 4종(sources·source_tier_review·fr_sources·unmapped_leaves_path) 본 파일 하단 추가.
+#   schema_version 0.2.9 manifest는 4 신규 슬롯 부재 상태로도 유효 (하위 호환). 0.3.0 schema는 4 슬롯 의무 — migrate-to-v030.py로 빈 슬롯 추가, scout 단계 5/9c 재실행에서 채움.
 
-schema_version: "0.2.9"
-project: <project_name>           # 예: ebr
-scan_root: <자료 폴더 경로>        # 예: D:/work/ebr-dev/docs (다중 시 배열)
+schema_version: "0.3.0"
+project: <project_name>           # 예: myapp
+scan_root: <자료 폴더 경로>        # 예: D:/work/myapp-dev/docs (다중 시 배열)
 scanned_at: <ISO 8601>            # 예: 2026-05-06T10:30:00
 
 # 발견된 모든 파일
@@ -435,3 +438,93 @@ two_doc_cross_check:
   artifacts:
     feature_spec_section: "feature-spec.md#§8-마인드맵-대조-결과"
     ui_menu_mindmap_section: "ui-menu-mindmap.md#§6-기능정의서-대조-결과"
+
+# =========================================================
+# v0.3.0 신규 슬롯 4종 (SDD ../../docs/qa-scout/spec.md)
+# =========================================================
+# Coverage Completeness Gate — 6 인풋 자료 합집합 변환 + source 객체 + candidates 레지스트리.
+# 마이그레이션: schema_version 0.2.9 manifest는 본 4 슬롯 부재 상태로도 유효 (migrate-to-v030.py로 빈 슬롯 추가).
+
+# -------------------------------------------------------
+# 6) sources[] — 6 인풋 자료 매핑 (SDD §4-1-1)
+# -------------------------------------------------------
+# 단계 5 자료 큐레이션에서 발견한 자료를 source_tier enum 6종으로 분류.
+# 각 자료는 F-catalog 흡수 여부(absorbed_into)를 명시 — null = 흡수 안 됨 정상.
+sources:
+  - tier: <F-catalog | FS-derived | PRD-derived | domain-derived | user-manual-derived | mindmap-leaf-derived>
+    path: <상대 경로>                                                                 # 예: docs/reference/function-spec.md
+    entries: []                                                                       # tier=F-catalog 시 F-NNN ID list (예: ["F-001", ..., "F-062"])
+    absorbed_into: <F-catalog | null>                                                # tier=FS-derived·PRD-derived 시 F-catalog 흡수 여부 / 흡수 안 됨 = null
+    partial_absorption: false                                                         # F-catalog가 부분만 흡수한 경우 true
+    uncovered_sections: []                                                            # partial_absorption=true 시 미커버 section list (예: ["§3.5.2", "§3.5.3"])
+    notes: <자유 텍스트>                                                              # 자료 특성 메모
+
+# -------------------------------------------------------
+# 7) source_tier_review[] — 6 tier 검토 흔적 (SDD §4-1-1, F-06 권고)
+# -------------------------------------------------------
+# 6 tier 모두 검토 흔적을 기록 — 본 프로젝트에 부재한 tier도 명시 (found: false + absence_reason).
+# 단계 9c.6 자가 검증 #1 통과 조건 — 6 tier 모두 검토 항목 존재.
+source_tier_review:
+  - tier: F-catalog
+    found: <true | false>
+    reviewed_at: <ISO 8601>
+    absence_reason: null                                                              # found=false 시 사유 (예: "본 프로젝트는 F-catalog 통합 자료 미보유")
+    absence_evidence: null                                                            # found=false 시 근거 (예: "개발팀 인계 시 명시 — 단계 1 engagement context")
+  - tier: FS-derived
+    found: <true | false>
+    reviewed_at: <ISO 8601>
+    absence_reason: null
+    absence_evidence: null
+  - tier: PRD-derived
+    found: <true | false>
+    reviewed_at: <ISO 8601>
+    absence_reason: null
+    absence_evidence: null
+  - tier: domain-derived
+    found: <true | false>
+    reviewed_at: <ISO 8601>
+    absence_reason: null
+    absence_evidence: null
+  - tier: user-manual-derived
+    found: <true | false>
+    reviewed_at: <ISO 8601>
+    absence_reason: null
+    absence_evidence: null
+  - tier: mindmap-leaf-derived
+    found: <true | false>
+    reviewed_at: <ISO 8601>
+    absence_reason: null
+    absence_evidence: null
+
+# -------------------------------------------------------
+# 8) fr_sources — §1 FR별 source 객체 (SDD §4-1-2)
+# -------------------------------------------------------
+# 각 §1 FR마다 primary source + secondary sources 기록 — 기계 추적용.
+# 사람 읽기 인용은 feature-spec.md §1 12번 컬럼(인풋 출처) + 8번 컬럼 §참조 bullet.
+# 단계 9c.6 자가 검증 #2 통과 조건 — 모든 §1 FR에 primary_tier/path/section 채워짐.
+fr_sources:
+  # 예시:
+  # FR-<PROJECT>-001:
+  #   primary_tier: F-catalog
+  #   primary_path: docs/reference/function-spec.md
+  #   primary_section: "F-001"
+  #   secondary_sources:
+  #     - tier: FS-derived
+  #       path: docs/architecture/functional-specs/FS_<MODULE>-NNN.md
+  #       section: "§3.5.1"
+  #     - tier: PRD-derived
+  #       path: docs/architecture/prd/PRD_005.md
+  #       section: "§5.3 FR-0101"
+  <FR-ID>:
+    primary_tier: <enum 6종>
+    primary_path: <상대 경로>
+    primary_section: <section ID>
+    secondary_sources: []
+
+# -------------------------------------------------------
+# 9) unmapped_leaves_path — candidates 레지스트리 위치 포인터 (SDD §4-1-6)
+# -------------------------------------------------------
+# ui-menu-mindmap.md leaf 중 §1 미매핑된 후보를 별도 yaml 파일에 등록.
+# 단계 9c.5 UI surface 감지 게이트에서 자동 채움.
+# 단계 9d.5 발행 게이트에서 status: candidate 잔존 시 scout 발행 FAIL.
+unmapped_leaves_path: "qa-handoff/{project}/unmapped-leaves.yaml"

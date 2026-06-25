@@ -273,7 +273,7 @@ README 부재 시 본 게이트 skip + `readme_discovery.scanned: false` 기록.
 
 특정 질문에 대해 자료가 없거나 정책이 확정되지 않은 경우 "모름" 또는 "현재 미정"으로 답변하면 된다. Scouter는 해당 항목을 `[자료 부족]` 또는 `[상세 화면 구조 부족]` 마커로 남기고 추정하지 않는다.
 
-단계 1c execution gate 3문 중 답변이 부재하거나 환경이 불명확하면 decision = `context-insufficient`로 결정되어 **실행 금지** 상태가 된다. 답변 갱신은 명인 명시 재실행 시만 가능.
+단계 1c execution gate 3문 중 답변이 부재하거나 환경이 불명확하면 decision = `context-insufficient`로 결정되어 **실행 금지** 상태가 된다. 답변 갱신은 QA 명시 재실행 시만 가능.
 
 ### 8-3. 민감 접근 정보는 본 문서에 직접 적지 말 것
 
@@ -325,7 +325,7 @@ Scouter 실행이 완료되면 자기 개발 폴더의 `qa-handoff/<project>/`�
 qa-handoff/<project>/
 ├── feature-spec.md                      ← v0.2.9 최종 읽기 산출물 1/2 (단일 markdown, §0~§8 9섹션)
 │   * §0 표지 (메타 14항목 + execution_gate 3행)
-│   * §1 기능 행 17컬럼 (FR-<PROJECT>-NNN)
+│   * §1 기능 행 13컬럼 (FR-<PROJECT>-NNN)
 │   * §2 비기능 요구 9컬럼 (NFR-<PROJECT>-NNN)
 │   * §3 사용자 스토리 9컬럼 (US-<PROJECT>-NNN)
 │   * §4 권한 매트릭스 (받기 04 흡수)
@@ -390,7 +390,7 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 - `FAIL`: marker 부착 누락 또는 위험 액션 한쪽만 표시
 - `NOT_RUN`: cross-check 미실행 초기 상태 (마이그레이션 직후 또는 단계 9d.5 진입 전)
 
-**자동 보정 X — marker만 남기고 명인 검토 후 결정** (Auto-Healing Loop 차단 패턴).
+**자동 보정 X — marker만 남기고 QA 검토 후 결정** (Auto-Healing Loop 차단 패턴).
 
 ### 9-3. 본 단계에서 만들어지지 않는 것
 
@@ -415,15 +415,15 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
    - **옵션 B**: 8시트 — 옵션 A + 06_권한매트릭스·07_상태전이·08_용어집. §8 cross-check는 markdown SoT.
    - **옵션 C**: 1시트 — 03_기능정의서만 (최소 발행).
    - **`ui-menu-mindmap.md`는 Sheets 이행 X** — markdown 보조 산출물로 유지 (Mermaid 트리는 Sheets 친화도 낮음).
-5. **reviewer 검증** — 새 Sheets를 기준으로 Codex Playwright reviewer 또는 명인 직접 검수를 진행. 10 enum 판정(PASS · FAIL · SCREEN-MISSING · SPEC-MISSING · PERMISSION-MISMATCH · BEHAVIOR-MISSING · VARIABLE-MISMATCH · STATE-MISMATCH · NOT-TESTED-RISKY-ACTION · CONTEXT-INSUFFICIENT) 중 하나로 모든 행을 분류.
-6. **반영 결정** — 명인 보고 + 개발팀 후속 확인(자료 요청·확정 요청 분리 패키지) 후 baseline에 머지.
+5. **reviewer 검증** — 새 Sheets를 기준으로 Codex Playwright reviewer 또는 QA 직접 검수를 진행. 10 enum 판정(PASS · FAIL · SCREEN-MISSING · SPEC-MISSING · PERMISSION-MISMATCH · BEHAVIOR-MISSING · VARIABLE-MISMATCH · STATE-MISMATCH · NOT-TESTED-RISKY-ACTION · CONTEXT-INSUFFICIENT) 중 하나로 모든 행을 분류.
+6. **반영 결정** — QA 보고 + 개발팀 후속 확인(자료 요청·확정 요청 분리 패키지) 후 baseline에 머지.
 
 ### 10-2. 책임 경계 요약
 
 | 영역 | 책임 | 산출물 종착점 |
 |---|---|---|
 | **Scouter (qa-scout 플러그인, 본 가이드 범위)** | 개발자 자료 → markdown 2종 정형화 + execution_gate + README discovery + cross-check 수집 | `qa-handoff/<project>/` |
-| **QA 후공정 (메인 QA 파트너)** | baseline 비교 · candidate 보정 · **Google Sheets 신규 생성 (옵션 A/B/C)** · reviewer 발주 · 명인 보고 | `knowledge/<project>/scout-handoff/` + Google Sheets |
+| **QA 후공정 (메인 QA 파트너)** | baseline 비교 · candidate 보정 · **Google Sheets 신규 생성 (옵션 A/B/C)** · reviewer 발주 · QA 보고 | `knowledge/<project>/scout-handoff/` + Google Sheets |
 | **연구팀 (`ai-research/`, Gemini CLI, 선택형)** | candidate research-pack 검증 + evidence-matrix 보강 | `ai-research/results/<date>-<project>-feature-spec-enrichment/` |
 | **감사팀 (`ai-audit/`, Codex, 선택형)** | Sheets 기준 reviewer 발주 | `ai-audit/results/<date>-<project>-feature-spec-playwright-review/` |
 
@@ -434,7 +434,7 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 1. 운영 환경과 분리된 스테이징/테스트 환경 정보 확보
 2. 테스트 전용 ID + PW 계정 확보 (운영 계정 사용 금지)
 3. 외부 메일/알림 차단 환경 확인
-4. 명인 명시 승인 + execution_gate.decision 준수 (`observe-only`·`context-insufficient` 시 read-only 진입 강제)
+4. QA 명시 승인 + execution_gate.decision 준수 (`observe-only`·`context-insufficient` 시 read-only 진입 강제)
 
 위 4 조건 중 하나라도 미충족 시 reviewer 결과는 `CONTEXT-INSUFFICIENT`로 남는다. Scouter 본체에서는 라이브 환경에 단계 1c execution gate decision 외 자율로 접속하지 않는다.
 
@@ -454,7 +454,7 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 
 단계 12b post-crawl 재확인 게이트에서 1회 다시 묻습니다. 큐레이션·정형화 1차 결과를 본 후 추가 후보(예: "이 화면도 깊은 뎁스로 보이는데 맞습니까?") + 빠진 상태 변경 액션 후보를 묻습니다. 이 1회로 종결되며 무한 질의 루프를 만들지 않습니다.
 
-단계 1c execution gate 3문은 시작 1회만 묻고, 액션별 재확인은 폐기됐습니다. 환경이 바뀐 경우 명인 명시 재실행으로만 갱신합니다.
+단계 1c execution gate 3문은 시작 1회만 묻고, 액션별 재확인은 폐기됐습니다. 환경이 바뀐 경우 QA 명시 재실행으로만 갱신합니다.
 
 ### Q3. Google Sheets MCP / Playwright MCP / Codex / Gemini CLI가 설치되어 있어야 합니까?
 
@@ -476,13 +476,13 @@ execution_gate.forbidden_actions[]에 등재된 상태 변경 액션 노드는 �
 
 ### Q5. README가 발견됐는데 그 내용을 그대로 기능정의서에 옮겨도 되나요?
 
-안 됩니다. README는 요구사항 SoT가 아닌 **탐색 힌트**. README에서 추출한 값은 `feature-spec.md` §1 16번 인풋 출처에 `README §x.x` 인용 + 17번 비고에 `[README 출처 — 본문 확인 필요]` 마커를 부착합니다. 최신성·정합성은 단계 6 큐레이션에서 확인합니다.
+안 됩니다. README는 요구사항 SoT가 아닌 **탐색 힌트**. README에서 추출한 값은 `feature-spec.md` §1 12번 인풋 출처에 `README §x.x` 인용 + 13번 비고에 `[README 출처 — 본문 확인 필요]` 마커를 부착합니다. 최신성·정합성은 단계 6 큐레이션에서 확인합니다.
 
 `AGENTS.md` / `CLAUDE.md` / `.cursorrules`는 `readme_discovery.agent_guidance_files[]`에 운영 지침으로 별도 기록하되 제품 요구사항으로 변환하지 않습니다.
 
 ### Q6. `feature-spec.md`와 `ui-menu-mindmap.md`가 서로 어긋나면 어떻게 됩니까?
 
-단계 9d.5 cross-check 게이트가 양방향(FR → 노드 / 노드 → FR) 검증을 1회 실행합니다. 누락은 marker(`[화면 위치 확인 필요]` / `SPEC-MISSING` 등)로 양쪽에 남깁니다. 자동 보정 X — 명인 검토 후 결정합니다.
+단계 9d.5 cross-check 게이트가 양방향(FR → 노드 / 노드 → FR) 검증을 1회 실행합니다. 누락은 marker(`[화면 위치 확인 필요]` / `SPEC-MISSING` 등)로 양쪽에 남깁니다. 자동 보정 X — QA 검토 후 결정합니다.
 
 ### Q7. 본 가이드 산출물을 QA에 어떻게 인계합니까?
 

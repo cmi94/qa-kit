@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "spec_id": "SPEC-2026-05-13-feature-spec-standard-design",
-  "source": "GxP feature spec sheet standard (reference master internal)",
+  "source": "표준 GxP 기능정의서 기준 디자인 v0.2.6.2",
   "extracted_at": "2026-05-13",
   "description": "GxP 기능 정의서 표준 디자인 token. 모든 향후 프로젝트 기능 정의서에 결정론적으로 적용. apply.py가 본 JSON을 읽어 batch_update 생성.",
 
@@ -94,6 +94,7 @@
     "상태 전이": 150,
     "출력 (Output)": 200,
     "예외/에러 처리": 250,
+    "인풋 출처": 250,
     "비고": 200,
 
     "카테고리": 130,

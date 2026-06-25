@@ -1,13 +1,13 @@
 ---
 template: feature-spec
-schema_version: "0.2.9"
+schema_version: "0.3.0"
 spec: ../../docs/qa-scout/spec.md
 upstream:
   - ../../docs/qa-scout/spec.md
   - ../../docs/qa-scout/spec.md
   - ../../docs/qa-scout/spec.md
 purpose: |
-  scout v0.2.9 최종 읽기 산출물 1/2. "무엇을 해야 하는가"를 단일 markdown으로 정형화한다.
+  scout v0.3.0 최종 읽기 산출물 1/2. "무엇을 해야 하는가"를 단일 markdown으로 정형화한다.
   v0.2.8까지의 feature-spec/ 5 markdown(01_표지/02_변경이력/03_기능정의서/04_비기능요구/05_사용자스토리)과
   domain-knowledge/ 5종 중 02-state-transition/04-permission-matrix/05-glossary를 흡수한 결과물이다.
   01-user-scenario는 분량이 커서 본문 흡수하지 않고 `_source/` 보존 + §1 인풋 출처 인용으로만 표시한다.
@@ -15,7 +15,7 @@ purpose: |
 location_hint: qa-handoff/{project}/feature-spec.md
 project: <project>
 domain: <중분류 코드>
-ai_author: scout v0.2.9 (<model>)
+ai_author: scout v0.3.0 (<model>)
 created: <YYYY-MM-DD>
 last_updated: <YYYY-MM-DD>
 linked_artifacts:
@@ -26,10 +26,10 @@ linked_artifacts:
   source_dir: _source/
   sheets_url: <Sheets URL 또는 null>     # 단계 17a markdown-to-sheets 결과
 sheets_mapping:
-  primary_sheet: 03_기능정의서            # 단일 시트 (17컬럼)
+  primary_sheet: 03_기능정의서            # 단일 시트 (13컬럼)
   side_sheets: [01_표지, 02_변경이력, 04_비기능요구, 05_사용자스토리]
   excluded_from_sheets: [§4_권한매트릭스, §5_상태전이, §6_용어집, §8_마인드맵대조결과]   # markdown 본문에만, Sheets 미이행
-execution_policy:                         # v0.2.9 신규 — SDD §5-10
+execution_policy:                         # v0.3.0 신규 — SDD §5-10
   decision: <full-execute | partial-execute | observe-only | context-insufficient>
   reviewer_status: <EXECUTED-TEST-ENV | PARTIAL-OBSERVED | NOT-TESTED-PROD-RISK | CONTEXT-INSUFFICIENT>
   environment_class: <local | dev | qa | staging | prod | unknown>
@@ -42,7 +42,7 @@ related_specs:
 
 # {project} 기능정의서
 
-> v0.2.9 최종 읽기 산출물. 표지·기능 정의·비기능·사용자 스토리·권한·상태 전이·용어집·변경 이력·마인드맵 대조 결과 9개 섹션을 단일 markdown에 통합. 시트 분리는 §1 본체(17컬럼)에만 적용(단계 17a markdown-to-sheets), 나머지 섹션은 markdown 본문 SoT.
+> v0.3.0 최종 읽기 산출물. 표지·기능 정의·비기능·사용자 스토리·권한·상태 전이·용어집·변경 이력·마인드맵 대조 결과 9개 섹션을 단일 markdown에 통합. 시트 분리는 §1 본체(13컬럼)에만 적용(단계 17a markdown-to-sheets), 나머지 섹션은 markdown 본문 SoT.
 
 ## §0 표지 (메타)
 
@@ -56,7 +56,7 @@ related_specs:
 | 플랫폼 (Platforms) | {platforms} |
 | 문서 버전 (Document Version) | 0.1 |
 | 문서 상태 (Status) | Draft |
-| AI 작성자 (AI Author) | scout v0.2.9 (`<model>`) |
+| AI 작성자 (AI Author) | scout v0.3.0 (`<model>`) |
 | 사람 검수자 (Human Reviewer) | [현업 확인 필요] |
 | 최초 작성일 (Created) | {YYYY-MM-DD} |
 | 최종 수정일 (Last Updated) | {YYYY-MM-DD} |
@@ -81,11 +81,13 @@ related_specs:
 
 본 표는 frontmatter `execution_policy.decision`·`execution_policy.reviewer_status` 두 필드를 채울 때 1:1 매핑 강제 기준이다. enum 외 값 금지.
 
-## §1 기능 행 — 17컬럼 (단계 9c — docs-to-function-spec)
+## §1 기능 행 — 13컬럼 (단계 9c — docs-to-function-spec)
 
 > ID 패턴은 PROJECT 헤더로부터 동적 치환. 예시는 `<PROJECT>` 변수 placeholder 사용.
 
-### 17컬럼 정의
+### 13컬럼 정의
+
+> 사전 조건·입력(Input)·상태 전이·출력(Output) 4개 컬럼은 SPEC-2026-06-25에서 제거. 해당 정보는 8번 상세 정책 / 기능 설명의 8단 카테고리(상태 전이·경계 조건 등)에 흡수.
 
 | # | 컬럼 | 비고 |
 |---|---|---|
@@ -96,38 +98,38 @@ related_specs:
 | 5 | 기능명 | 명사형 15~30자 |
 | 6 | 기능 목적 (Why) | "···을 위해 ···한다" |
 | 7 | 기능 요약 (1줄) | 행위·결과 |
-| 8 | 사전 조건 | 권한·상태·이전 단계 |
-| 9 | 상세 정책 / 기능 설명 | PRD 본문 인용 + BR 코드 |
-| 10 | 입력 (Input) | 필드/타입/필수/검증 규칙 |
-| 11 | 처리 로직 (Process) | 1) 2) 3) 단계 |
-| 12 | 상태 전이 | "X → Y" |
-| 13 | 출력 (Output) | 화면 갱신·이벤트·DB |
-| 14 | 예외/에러 처리 | 케이스/메시지·HTTP 코드·BR — 음성 TC 핵심 |
-| 15 | TC ID | `TC-<PROJECT>-NNN` 다중 (RTM, 후공정 채움) |
-| 16 | 인풋 출처 | `(<source> §x.x; <보완 문서> §y.y; BR-<도메인>-NN)` — 행 단위 GxP 추적 |
-| 17 | 비고 | FR↔NFR cross-reference 등 자유 |
+| 8 | 상세 정책 / 기능 설명 | PRD 본문 인용 + BR 코드 |
+| 9 | 처리 로직 (Process) | 1) 2) 3) 단계 |
+| 10 | 예외/에러 처리 | 케이스/메시지·HTTP 코드·BR — 음성 TC 핵심 |
+| 11 | TC ID | `TC-<PROJECT>-NNN` 다중 (RTM, 후공정 채움) |
+| 12 | 인풋 출처 | `(<source> §x.x; <보완 문서> §y.y; BR-<도메인>-NN)` — 행 단위 GxP 추적 |
+| 13 | 비고 | FR↔NFR cross-reference 등 자유 |
 
 ### 채움 양식 (도메인 중립 placeholder)
 
-| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `FR-<PROJECT>-NNN` | `SCR-<PROJECT>-NNN` | `<페이지 경로>` (Depth N) | `<중분류 코드>` | `<기능명 — 명사형>` | `<목적 — Why>` | `<요약 — 1줄>` | `<사전 조건>` | `<상세 정책 + BR-<도메인>-NN>` | `<입력 필드(타입, 필수, 검증)>` | `1) ... 2) ... 3) ...` | `<상태 X → 상태 Y>` 또는 `없음` | `<출력>` | `<예외 케이스>: <코드>` | `TC-<PROJECT>-NNN (TBD)` | `(<source> §x.x; <보완 문서> §y.y; BR-<도메인>-NN)` | `<자유 비고>` |
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `FR-<PROJECT>-NNN` | `SCR-<PROJECT>-NNN` | `<페이지 경로>` (Depth N) | `<중분류 코드>` | `<기능명 — 명사형>` | `<목적 — Why>` | `<요약 — 1줄>` | `<상세 정책 + BR-<도메인>-NN>` | `1) ... 2) ... 3) ...` | `<예외 케이스>: <코드>` | `TC-<PROJECT>-NNN (TBD)` | `(<source> §x.x; <보완 문서> §y.y; BR-<도메인>-NN)` | `<자유 비고>` |
 
 ### 채움 가이드
 
-- F-NNN 단위 분해 (사용자 행위 / CRUD / 시스템 자동)
-- 17컬럼 모두 채움 또는 `[자료 부족]` 마커
+- F-NNN 단위 분해 — **6 인풋 합집합 SoT** (F-catalog + FS-derived + PRD-derived + domain-derived + user-manual-derived + mindmap-leaf-derived). input-manifest.yaml `sources[]` + `source_tier_review[]` 완료된 자료 기반
+- 13컬럼 모두 채움 또는 `[자료 부족]` 마커
+- **8번 컬럼 (상세 정책) — 8 카테고리 정형 강제 (v0.3.0)**: 모든 FR은 8번 컬럼에 `• 핵심 룰: …` · `• 경계 조건: …` · `• 상태 전이: …` · `• 권한 게이트: …` · `• 데이터 무결성: …` · `• 화면 동작: …` · `• 부수 효과: …` · `• 참조: …` 8단 bullet 필수. 자료 부재 시 `• <카테고리>: [자료 부족] (<확인한 입력 1>, <확인한 입력 2>)` 통일 마커. 자유 흐름 cell·dash-only는 `verify-8-categories.py` FAIL.
+- **각 FR에 input-manifest.yaml `fr_sources[<FR_ID>]` 객체 부착 (v0.3.0)**: `primary: <tier·path·section>` + `secondary_sources: [...]`. fr_sources 부재 FR은 작성 금지.
 - 추정 금지·모호 시 즉시 질의 (5개 패턴 — 같은 용어 2의미·행위자 불명·필드 타입 불명·정의 충돌·단위 불명)
-- 16번 인풋 출처 누락 행 X
+- 12번 인풋 출처 누락 행 X. 옵션 D 발행 시 sheet 인풋 출처 컬럼으로 직접 매핑
 - ID 패턴은 PROJECT 헤더로 동적 치환
 - 영역 헤더 이모티콘 X (그룹 mergeCells 적용 X)
-- **README 1차 발견 행**: 16번에 `README §x.x` 인용 + 17번 비고에 `[README 출처 — 본문 확인 필요]` 마커 (탐색 힌트일 뿐, 단정 금지 — SDD §5-11-5)
+- **README 1차 발견 행**: 12번에 `README §x.x` 인용 + 13번 비고에 `[README 출처 — 본문 확인 필요]` 마커 (탐색 힌트일 뿐, 단정 금지 — SDD §5-11-5)
+- **단계 9c.5 UI surface 감지 (v0.3.0)**: §1 본문 자동 진입 금지. mindmap leaf ↔ §1 매핑 안 되는 후보는 `unmapped-leaves.yaml` candidate 등록 → QA 단독 승인 후만 §1 진입 (Auto-Healing Loop 차단)
+- **단계 9c.6 자가 검증 9항 (v0.3.0)**: `verify-8-categories.py` PASS + `unmapped-leaves.yaml` status candidate 0건 + cross-check 3 방향 (A·B·C) PASS
 
-### 16번 / 17번 — evidence·deep screen mapping hint
+### 12번 / 13번 — evidence·deep screen mapping hint
 
 SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양식으로 출처·비고를 채운다.
 
-#### 16번 인풋 출처 — 다중 evidence 인용
+#### 12번 인풋 출처 — 다중 evidence 인용
 
 `(<문서 근거>; <화면 근거>; <코드 근거>; BR-<도메인>-NN)` 4종 중 가능한 만큼 ;-구분으로 나열.
 
@@ -144,7 +146,7 @@ SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양
 
 확정 1건만 있고 나머지가 부족하면 `[자료 부족 — <차원>]` 함께 표기. 예: `(<source-doc> §x.x; [자료 부족 — 화면 capture 없음])`.
 
-#### 17번 비고 — deep screen / behavior marker
+#### 13번 비고 — deep screen / behavior marker
 
 해당 행이 deep screen target에 속하거나 동적 동작·변수·상태 분기를 포함하면 아래 marker 명시. reviewer가 enum 판정에 활용.
 
@@ -163,7 +165,7 @@ SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양
 
 #### deep screen target 행 — 도메인 중립 예시
 
-| 9 (상세 정책) | 16 (인풋 출처) | 17 (비고) |
+| 8 (상세 정책) | 12 (인풋 출처) | 13 (비고) |
 |---|---|---|
 | `<상태 X>` 상태에서만 `<액션>` 가능 (`<source-doc> §x.x` 대안흐름) | `(<source-doc> §x.x; capture:<screen_slug>.yaml#tables[1]; state-transition §<entity>; [자료 부족 — 동적 lifecycle 미관찰])` | `[동적 UI 확인 필요]` `[상태별 UI 확인 필요]` — deep_screen_targets[].id=`<target id>` |
 | `<변수/marker>`는 `<렌더링 방식>`으로 표시되며 `<삭제 방식>` (`<source-doc> §y.y`) | `(design:<variable-topic> §y.y; <source-doc> §없음 — 문서 근거 부족)` | `[변수 동작 자료 부족]` — gap=variable-behavior-gap |
@@ -277,7 +279,7 @@ SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양
 
 | 버전 | 변경일 | 변경자 | 변경 유형 | 변경 내용 | 영향받는 ID | 리뷰/승인자 |
 |---|---|---|---|---|---|---|
-| 0.1 | `<YYYY-MM-DD>` | scout v0.2.9 (`<model>`) | 최초 작성 | `<project>` 도메인 정형화 1차 초안: FR `<N>`건, NFR `<N>`건, US `<N>`건 | FR-<PROJECT>-001~NNN, NFR-<PROJECT>-001~NNN, US-<PROJECT>-001~NNN | [현업 확인 필요] |
+| 0.1 | `<YYYY-MM-DD>` | scout v0.3.0 (`<model>`) | 최초 작성 | `<project>` 도메인 정형화 1차 초안: FR `<N>`건, NFR `<N>`건, US `<N>`건 | FR-<PROJECT>-001~NNN, NFR-<PROJECT>-001~NNN, US-<PROJECT>-001~NNN | [현업 확인 필요] |
 
 ### 변경 유형
 
@@ -294,18 +296,19 @@ SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양
 - 영향받는 ID 컬럼: FR/NFR/US/SCR ID 다중 (콤마 구분)
 - 사람 검수 통과 후에 1.0 발행 → 검수자 ID 명시
 
-## §8 마인드맵 대조 결과 (cross-check — v0.2.9 신규, SDD §5-9)
+## §8 마인드맵 대조 결과 (cross-check — v0.3.0 신규, SDD §5-9)
 
-> `ui-menu-mindmap.md`와의 양방향 정합 검증 결과. 단계 9d.5에서 1회 실행. **자동 보정 X** — marker만 남기고 명인 검토 후 반영. 별도 제3 문서를 만들지 않는다.
+> `ui-menu-mindmap.md`와의 양방향 정합 검증 결과. 단계 9d.5에서 1회 실행. **자동 보정 X** — marker만 남기고 QA 검토 후 반영. 별도 제3 문서를 만들지 않는다.
 
 ### cross-check 결과 메타
 
 | 항목 | 값 |
 |---|---|
 | executed_at | `<ISO 8601>` |
-| result | `<PASS | PASS_WITH_NOTES | FAIL>` |
+| result | `<PASS | PASS_WITH_NOTES | FAIL | NOT_RUN>` |
 | FR 매핑률 (방향 A) | `<0.00 ~ 1.00>` |
 | leaf 매핑률 (방향 B) | `<0.00 ~ 1.00>` |
+| unmapped-leaves candidate (방향 C) | `<0건 — 발행 게이트 PASS 필수>` |
 | forbidden_actions 양쪽 표시 | `<yes | no | n/a — full-execute decision>` |
 | input-manifest 슬롯 | `two_doc_cross_check` |
 | 마인드맵 대응 섹션 | `ui-menu-mindmap.md` §6 |
@@ -323,7 +326,7 @@ SDD `../../docs/qa-scout/spec.md`에 따라 deep screen target 행은 다음 양
 ### 판정 룰
 
 - **PASS**: 방향 A·B 모든 검증 매핑률 100% + forbidden_actions 양쪽 표시 (또는 full-execute decision으로 양쪽 표시 무관)
-- **PASS_WITH_NOTES**: 매핑률 < 100%이지만 모든 미매핑 항목이 marker(`[화면 위치 확인 필요]` / `[상태 표시 누락]` / `[권한 표시 누락]` / `[승인 범위 밖 상태 변경 액션 표시 누락]`)로 빠짐없이 부착됨. 자동 보정 X, 명인 검토 후 결정
+- **PASS_WITH_NOTES**: 매핑률 < 100%이지만 모든 미매핑 항목이 marker(`[화면 위치 확인 필요]` / `[상태 표시 누락]` / `[권한 표시 누락]` / `[승인 범위 밖 상태 변경 액션 표시 누락]`)로 빠짐없이 부착됨. 자동 보정 X, QA 검토 후 결정
 - **FAIL**: marker 부착 누락 또는 forbidden_actions 한쪽 누락 (`partial-execute`/`observe-only` decision일 때만)
 
 (자세한 검증 룰·방향 B 결과는 ui-menu-mindmap.md §6 참조. 본 §8은 방향 A 결과만 기록 — 양쪽 분리 기록 원칙)

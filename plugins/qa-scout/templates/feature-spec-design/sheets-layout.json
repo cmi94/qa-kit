@@ -1,7 +1,8 @@
 {
-  "version": "1.0",
-  "spec_id": "SPEC-2026-05-13-feature-spec-standard-design",
-  "description": "GxP 기능 정의서 표준 6시트 레이아웃. apply.py가 본 JSON 따라 시트 생성·헤더 작성. design_managed:false 시트는 디자인 적용 건너뜀.",
+  "version": "3.0",
+  "spec_id": "SPEC-2026-05-22-qa-scout-v3-0-coverage-completeness-gate",
+  "description": "GxP 기능 정의서 표준 시트 레이아웃 v3.0 — 옵션 A/B/C/D 분기. apply.py는 --sheets-option 인자로 visible_in[] 필터 + headers_by_option·column_widths_by_option 분기. design_managed:false 시트는 디자인 적용 건너뜀. 기존 v1.0 호환 — headers·column_widths 필드는 fallback으로 유지 (옵션 미지정 시 사용).",
+  "compatibility_notes": "v0.2.9 plugin은 본 schema의 신규 필드(visible_in·headers_by_option·column_widths_by_option)를 무시하고 기존 headers·column_widths만 읽음 — 하위 호환 보장. v0.3.0 plugin은 신규 필드 우선 사용 + 미존재 시 fallback.",
 
   "sheets": [
     {
@@ -9,13 +10,15 @@
       "title": "01_표지",
       "type": "cover",
       "design_managed": false,
-      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X."
+      "visible_in": ["A", "B"],
+      "_comment": "자유 디자인 시트 (제목·메타·작성 기준 통합). apply.py는 시트 존재만 보장하고 디자인은 변경 X. 옵션 C·D(03_기능정의서 단독)에서는 미생성."
     },
     {
       "index": 1,
       "title": "02_변경이력",
       "type": "changelog",
       "design_managed": true,
+      "visible_in": ["A", "B"],
       "headers": [
         "버전",
         "일자",
@@ -31,73 +34,136 @@
       "title": "03_기능정의서",
       "type": "feature_spec",
       "design_managed": true,
+      "visible_in": ["A", "B", "C", "D"],
+      "_comment": "옵션 A/B/C는 14 컬럼, 옵션 D는 15 컬럼 (인풋 출처 추가). 사전 조건·입력(Input)·상태 전이·출력(Output) 4개 컬럼 제거 (SPEC-2026-06-25-feature-spec-column-trim). headers·column_widths는 옵션 미지정 시 fallback (= 옵션 A 동일).",
       "headers": [
         "No.",
         "기능 ID",
-        "화면 ID",
+        "URS ID",
+        "TC ID",
         "메뉴 경로",
         "중분류",
         "기능명",
         "기능 목적 (Why)",
         "기능 요약 (1줄)",
-        "사전 조건",
         "상세 정책 / 기능 설명",
-        "입력 (Input)",
         "처리 로직 (Process)",
-        "상태 전이",
-        "출력 (Output)",
         "예외/에러 처리",
-        "TC ID",
+        "테스트 결과",
         "비고"
-      ]
+      ],
+      "column_widths": [40, 100, 100, 100, 200, 100, 180, 250, 200, 350, 250, 250, 100, 200],
+      "headers_by_option": {
+        "A": ["No.", "기능 ID", "URS ID", "TC ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "상세 정책 / 기능 설명", "처리 로직 (Process)", "예외/에러 처리", "테스트 결과", "비고"],
+        "B": ["No.", "기능 ID", "URS ID", "TC ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "상세 정책 / 기능 설명", "처리 로직 (Process)", "예외/에러 처리", "테스트 결과", "비고"],
+        "C": ["No.", "기능 ID", "URS ID", "TC ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "상세 정책 / 기능 설명", "처리 로직 (Process)", "예외/에러 처리", "테스트 결과", "비고"],
+        "D": ["No.", "기능 ID", "URS ID", "TC ID", "메뉴 경로", "중분류", "기능명", "기능 목적 (Why)", "기능 요약 (1줄)", "상세 정책 / 기능 설명", "처리 로직 (Process)", "예외/에러 처리", "테스트 결과", "인풋 출처", "비고"]
+      },
+      "column_widths_by_option": {
+        "A": [40, 100, 100, 100, 200, 100, 180, 250, 200, 350, 250, 250, 100, 200],
+        "B": [40, 100, 100, 100, 200, 100, 180, 250, 200, 350, 250, 250, 100, 200],
+        "C": [40, 100, 100, 100, 200, 100, 180, 250, 200, 350, 250, 250, 100, 200],
+        "D": [40, 100, 100, 100, 200, 100, 180, 250, 200, 350, 250, 250, 100, 250, 200]
+      },
+      "column_validation": {
+        "테스트 결과": {
+          "type": "dropdown",
+          "values": ["PASS", "FAIL", "N/A"],
+          "default": "N/A",
+          "conditional_format": {
+            "PASS": {"backgroundColor": {"red": 0, "green": 0.38, "blue": 0}},
+            "FAIL": {"backgroundColor": {"red": 0.753, "green": 0, "blue": 0}},
+            "N/A":  {"backgroundColor": {"red": 0.741, "green": 0.843, "blue": 0.933}}
+          }
+        }
+      }
     },
     {
       "index": 3,
-      "title": "04_비기능요구",
-      "type": "nfr",
+      "title": "04_TestCase",
+      "type": "test_case",
       "design_managed": true,
+      "visible_in": ["A", "B", "C", "D"],
+      "_comment": "전체 TC 취합 시트 — 옵션 A~D 공통 생성. 기능정의서 TC ID와 1:1 매핑. 테스트 결과(PASS·FAIL·N/A) 드롭다운 적용.",
       "headers": [
         "No.",
-        "NFR ID",
-        "분류",
-        "요구사항명",
-        "요구사항 설명",
-        "측정 기준 / 수용 기준",
-        "관련 규정 또는 관련 FR",
-        "TC ID"
-      ]
+        "TC ID",
+        "TC 제목",
+        "URS ID",
+        "기능 ID",
+        "테스트 유형",
+        "사전 조건",
+        "테스트 단계",
+        "기대 결과",
+        "실제 결과",
+        "테스트 결과",
+        "비고"
+      ],
+      "column_widths": [40, 100, 250, 100, 100, 80, 200, 300, 250, 250, 100, 200],
+      "column_validation": {
+        "테스트 결과": {
+          "type": "dropdown",
+          "values": ["PASS", "FAIL", "N/A"],
+          "default": "N/A",
+          "conditional_format": {
+            "PASS": {"backgroundColor": {"red": 0, "green": 0.38, "blue": 0}},
+            "FAIL": {"backgroundColor": {"red": 0.753, "green": 0, "blue": 0}},
+            "N/A":  {"backgroundColor": {"red": 0.741, "green": 0.843, "blue": 0.933}}
+          }
+        }
+      }
     },
     {
       "index": 4,
-      "title": "05_사용자스토리",
-      "type": "user_story",
+      "title": "06_권한매트릭스",
+      "type": "permission_matrix",
       "design_managed": true,
+      "visible_in": ["B"],
+      "_comment": "옵션 B 전용 — feature-spec.md §4 권한 매트릭스를 시트로 이행. headers는 동적 (role × FR × action) — 본 layout은 base headers만 정의, apply.py가 role 컬럼 동적 확장.",
       "headers": [
         "No.",
-        "US ID",
-        "역할",
-        "사용자 스토리",
-        "관련 FR",
-        "인수 기준",
-        "우선순위",
-        "TC ID"
+        "FR ID",
+        "기능명",
+        "역할 (role)",
+        "조회 (read)",
+        "생성 (create)",
+        "수정 (update)",
+        "삭제 (delete)"
       ]
     },
     {
       "index": 5,
-      "title": "06_18c_개발팀_질의",
-      "type": "dev_query",
+      "title": "07_상태전이",
+      "type": "state_transition",
       "design_managed": true,
-      "optional": true,
-      "_comment": "선택 시트 — 외부 검수·개발팀 질의 발생 시 추가. apply.py --include-optional 플래그로 생성.",
+      "visible_in": ["B"],
+      "_comment": "옵션 B 전용 — feature-spec.md §5 상태 전이 요약을 시트로 이행.",
       "headers": [
         "No.",
-        "카테고리",
-        "질의 내용",
-        "영향 FR",
-        "라이브 관찰 결과",
-        "확인 요청 사항",
-        "개발팀 회신"
+        "엔티티",
+        "현재 상태",
+        "전이 트리거",
+        "다음 상태",
+        "권한",
+        "부수 효과",
+        "관련 FR"
+      ]
+    },
+    {
+      "index": 6,
+      "title": "08_용어집",
+      "type": "glossary",
+      "design_managed": true,
+      "visible_in": ["B"],
+      "_comment": "옵션 B 전용 — feature-spec.md §6 용어집을 시트로 이행.",
+      "headers": [
+        "No.",
+        "용어 (한글)",
+        "용어 (영문)",
+        "도메인",
+        "정의",
+        "관련 FR",
+        "비고"
       ]
     }
   ]

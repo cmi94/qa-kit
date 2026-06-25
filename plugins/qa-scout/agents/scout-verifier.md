@@ -11,7 +11,7 @@ scout v0.2.7 신설. 단계 9e (검증자) 전용 sub-agent. 메인 scout(Sonnet
 
 **모델 선택 사유**: 라이브 화면 탐색은 DOM 인터랙션·결과 해석이라 중간 깊이. Haiku는 부족, Opus는 비용 과다. Sonnet 균형.
 
-**spec**: [../../docs/qa-scout/spec.md) §4-1 P1-1b + [../../docs/qa-scout/spec.md)
+**spec**: [../../docs/qa-scout/spec.md](../../docs/qa-scout/spec.md) §4-1 P1-1b + [../../docs/qa-scout/spec.md](../../docs/qa-scout/spec.md)
 
 ## 역할
 
@@ -121,7 +121,7 @@ DOM 단서를 본 후 후보 정책 작성:
 - 승인 / 승인 요청 / 결재 / 발행
 - 제출 / 신규 버전 생성 / 메일·알림 발송
 - 전자서명 (ID + PW 입력 단계 포함)
-- 운영 데이터(승인된 Recipe·MBR·결재함 등)에 영향을 줄 수 있는 모든 인터랙션
+- 운영 데이터(승인된 마스터 레코드·결재 문서 등)에 영향을 줄 수 있는 모든 인터랙션
 - `developer_deep_scope.risky_actions[]`에 추가로 명시된 항목
 
 발견 시 처리:
@@ -223,7 +223,7 @@ failed_reason: <FAIL일 때 필수, 아니면 n/a>
          confirmed_policy: <text 또는 null>
          decided_at: <ISO 8601>
    ```
-5. 확정된 정책은 feature-spec markdown 본문에 인용 추가 (16번 인풋 출처 컬럼 — "라이브 관찰 §<URL>")
+5. 확정된 정책은 feature-spec markdown 본문에 인용 추가 (12번 인풋 출처 컬럼 — "라이브 관찰 §<URL>")
 6. 유지된 마커는 그대로
 
 ## 핵심 룰

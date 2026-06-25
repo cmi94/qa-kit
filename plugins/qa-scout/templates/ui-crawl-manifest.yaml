@@ -1,5 +1,6 @@
 # plugins/qa-scout/templates/ui-crawl-manifest.yaml
-# spec: ../../docs/qa-scout/spec.md (v0.2.8 footer 참조)
+# spec: ../../docs/qa-scout/spec.md §5-4
+# upstream: ../../docs/qa-scout/spec.md §5-2
 # location_hint: knowledge/{project}/shared/pages/ui-crawl-manifest.yaml
 #
 # 본 manifest는 "요구사항 근거"와 "화면 관찰 증거"를 명시적으로 분리한다.
@@ -7,7 +8,7 @@
 # 위험 액션은 자동 클릭 금지. 본 manifest에 risky_actions_not_clicked로 명시 기록.
 
 schema_version: "0.1.0"
-project: <project>                        # 예: ebr
+project: <project>                        # 예: myapp
 crawled_at: <ISO 8601>
 crawler: <playwright-mcp | chrome-mcp | python-playwright | manual>
 live_url: <URL 또는 null>
@@ -82,7 +83,7 @@ dynamic_regions:
 # ---------------------------------------------------------------
 # 5. variables — 변수 lifecycle 관찰
 # ---------------------------------------------------------------
-# <도메인 엔티티>·Editor·Form 등에서 변수 패널·marker·삽입·삭제·치환·atomic 동작이 있는 경우.
+# 복잡 편집 화면·에디터·폼 등에서 변수 패널·marker·삽입·삭제·치환·atomic 동작이 있는 경우.
 variables:
   panel_observed: <bool>
   variable_kinds: [<text | number | dropdown | date | checkbox | signature | formula | sum | avg | sap | camera>]

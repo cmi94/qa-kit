@@ -29,7 +29,7 @@ v0.2.9 신규 스킬. v0.2.8까지는 받기 5종 중 `domain-knowledge/03-scree
   - `downstream_enrichment.deep_screen_targets[]` → §2 deep_target 컬럼 + §4 매핑 표 1:1
   - `execution_gate:` → frontmatter `execution_policy:` 동기 + ⚠ 마커 활성 여부 결정
   - `readme_discovery:` → README 출처 노드 마커
-- `feature-spec.md` §1 17컬럼 (SCR-ID·FR-ID 매핑 참조 — cross-check 준비)
+- `feature-spec.md` §1 13컬럼 (SCR-ID·FR-ID 매핑 참조 — cross-check 준비)
 - (선택) 화면 와이어프레임 PNG/PDF (원본은 `_source/` 보존)
 
 ## 출력
@@ -45,7 +45,7 @@ v0.2.9 신규 스킬. v0.2.8까지는 받기 5종 중 `domain-knowledge/03-scree
 - `ui-crawl-manifest.yaml` 읽기 — observed/partially-observed/missing 분류, 화면별 capture yaml 경로 식별
 - `input-manifest.yaml > downstream_enrichment` 전체 흡수 (deep_screen_targets[]·developer_deep_scope·confirmation_rounds[])
 - 다중 파일이면 Glob/Grep으로 동일 화면 키워드 교차 검증
-- `feature-spec.md` §1 17컬럼 SCR-ID 인덱스 추출 (cross-check 준비)
+- `feature-spec.md` §1 13컬럼 SCR-ID 인덱스 추출 (cross-check 준비)
 
 ### 2) frontmatter 채움
 templates/ui-menu-mindmap.md의 frontmatter 슬롯을 다음 SoT에서 채운다.

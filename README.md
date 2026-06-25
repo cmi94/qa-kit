@@ -41,6 +41,21 @@ Claude Code에서 마켓플레이스 1회 등록 후 원하는 플러그인을 �
 자세한 사용법: [plugins/qa-scout/README.md](plugins/qa-scout/README.md)
 스펙: [docs/qa-scout/spec.md](docs/qa-scout/spec.md)
 
+### [qa-report](plugins/qa-report/) (v0.1.5)
+
+N차 통합테스트 결과 보고서(.xlsx)를 양식 고정·데이터만 채우는 방식으로 결정론적 생성. `/qa-report`가 입력 5개(솔루션명·Jira 프로젝트 키·QA 일정·이전 차수 파일·출력 폴더)를 강제 수집하고, Atlassian(Jira) MCP로 신규/이월 버그를 fetch해 count-only 보고서(이슈 수 집계·결함 원인 유형별 분포·차수별 추이·결론)를 만든다.
+
+| 구성요소 | 역할 |
+|---|---|
+| `/qa-report` 커맨드 | 입력 강제 수집 → Jira fetch → 집계 → 렌더 오케스트레이션 |
+| `build_report.py` | 결정론적 렌더러 (양식 RGB 고정·메타 블록 기록) |
+| `read_meta.py` | 이전 차수 .xlsx 메타 읽기 (회차 자동 감지) |
+
+- 회차 누적은 결과 `.xlsx` 내장 `_meta` 블록 체인(1차→2차→3차, 발부 시점 동결).
+- 보고자(reporter) 선택 — 비우면 `currentUser()`(본인), 지정 시 타 QA·팀 데이터도 집계 (v0.1.1).
+
+설치: `/plugin install qa-report@qa-kit` · 자세한 사용법: [plugins/qa-report/README.md](plugins/qa-report/README.md)
+
 ## 향후 추가 예정
 
 - `qa-tc` — JIRA 이슈 분석 → 테스트 케이스 자동 생성

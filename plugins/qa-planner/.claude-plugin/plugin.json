@@ -1,0 +1,11 @@
+{
+  "name": "qa-planner",
+  "version": "0.1.0",
+  "description": "기능정의서·정책정의서 baseline 위에서 코드 변경분을 delta로 유지보수하는 자율 저술 플러그인(POST 사후 문서화 전용). planner-lead(저술)·planner-critic(독립 채점) 에이전트 + 결정론 게이트 5축(완전성·추적성·ISO 25010 커버리지·N/A 사유·정합성) + rubric v2(정합성·명료성·코드정합성) 품질 루프. 산출은 delta CSV draft까지만 — 마스터 반영은 사람 게이트(no-auto-apply, GxP). 변수형 설계: 프로젝트 상수(id 대역·baseline 경로·컬럼 스키마)는 planner-config로 분리. 선행 의존: qa-scout v0.4.0+(baseline 생산). 루프 실행은 오케스트레이션 문서(docs/orchestration.md) 경로 — 자동 드라이버 없음.",
+  "author": {
+    "name": "최명인",
+    "email": "chlauddls12@gmail.com"
+  },
+  "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-planner",
+  "keywords": ["qa", "planner", "delta-maintenance", "documentation", "gxp", "spec-maintenance"]
+}

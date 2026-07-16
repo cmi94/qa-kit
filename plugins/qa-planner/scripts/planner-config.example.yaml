@@ -1,0 +1,61 @@
+# qa-planner 프로젝트 config — 플러그인의 유일한 프로젝트 결합 지점
+#
+# 변수형 원칙 — 이 파일 하나만 프로젝트별로 갈아끼우면 에이전트·계약·게이트는 그대로 재사용된다.
+# 아래는 형태 예시(가상 프로젝트 APP). 실제 프로젝트 값으로 전부 교체해서
+# {문서 원본 폴더}/planner-config.yaml 로 저장해 쓴다.
+
+project: app                       # 프로젝트 슬러그 (run-id·보고용)
+
+# ── id 체계 ──────────────────────────────────────────────
+id:
+  fr_prefix: "FR-APP-"             # 기능 ID = {fr_prefix}{NNN} (도메인 대역 내 max+1, 결번 허용, 재사용 금지)
+  policy_prefix: "P-APP-"          # 정책 ID = {policy_prefix}{NNN} (동일 규칙)
+  # 도메인 대역표 — 기능정의서·정책정의서 공용 정렬. 프로젝트 도메인 구조대로 정의.
+  bands:
+    - {domain: AUTH,   fr_range: [1, 99],    policy_range: [1, 99],    sheet_tab: "03_AUTH"}
+    - {domain: USER,   fr_range: [100, 199], policy_range: [101, 199], sheet_tab: "04_USER"}
+    - {domain: SYSTEM, fr_range: [200, 299], policy_range: [201, 299], sheet_tab: "05_SYSTEM"}
+
+# ── baseline (마스터 원본 — 사람 소유, planner는 읽기 전용) ──
+baseline:
+  funcspec_master: "docs/qa-scout/기능정의서/기능정의서_master.csv"
+  policyspec_master: "docs/qa-scout/정책정의서/정책정의서_master.csv"
+
+# ── 컬럼 스키마 ──────────────────────────────────────────
+# delta CSV = "변경 유형" + 아래 마스터 컬럼 그대로 + "근거 | 마커".
+# 마스터 컬럼은 프로젝트마다 다르다 — qa-scout v0.4.0 산출(옵션 A/B/C 14열) 기준 예시.
+# (옵션 D는 15열 — "인풋 출처" 추가. 18컬럼 등 다른 스키마 프로젝트는 이 목록만 교체.)
+columns:
+  funcspec_master_columns:
+    - "시트"
+    - "No."
+    - "기능 ID"
+    - "URS ID"
+    - "TC ID"
+    - "메뉴 경로"
+    - "중분류"
+    - "기능명"
+    - "기능 목적"
+    - "기능 요약"
+    - "상세 정책 / 기능 설명"
+    - "처리 로직 (Process)"
+    - "예외/에러 처리"
+    - "비고"
+  policyspec_master_columns:
+    - "정책 ID"
+    - "정책 구분"
+    - "정책명"
+    - "정책 목표"
+    - "정책 내용 및 기준"
+    - "적용 범위"
+    - "관련 FR"
+    - "비고"
+
+# ── POST 인풋 좌표 (호출자가 런마다 지정하는 값의 기본 틀) ──
+source:
+  repo: "."                        # 코드 레포 루트 (planner 실행 홈 기준 상대 또는 절대)
+  # 커밋 범위·PDCA 문서는 런마다 호출 헤더([CODE]·[PDCA])로 지정 — 여기 박지 않는다(스냅샷은 낡는다)
+
+# ── 런 산출 위치 ─────────────────────────────────────────
+outputs:
+  dir: "qa-planner/outputs"        # {dir}/{기능명}/ 에 delta CSV 2종 + _run/

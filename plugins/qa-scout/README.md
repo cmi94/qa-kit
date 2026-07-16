@@ -1,10 +1,10 @@
-# qa-scout (v0.3.1)
+# qa-scout (v0.4.0)
 
 > 개발자가 보유한 5종 도메인 지식을 인계받고 PRD + 자료를 **단일 markdown 2종**(`feature-spec.md` + `ui-menu-mindmap.md`)으로 압축 정형화하는 Claude Code 플러그인. v0.3.0 Coverage Completeness Gate — 6 인풋 합집합 변환 + 8 카테고리 정형 강제 + D-3 readback diff 차단 게이트 + Sheets 옵션 D(15컬럼 인풋 출처 매핑) 신설.
 
 **spec**: [../../docs/qa-scout/spec.md](../../docs/qa-scout/spec.md)
 
-**최신 publish 버전**: v0.3.1 (2026-06-25) — 03_기능정의서 컬럼 표준 정비 (사전 조건·입력·상태 전이·출력 4개 컬럼 제거, 옵션 A/B/C 14열·D 15열) + 04_TestCase 시트. [CHANGELOG](CHANGELOG.md) 참조.
+**최신 publish 버전**: v0.4.0 (2026-07-16) — 신규 스킬 `docs-to-policy-spec`: 기능정의서 상세정책에서 정책정의서 draft(11컬럼 delta 양식) 파생, 변수형 정책 ID 대역제 + 결정론 validator + scout 단계 9c.7 배선. [CHANGELOG](CHANGELOG.md) 참조.
 
 **최초 실행 가이드**: [`docs/developer-first-run-guide.md`](docs/developer-first-run-guide.md) — 개발자가 처음 받았을 때 단계별로 따라할 변수형 가이드.
 
@@ -48,7 +48,8 @@ QA 측 (별도 후공정)
 - **v0.2.8** — deep screen coverage 게이트, 단계 1b deep-scope 5문 + 단계 12b post-crawl 재확인, `downstream_enrichment` optional 블록, research-seed·ui-crawl-manifest 신규
 - **v0.2.9** — 최종 읽기 산출물 2종 압축 (`feature-spec.md` + `ui-menu-mindmap.md`), 단계 1c execution gate, 단계 4a README discovery gate, 단계 9 5분기, 단계 17a Sheets 옵션 A/B/C 분기, 신규 스킬 `docs-to-ui-menu-mindmap`, 핵심 규약 7번 표현 변경
 - **v0.3.0** — **Coverage Completeness Gate 통합** (6 인풋 합집합 변환 + §1 9번 컬럼 8 카테고리 정형 강제 + 단계 9c.5 UI surface 감지 + 단계 9c.6 자가 검증 9항 + 단계 9d.5 방향 C 게이트 + 단계 17a 옵션 D 18컬럼 신설 + 단계 17b D-3 readback diff 차단 게이트), 신규 스크립트 3종 (`verify-8-categories.py`·`apply-cells.py`·`verify-readback.py`), 신규 템플릿 `unmapped-leaves.yaml`, **`migrate-to-v030.py` 마이그레이션 유틸**
-- **v0.3.1** (현재) — **03_기능정의서 컬럼 표준 정비** (사전 조건·입력·상태 전이·출력 4개 컬럼 제거 → 9번 상세 정책 8단 카테고리 흡수, 옵션 A/B/C 14열·D 15열) + **04_TestCase 시트** + URS ID·TC ID 컬럼 정합. scout 문서류·sheets-layout·design-tokens·skills·scripts 전수 동기. spec SPEC-2026-06-25-feature-spec-column-trim.
+- **v0.3.1** — **03_기능정의서 컬럼 표준 정비** (사전 조건·입력·상태 전이·출력 4개 컬럼 제거 → 9번 상세 정책 8단 카테고리 흡수, 옵션 A/B/C 14열·D 15열) + **04_TestCase 시트** + URS ID·TC ID 컬럼 정합. scout 문서류·sheets-layout·design-tokens·skills·scripts 전수 동기. spec SPEC-2026-06-25-feature-spec-column-trim.
+- **v0.4.0** (현재) — **신규 스킬 `docs-to-policy-spec`**: 기능정의서 §1 상세정책에서 정책정의서 draft(11컬럼 delta 양식) 파생. 한 행=정책 하나(3요소), 여러 FR 공통 규칙 병합·관련 FR 다중 참조, 정책 ID 변수형 대역제(config 분리). 코드 전용 규칙은 `[원본필요]` 후보만(본문 행 X). 결정론 validator + 단계 9c.7 배선. 마스터 자동 반영 금지(draft까지만).
 
 ## 효과
 
@@ -85,6 +86,7 @@ cp -r plugins/qa-scout/skills/curate-input ~/.claude/skills/                # �
 cp -r plugins/qa-scout/skills/docs-to-function-spec ~/.claude/skills/       # 단계 9c → feature-spec.md
 cp -r plugins/qa-scout/skills/docs-to-ui-menu-mindmap ~/.claude/skills/     # 단계 9b → ui-menu-mindmap.md (v0.3.0 신규)
 cp -r plugins/qa-scout/skills/markdown-to-sheets ~/.claude/skills/          # 단계 17a QA 측 Sheets 이행
+cp -r plugins/qa-scout/skills/docs-to-policy-spec ~/.claude/skills/         # 단계 9c.7 → 정책정의서 draft 파생 (v0.4.0 신규)
 
 # 3. 양식 템플릿 (선택 — scout이 자동 카피)
 cp -r plugins/qa-scout/templates ~/.claude/templates/qa-scout/

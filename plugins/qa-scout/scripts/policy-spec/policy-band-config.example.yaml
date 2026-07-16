@@ -1,0 +1,54 @@
+# 정책정의서 ID 대역제 config — docs-to-policy-spec 스킬 입력 (프로젝트별)
+#
+# 변수형 원칙 — 이 파일 하나만 프로젝트별로 갈아끼우면 스킬은 그대로 재사용된다.
+# 정책 ID 대역은 기능정의서 FR 도메인 대역과 1:1 정렬한다. 대역 안 연속 발급,
+# 결번 허용, 재사용 금지 (기능정의서 대역제와 동일 규칙).
+#
+# 아래는 예시. 실제 프로젝트는 project/id_prefix/fr_prefix + bands를 그 프로젝트 값으로 교체.
+
+project: sample                # 프로젝트 슬러그 (보고·경로용)
+id_prefix: "P-APP-"           # 정책 ID 접두 — 정책 ID = {id_prefix}{NNN}
+fr_prefix: "FR-APP-"          # 관련 FR 매칭·유효성 검증용 접두
+
+# 정책 구분(도메인) ↔ ID 대역 ↔ 대응 FR 도메인 대역 ↔ 시트 탭
+# 도메인·대역·탭은 프로젝트 기능정의서 도메인 구조에 맞게 정의한다(아래는 형태 예시).
+bands:
+  - domain: AUTH
+    policy_category: "인증·세션 정책"
+    id_range: [1, 99]          # P-APP-001 ~ 099
+    fr_range: [1, 99]          # FR-APP-0xx
+    sheet_tab: "03_AUTH"
+  - domain: USER
+    policy_category: "사용자 정책"
+    id_range: [101, 199]
+    fr_range: [100, 199]
+    sheet_tab: "04_USER"
+  - domain: SYSTEM
+    policy_category: "시스템 정책"
+    id_range: [201, 299]
+    fr_range: [200, 299]
+    sheet_tab: "05_SYSTEM"
+  - domain: MODULE_A
+    policy_category: "모듈 A 정책"
+    id_range: [301, 399]
+    fr_range: [300, 399]
+    sheet_tab: "06_MODULE_A"
+  - domain: MODULE_B
+    policy_category: "모듈 B 정책"
+    id_range: [401, 499]
+    fr_range: [400, 499]
+    sheet_tab: "07_MODULE_B"
+  - domain: AUDIT
+    policy_category: "감사 정책"
+    id_range: [701, 799]
+    fr_range: [700, 799]
+    sheet_tab: "10_AUDIT"
+  - domain: NOTIFICATION
+    policy_category: "알림 정책"
+    id_range: [801, 899]
+    fr_range: [800, 899]
+    sheet_tab: "11_NOTIFICATION"
+
+# 대역 안에서 이미 발급된 ID를 재사용하지 않도록 baseline 마스터를 참조한다.
+# 없으면 각 대역 시작값부터 발급.
+baseline_master: "docs/qa-scout/정책정의서/정책정의서_master.csv"   # 프로젝트 문서 원본 (읽기 전용, 없으면 빈 baseline)

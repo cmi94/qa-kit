@@ -14,9 +14,16 @@
       "name": "qa-scout",
       "source": "./plugins/qa-scout",
       "description": "개발자가 보유한 5종 도메인 지식을 인계받고 PRD를 GxP 양식 기능 정의서(Google Sheets 옵션 A/B/C/D)로 정형화하는 플러그인. scout 에이전트(+sub-agent 4종) + curate-input·docs-to-function-spec·markdown-to-sheets 스킬 + qa-handoff/ 표준 폴더. Coverage Completeness Gate(6 인풋 합집합 + 8 카테고리 강제 + D-3 readback diff 게이트). v0.3.1 컬럼 표준 정비(옵션 A/B/C 14열·D 15열) + 04_TestCase 시트. 환각 가드(추정 금지·[자료 부족] 마커·출처 표기·최신본 확인) + 단계 -1~20 양방향 인계.",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "category": "qa",
-      "tags": ["qa", "scout", "spec-normalization", "documentation", "handoff", "gxp"],
+      "tags": [
+        "qa",
+        "scout",
+        "spec-normalization",
+        "documentation",
+        "handoff",
+        "gxp"
+      ],
       "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-scout"
     },
     {
@@ -25,7 +32,14 @@
       "description": "N차 통합테스트 결과 보고서(.xlsx)를 양식 고정·데이터만 채우는 방식으로 결정론적 생성. /qa-report가 입력 5개를 강제 수집하고 Atlassian(Jira) MCP로 신규/이월 버그를 fetch해 count-only 보고서(이슈 수 집계·결함 원인 유형별 분포·차수별 추이·결론)를 만든다. 회차 자동 감지·누적 이음은 결과 .xlsx 내장 메타 블록(이전 차수 파일 체인). 보고자는 기본 currentUser(), 지정 시 타 QA·팀 데이터도 집계.",
       "version": "0.1.5",
       "category": "qa",
-      "tags": ["qa", "integration-test", "report", "jira", "defect", "xlsx"],
+      "tags": [
+        "qa",
+        "integration-test",
+        "report",
+        "jira",
+        "defect",
+        "xlsx"
+      ],
       "homepage": "https://github.com/cmi94/qa-kit/tree/main/plugins/qa-report"
     }
   ]

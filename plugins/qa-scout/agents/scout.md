@@ -373,6 +373,14 @@ scout 본체, 단계 9e verifier(Playwright MCP), 단계 12b 재확인, 후공�
      - **1건 FAIL → scout pre-publish 차단** + QA 보고 (grep 결과·candidate 목록 첨부)
      - **9항 PASS** → 단계 9d.5 cross-check 진입 가능
      - **D-3 readback diff는 본 9c.6 대상 아님** — 단계 17b post-publish 전용 (markdown-to-sheets 스킬이 호출)
+
+   - **단계 9c.7 (정책정의서 파생, v0.4.0 신규)**:
+     - **트리거**: 단계 9c.6 PASS 직후 (feature-spec 확정 상태)
+     - **Skill: docs-to-policy-spec v1.0 호출** → `feature-spec.md` §1 상세정책에서 정책정의서 draft(11컬럼 delta 양식, 도메인별) 파생
+     - 입력: `feature-spec.md`(또는 외부 양식 stub 시 그 위치의 기능정의서) + 프로젝트 대역 config(`scripts/policy-spec/policy-band-config.example.yaml` 복사·채움) + baseline 정책 마스터(있으면)
+     - 파생 원칙: 한 행=정책 하나(3요소), 여러 FR 공통 규칙 병합·관련 FR 다중 참조, 정책 ID 변수형 대역제. **기능정의서 근거 없는 정책 생성 금지** — 코드 전용 규칙은 `[원본필요]` 후보만 비고, 본문 행 X (Auto-Healing 차단, bridge-wrapping-pattern 준수)
+     - 발행 게이트: `scripts/policy-spec/validate-policy-spec.py` exit 0 (8컬럼 헤더·관련 FR 실재·대역 준수·3요소·[원본필요] 격리)
+     - **마스터 자동 반영 금지** — draft까지만, 승인 행 반영은 사람 게이트. 기능정의서·외부 stub 둘 다 부재 시 SKIP + 사유. spec: ../../docs/qa-scout/spec.md
    - **단계 9d (final_artifacts 슬롯 hash 기록)**:
      - `input-manifest.yaml > final_artifacts:` 슬롯에 두 산출물 경로 + SHA-256 hash 기록
      - `feature_spec` / `ui_menu_mindmap` 두 항목 각각 path + hash + recorded_at
